@@ -1,0 +1,36 @@
+<div class="login-container">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>Bienvenid&commat;</mat-card-title>
+        <mat-card-subtitle>Ingrese Para continuar</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="you@example.com" formControlName="email">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="loginForm.get('email')?.invalid">Ingrese un mail valido</mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" placeholder="••••••••" formControlName="password">
+            <button mat-icon-button matSuffix (click)="hide = !hide" type="button">
+              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.invalid">Contraseña requerida</mat-error>
+          </mat-form-field>
+  
+          <button mat-raised-button color="primary" class="full-width mt-2" type="submit" [disabled]="loginForm.invalid">
+            Login
+          </button>
+  
+          <div class="forgot-password text-center mt-1">
+            <a href="#">Olvidaste tu contraseña?</a>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
