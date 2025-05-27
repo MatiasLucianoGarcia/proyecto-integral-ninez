@@ -1,35 +1,39 @@
-const supabase = require('../config/db');
+const entidadService = require('../services/entidadService');
 
 const getEntidades = async (req, res) => {
-  const { data, error } = await supabase.from('entidad').select('*');
-  if (error) return res.status(500).json({ message: 'Error al obtener entidades', error });
-  res.json(data);
+  try {
+    const entidades = await entidadService.getEntidades();
+    res.json(entidades);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener entidades', error });
+  }
 };
 
 const createEntidad = async (req, res) => {
-  const { nombre, servicio_local, descripcion } = req.body;
-  const { data, error } = await supabase.from('entidad').insert([{ nombre, servicio_local, descripcion }]).select();
-  if (error) return res.status(500).json({ message: 'Error al crear entidad', error });
-  res.status(201).json(data[0]);
+  try {
+    const nuevaEntidad = await entidadService.createEntidad(req.body);
+    res.status(201).json(nuevaEntidad);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear entidad', error });
+  }
 };
 
 const updateEntidad = async (req, res) => {
-  const { id } = req.params;
-  const { nombre, servicio_local, descripcion } = req.body;
-  const { data, error } = await supabase
-    .from('entidad')
-    .update({ nombre, servicio_local, descripcion })
-    .eq('id', id)
-    .select();;
-  if (error) return res.status(500).json({ message: 'Error al actualizar entidad', error });
-  res.json(data[0]);
+  try {
+    const entidadActualizada = await entidadService.updateEntidad(req.params.id, req.body);
+    res.json(entidadActualizada);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar entidad', error });
+  }
 };
 
 const deleteEntidad = async (req, res) => {
-  const { id } = req.params;
-  const { error } = await supabase.from('entidad').delete().eq('id', id);
-  if (error) return res.status(500).json({ message: 'Error al eliminar entidad', error });
-  res.json({ message: 'Entidad eliminado' });
+  try {
+    await entidadService.deleteEntidad(req.params.id);
+    res.json({ message: 'Entidad eliminada' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar entidad', error });
+  }
 };
 
 module.exports = {

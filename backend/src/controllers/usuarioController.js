@@ -1,67 +1,44 @@
-const supabase = require('../config/db');
-const bcrypt = require('bcryptjs');
+const usuarioService = require('../services/usuarioService');
 
-// Crear usuario (solo admin)
+// Crear usuario
 const createUsuario = async (req, res) => {
-  const { nombre, contraseña, id_entidad, id_rol } = req.body;
-
-  const hashedPassword = await bcrypt.hash(contraseña, 10);
-
-  const { data, error } = await supabase
-    .from('usuario')
-    .insert([{ nombre, contraseña: hashedPassword, id_entidad, id_rol }]).select();
-
-  if (error) return res.status(500).json({ message: 'Error al crear usuario', error });
-  res.status(201).json(data[0]);
+  try {
+    const nuevoUsuario = await usuarioService.createUsuario(req.body);
+    res.status(201).json(nuevoUsuario);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear usuario', error });
+  }
 };
 
-// Obtener usuario por ID con info de entidad y rol
+// Obtener usuario por ID
 const getUsuarioById = async (req, res) => {
-  const { id } = req.params;
-
-  const { data: usuario, error } = await supabase
-    .from('usuario')
-    .select('id, nombre, entidad(nombre, servicio_local, descripcion), rol(nombre_rol)')
-    .eq('id', id)
-    .single();
-
-  if (error || !usuario) {
-    return res.status(404).json({ message: 'Usuario no encontrado', error });
+  try {
+    const usuario = await usuarioService.getUsuarioById(req.params.id);
+    res.json(usuario);
+  } catch (error) {
+    const status = error.status || 500;
+    res.status(status).json({ message: error.message || 'Error al obtener usuario', error });
   }
-
-  res.json(usuario);
 };
 
-// Actualizar usuario (solo admin)
+// Actualizar usuario
 const updateUsuario = async (req, res) => {
-  const { id } = req.params;
-  const { nombre, contraseña, id_entidad, id_rol } = req.body;
-
-  let updateFields = { nombre, id_entidad, id_rol };
-
-  if (contraseña) {
-    updateFields.contraseña = await bcrypt.hash(contraseña, 10);
+  try {
+    const usuarioActualizado = await usuarioService.updateUsuario(req.params.id, req.body);
+    res.json(usuarioActualizado);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar usuario', error });
   }
-
-  const { data, error } = await supabase
-    .from('usuario')
-    .update(updateFields)
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (error || !data) return res.status(500).json({ message: 'Error al actualizar usuario', error });
-  res.json(data);
 };
 
-// Eliminar usuario (solo admin)
+// Eliminar usuario
 const deleteUsuario = async (req, res) => {
-  const { id } = req.params;
-
-  const { error } = await supabase.from('usuario').delete().eq('id', id);
-
-  if (error) return res.status(500).json({ message: 'Error al eliminar usuario', error });
-  res.json({ message: 'Usuario eliminado' });
+  try {
+    await usuarioService.deleteUsuario(req.params.id);
+    res.json({ message: 'Usuario eliminado' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar usuario', error });
+  }
 };
 
 module.exports = {
