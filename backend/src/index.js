@@ -6,6 +6,9 @@ const authRoutes = require('./routes/authRoutes');
 const rolRoutes = require('./routes/rolRoutes');
 const entidadRoutes = require('./routes/entidadRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const nacionalidadRoutes = require('./routes/nacionalidadRoutes');
+const generoRoutes = require('./routes/generoRoutes');
+const personaRoutes = require('./routes/personaRoutes');
 
 //const supabase = require('./config/db'); // Importar el cliente de Supabase
 
@@ -20,6 +23,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/roles',rolRoutes);
 app.use('/api/entidades', entidadRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/nacionalidades',nacionalidadRoutes);
+app.use('/api/generos',generoRoutes);
+app.use('/api/personas', personaRoutes);
 
 // Bienvenida
 app.get('/', (req, res) => {

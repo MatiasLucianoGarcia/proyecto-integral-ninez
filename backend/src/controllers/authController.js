@@ -2,8 +2,8 @@ const authService = require('../services/authService');
 
 const login = async (req, res) => {
   try {
-    const token = await authService.loginUser(req.body);
-    res.json({ token });
+    const { token, usuario } = await authService.loginUser(req.body);
+    res.json({ token, usuario });
   } catch (error) {
     const isAuthError = [
       'Usuario no encontrado',

@@ -1,9 +1,10 @@
 const supabase = require('../config/db');
 const bcrypt = require('bcryptjs');
 const { generateToken } = require('../utils/jwt');
+const usuarioService = require('./usuarioService');
 
 const loginUser = async ({ nombre, contraseña }) => {
-  // Buscar el usuario
+  // Buscar el usuario por nombre
   const { data: user, error } = await supabase
     .from('usuario')
     .select('*')
@@ -14,7 +15,6 @@ const loginUser = async ({ nombre, contraseña }) => {
     throw new Error('Usuario no encontrado');
   }
 
-  // Validar contraseña
   const validPassword = await bcrypt.compare(contraseña, user.contraseña);
   if (!validPassword) {
     throw new Error('Contraseña incorrecta');
@@ -24,7 +24,6 @@ const loginUser = async ({ nombre, contraseña }) => {
     throw new Error('El usuario no tiene un rol asignado');
   }
 
-  // Obtener el nombre del rol
   const { data: rolData, error: rolError } = await supabase
     .from('rol')
     .select('nombre_rol')
@@ -37,10 +36,11 @@ const loginUser = async ({ nombre, contraseña }) => {
 
   const rol = rolData.nombre_rol;
 
-  // Generar token
   const token = generateToken({ id: user.id, rol, nombre: user.nombre });
 
-  return token;
+  const usuario = await usuarioService.getUsuarioById(user.id);
+
+  return { token, usuario };
 };
 
 module.exports = {
