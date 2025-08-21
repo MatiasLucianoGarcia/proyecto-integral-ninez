@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LoginService } from './services/login.service';
+import { Router } from '@angular/router';
 
 
 
@@ -21,9 +23,9 @@ export class LoginComponent {
   loginForm: FormGroup;
   hide = true;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      name: ['', [Validators.required,]],
       password: ['', Validators.required]
     });
   }
@@ -31,7 +33,17 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       console.log('Form Data:', this.loginForm.value);
-      // Auth logic
+      this.loginService.login(this.loginForm.value.name, this.loginForm.value.password).subscribe({
+        next: (response) => {
+          console.log('Login successful:', response);
+          this.router.navigate(['/formulario-carga']);
+        },
+        error: (error) => {
+          console.error('Login failed:', error);
+          this.loginForm.setErrors({invalidLogin:true})
+          
+          } 
+      });
     }
   }
 
