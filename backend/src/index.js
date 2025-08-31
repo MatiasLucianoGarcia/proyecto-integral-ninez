@@ -9,6 +9,7 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 const nacionalidadRoutes = require('./routes/nacionalidadRoutes');
 const generoRoutes = require('./routes/generoRoutes');
 const personaRoutes = require('./routes/personaRoutes');
+const domicilioRoutes = require('./routes/domicilioRoutes');
 
 //const supabase = require('./config/db'); // Importar el cliente de Supabase
 
@@ -26,6 +27,7 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/nacionalidades',nacionalidadRoutes);
 app.use('/api/generos',generoRoutes);
 app.use('/api/personas', personaRoutes);
+app.use('/api/domicilios', domicilioRoutes);
 
 // Bienvenida
 app.get('/', (req, res) => {
