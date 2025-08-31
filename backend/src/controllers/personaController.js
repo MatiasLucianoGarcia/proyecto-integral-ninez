@@ -1,4 +1,5 @@
 const personaService = require('../services/personaService');
+const historialService = require('../services/historialService');
 
 const getPersonas = async (req, res) => {
   try {
@@ -12,8 +13,20 @@ const getPersonas = async (req, res) => {
 const createPersona = async (req, res) => {
   try {
     const nueva = await personaService.createPersona(req.body);
+
+    // Armo la intervención con el usuario actual
+    const intervencion = `El usuario ${req.user.nombre} ingresó a ${nueva.nombre} (${nueva.dni}) al sistema`;
+
+    await historialService.createHistorial({
+      dni: nueva.dni,
+      intervencion,
+      resultado: 'Alta exitosa',
+      fecha_carga: new Date()
+    });
+
     res.status(201).json(nueva);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error al crear persona', error });
   }
 };
