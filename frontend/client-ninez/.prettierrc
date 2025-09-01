@@ -1,0 +1,19 @@
+{
+	"printWidth": 150,
+	"singleQuote": true,
+	"tabWidth": 4,
+	"trailingComma": "all",
+	"htmlWhitespaceSensitivity": "css",
+	"bracketSameLine": false,
+	"endOfLine": "auto",
+	"useTabs": true,
+	"ignoreComments": true,
+	"overrides": [
+		{
+			"files": "*.ts",
+			"options": {
+				"parser": "typescript"
+			}
+		}
+	]
+}

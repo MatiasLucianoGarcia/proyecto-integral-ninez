@@ -1,0 +1,10 @@
+<app-nav-bar (menuClick)="drawer.toggle()" />
+<mat-drawer-container class="dashboard-container" autosize>
+	<mat-drawer #drawer class="dashboard-sidenav" mode="side">
+		<app-sidebar />
+	</mat-drawer>
+	<div class="dashboard-content">
+		<ng-content></ng-content>
+		<p>dashboard works!</p>
+	</div>
+</mat-drawer-container>

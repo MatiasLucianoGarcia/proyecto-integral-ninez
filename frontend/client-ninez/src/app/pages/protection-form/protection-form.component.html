@@ -1,33 +1,55 @@
 <div class="container">
-    <h2>Formulario de Protección</h2>
-    <!-- <form [formGroup]="protectionForm" (ngSubmit)="onSubmit()"> -->
-    <!-- <form >
-        <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nombre Completo</mat-label>
-        <input matInput formControlName="fullName" placeholder="Ingrese su nombre completo">
-        <mat-error *ngIf="protectionForm.get('fullName')?.invalid">El nombre es requerido</mat-error>
-        </mat-form-field>
-    
-        <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Edad</mat-label>
-        <input matInput type="number" formControlName="age" placeholder="Ingrese su edad">
-        <mat-error *ngIf="protectionForm.get('age')?.invalid">La edad es requerida y debe ser un número válido</mat-error>
-        </mat-form-field>
-    
-        <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Dirección</mat-label>
-        <input matInput formControlName="address" placeholder="Ingrese su dirección">
-        <mat-error *ngIf="protectionForm.get('address')?.invalid">La dirección es requerida</mat-error>
-        </mat-form-field>
-    
-        <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Teléfono de Contacto</mat-label>
-        <input matInput formControlName="contactNumber" placeholder="Ingrese su teléfono de contacto">
-        <mat-error *ngIf="protectionForm.get('contactNumber')?.invalid">El teléfono es requerido</mat-error>
-        </mat-form-field>
-    
-        <button mat-raised-button color="primary" type="submit" >Enviar</button>
-    </form> -->
-
-    <button mat-raised-button color="primary" class="full-width mt-2"  (click)="click()">Enviar</button>
+  <h2>Formulario de Protección</h2>
+  <form [formGroup]="protectionForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="familiares">
+      <div *ngFor="let familiar of familiares.controls; let i = index" [formGroupName]="i" class="familiar-card">
+        <mat-card>
+          <mat-card-title>Familiar {{i + 1}}</mat-card-title>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>DNI</mat-label>
+            <input matInput formControlName="dni" type="number" required>
+            <mat-error *ngIf="familiar.get('dni')?.invalid">DNI requerido</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre" required>
+            <mat-error *ngIf="familiar.get('nombre')?.invalid">Nombre requerido</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Apellido</mat-label>
+            <input matInput formControlName="apellido" required>
+            <mat-error *ngIf="familiar.get('apellido')?.invalid">Apellido requerido</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Fecha de Nacimiento</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="familiar.get('fechaNacimiento')?.invalid">Fecha requerida</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Género</mat-label>
+            <input matInput formControlName="id_genero" type="number" required>
+            <mat-error *ngIf="familiar.get('id_genero')?.invalid">Género requerido</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nacionalidad</mat-label>
+            <input matInput formControlName="id_nacionalidad" type="number" required>
+            <mat-error *ngIf="familiar.get('id_nacionalidad')?.invalid">Nacionalidad requerida</mat-error>
+          </mat-form-field>
+          <button mat-icon-button color="warn" *ngIf="familiares.length > 1" (click)="removeFamiliar(i)" type="button">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+    </div>
+    <div class="actions">
+      <button mat-raised-button color="accent" type="button" (click)="addFamiliar()">
+        <mat-icon>add</mat-icon> Agregar familiar
+      </button>
+      <button mat-raised-button color="primary" class="full-width mt-2" type="submit" [disabled]="protectionForm.invalid">
+        Guardar
+      </button>
+    </div>
+  </form>
 </div>

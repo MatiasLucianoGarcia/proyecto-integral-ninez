@@ -1,0 +1,38 @@
+.container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #232323;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+
+h2 {
+  color: #80deea;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.familiar-card {
+  margin-bottom: 24px;
+}
+
+.mat-card-title {
+  color: #ffb74d;
+  font-size: 1.2rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}

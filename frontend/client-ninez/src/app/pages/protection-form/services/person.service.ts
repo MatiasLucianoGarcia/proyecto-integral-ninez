@@ -15,7 +15,6 @@ export class PersonService {
 
   savePerson(personData: {dni:number, nombre:string, apellido:string, fechaNacimiento:Date, id_genero:number, id_nacionalidad:number, token:string }): Observable<any> {
     const { token, ...req } = personData;
-    const headers = { 'Authorization': `Bearer ${token}` };
-    return this.http.post('http://localhost:8080/api/personas', req, { headers });
+    return this.http.post('http://localhost:8080/api/personas', req);
   }
 }

@@ -1,9 +1,18 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { ProtectionFormComponent } from './pages/protection-form/protection-form.component';
+import { SessionGuard } from './core/guards/session.guard';
 
 export const routes: Routes = [
-    {component:LoginComponent, path:''},
-    {component:LoginComponent,path:'login'},
-    {component:ProtectionFormComponent, path:'formulario-carga'}
+	{ path: 'login', loadChildren: () => import('./features/login/login.routes').then((m) => m.LOGIN_ROUTES) },
+	{
+		path: '',
+		canActivate: [SessionGuard],
+		children: [
+			{
+				path: 'dashboard',
+				loadChildren: () => import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+			},
+			// Aquí puedes agregar más rutas protegidas
+		],
+	},
+	{ path: '**', redirectTo: 'login' },
 ];

@@ -1,4 +1,4 @@
-import { RolEnum } from "../enums/role-enum";
+import { RolEnum } from "./enums/role-enum";
 import { Entity } from "./entity";
 
 export interface User {
