@@ -4,7 +4,11 @@
 	</button>
 	<span>My App</span>
 	<span class="example-spacer"></span>
-	<button mat-icon-button class="example-icon account_circle" aria-label="Example icon-button with heart icon">
+	<button mat-icon-button class="example-icon account_circle" aria-label="Example icon-button with heart icon" [matMenuTriggerFor]="menu">
 		<mat-icon>account_circle</mat-icon>
 	</button>
+	<mat-menu #menu="matMenu">
+		<button mat-menu-item>Item 1</button>
+		<button mat-menu-item (click)="logout()">Cerrar Sesion</button>
+	</mat-menu>
 </mat-toolbar>

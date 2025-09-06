@@ -6,24 +6,21 @@ import { User } from '../domain/user';
 import { UserDataService } from '../data/user-data.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class LoginService {
+	private http = inject(HttpClient);
+	private userDataService = inject(UserDataService);
 
-  private http = inject(HttpClient);
-  private userDataService = inject(UserDataService);
+	login(nombre: string, contraseña: string): Observable<UserSessionsDTO> {
+		return this.http.post<UserSessionsDTO>('http://localhost:8080/api/auth/login', { nombre, contraseña }).pipe(
+			tap((res) => {
+				this.userDataService.setUser(res);
+			}),
+		);
+	}
 
-  login(nombre: string, contraseña: string): Observable<UserSessionsDTO> {
-      return this.http.post<UserSessionsDTO>('http://localhost:8080/api/auth/login', { nombre, contraseña }).pipe(
-        tap(res=> {
-          const user = res.usuario;
-          this.userDataService.setUser(user);
-        })
-     );
-  }
-
-  getUser(): User | null {
-    return this.userDataService.getUser();
-  }
-
+	getUser(): User | null {
+		return this.userDataService.getUser();
+	}
 }

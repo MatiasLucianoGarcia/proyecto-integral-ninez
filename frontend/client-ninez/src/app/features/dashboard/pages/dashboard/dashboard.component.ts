@@ -3,10 +3,11 @@ import { NavBarComponent } from '../../components/nav-bar/nav-bar.component';
 import { DashboardSidebarService } from '../../services/dashboard-sidebar.service';
 import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { PersonsListComponent } from '../../../persons';
 
 @Component({
 	selector: 'app-dashboard',
-	imports: [NavBarComponent, MatDrawerContainer, MatDrawer, SidebarComponent],
+	imports: [NavBarComponent, MatDrawerContainer, MatDrawer, SidebarComponent, PersonsListComponent],
 	templateUrl: './dashboard.component.html',
 	styleUrl: './dashboard.component.scss',
 })

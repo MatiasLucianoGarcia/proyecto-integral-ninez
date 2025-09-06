@@ -1,0 +1,5 @@
+@for(person of persons; track person.dni) {
+<app-person-card [person]="person" />
+} @empty {
+<p>No hay personas para mostrar.</p>
+}
