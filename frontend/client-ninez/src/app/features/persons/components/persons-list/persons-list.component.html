@@ -1,5 +1,9 @@
 @for(person of persons; track person.dni) {
 <app-person-card [person]="person" />
+
 } @empty {
 <p>No hay personas para mostrar.</p>
 }
+<button mat-icon-button matFab>
+	<mat-icon>add</mat-icon>
+</button>

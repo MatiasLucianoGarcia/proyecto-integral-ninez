@@ -2,10 +2,12 @@ import { Component, inject } from '@angular/core';
 import { PersonService } from '../../services';
 import { Persona } from '../../domain';
 import { PersonCardComponent } from '../person-card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'app-persons-list',
-	imports: [PersonCardComponent],
+	imports: [PersonCardComponent, MatButtonModule, MatIconModule],
 	templateUrl: './persons-list.component.html',
 	styleUrl: './persons-list.component.scss',
 })
