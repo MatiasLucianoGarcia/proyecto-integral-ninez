@@ -1,15 +1,29 @@
 const domicilioService = require('../services/domicilioService');
+const historialService = require('../services/historialService');
 
 // POST
 const crearDomicilio = async (req, res) => {
   try {
     const fecha_carga = new Date().toISOString().split("T")[0];
+
     const nuevoDomicilio = await domicilioService.crearDomicilio(
       req.body.dni,
       req.body.nombre,
       req.body.numero,
       fecha_carga
     );
+
+    // Armo la intervención con el usuario actual
+    const intervencion = `El usuario ${req.user.nombre} añadio nueva informacion sobre el domicilio para esta persona`;
+
+    // Agrego al historial
+    await historialService.createHistorial({
+      dni: req.body.dni,
+      intervencion,
+      resultado: "Alta de domicilio exitosa",
+      fecha_carga: new Date(),
+    });
+
     res.status(201).json(nuevoDomicilio);
   } catch (error) {
     console.error(error);
