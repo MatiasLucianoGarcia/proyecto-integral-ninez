@@ -1,9 +1,9 @@
 const supabase = require('../config/db');
 
-const createHistorial = async ({ dni, intervencion, resultado, fecha_carga }) => {
+const createHistorial = async ({ dni, intervencion, resultado}) => {
   const { data, error } = await supabase
     .from('historial')
-    .insert([{ dni, intervencion, resultado, fecha_carga }])
+    .insert([{ dni, intervencion, resultado}])
     .select();
 
   if (error) throw error;

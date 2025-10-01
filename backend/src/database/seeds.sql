@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS Vivienda (
   dni INTEGER REFERENCES Persona(dni),
   tipo_vivienda INTEGER REFERENCES Tipo_Vivienda(id),
   observaciones TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear tabla Condiciones_vida
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS Condiciones_vida(
   acceso_agua BOOLEAN,
   acceso_internet BOOLEAN,
   alimentos_propios BOOLEAN,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Parentezco
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS Contacto(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni),
   telefono VARCHAR(50),
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Domicilio
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS Domicilio(
   dni INTEGER REFERENCES Persona(dni),
   nombre VARCHAR(100),
   numero INTEGER,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Trabajo
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS Trabajo(
   dni INTEGER REFERENCES Persona(dni),
   descripcion TEXT,
   horario TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Escolaridad
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS Escolaridad(
   escuela VARCHAR(100),
   nivel VARCHAR(50),
   año VARCHAR(50),
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Salud
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS Salud(
   tratamiento_prolongado TEXT,
   discapacidad TEXT,
   adicciones TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Control_medico
@@ -148,7 +148,8 @@ CREATE TABLE IF NOT EXISTS Control_medico(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni),
   unidad_sanitaria VARCHAR(100),
-  fecha_carga DATE
+  observaciones TEXT,
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Actividades
@@ -158,7 +159,7 @@ CREATE TABLE IF NOT EXISTS Actividades(
   actividad VARCHAR(100),
   horario VARCHAR(255),
   observaciones TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Intereses
@@ -169,7 +170,7 @@ CREATE TABLE IF NOT EXISTS Intereses(
   gustos TEXT,
   vinculos_significativos TEXT,
   datos_desarrollo TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Perdidas
@@ -177,7 +178,7 @@ CREATE TABLE IF NOT EXISTS Perdidas(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni),
   descripcion TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Efector
@@ -192,7 +193,7 @@ CREATE TABLE IF NOT EXISTS Efectores_previos(
   dni INTEGER REFERENCES Persona(dni),
   id_efector INTEGER REFERENCES Efector(id),
   observaciones TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Efectores_posteriores
@@ -201,7 +202,7 @@ CREATE TABLE IF NOT EXISTS Efectores_posteriores(
   dni INTEGER REFERENCES Persona(dni),
   id_efector INTEGER REFERENCES Efector(id),
   observaciones TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Derecho 
@@ -218,7 +219,7 @@ CREATE TABLE IF NOT EXISTS Servicio(
   motivo TEXT,
   id_efector INTEGER REFERENCES Efector(id),
   derecho_vulnerado INTEGER REFERENCES derecho(id),
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla Historial
@@ -227,7 +228,7 @@ CREATE TABLE IF NOT EXISTS Historial(
   dni INTEGER REFERENCES Persona(dni),
   intervencion TEXT,
   resultado TEXT,
-  fecha_carga DATE
+  fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
 -- Crear Tabla

@@ -1,9 +1,9 @@
 const supabase = require('../config/db');
 
-const crearDomicilio = async (dni, nombre, numero, fecha_carga) => {
+const crearDomicilio = async (dni, nombre, numero) => {
   const { data, error } = await supabase
     .from('domicilio')
-    .insert([{ dni, nombre, numero, fecha_carga }])
+    .insert([{ dni, nombre, numero}])
     .select();
   if (error) throw error;
   return data[0];

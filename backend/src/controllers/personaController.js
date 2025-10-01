@@ -21,7 +21,6 @@ const createPersona = async (req, res) => {
       dni: nueva.dni,
       intervencion,
       resultado: "Alta exitosa",
-      fecha_carga: new Date(),
     });
 
     res.status(201).json(nueva);

@@ -1,9 +1,9 @@
 const supabase = require('../config/db');
 
-const crearContacto = async (dni, telefono, fecha_carga) => {
+const crearContacto = async (dni, telefono) => {
   const { data, error } = await supabase
     .from('contacto')
-    .insert([{ dni, telefono, fecha_carga }])
+    .insert([{ dni, telefono }])
     .select();
   if (error) throw error;
   return data[0];

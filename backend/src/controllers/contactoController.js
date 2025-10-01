@@ -4,12 +4,9 @@ const historialService = require('../services/historialService');
 // POST
 const crearContacto = async (req, res) => {
   try {
-    const fecha_carga = new Date().toISOString().split("T")[0];
-
     const nuevoContacto = await contactoService.crearContacto(
       req.body.dni,
       req.body.telefono,
-      fecha_carga
     );
 
     // Armo la intervención con el usuario actual
@@ -20,7 +17,6 @@ const crearContacto = async (req, res) => {
       dni: req.body.dni,
       intervencion,
       resultado: "Alta de contacto exitosa",
-      fecha_carga: new Date(),
     });
 
     res.status(201).json(nuevoContacto);
