@@ -21,3 +21,6 @@ INSERT INTO Genero (nombre) VALUES  ('Masculino'), ('Femenino'), ('No Binario'),
 
 -- Insertar en la tabla Nacionalidad
 INSERT INTO Nacionalidad (nombre) VALUES  ('Argentina'), ('Chile'), ('Uruguay'), ('Brasil'), ('Paraguay'), ('Bolivia'), ('Perú'), ('Ecuador'),('Colombia'), ('Venezuela'), ('España'), ('Italia'), ('Alemania'), ('Francia'), ('Reino Unido'), ('Estados Unidos');
+
+-- Insertar en la tabla Tipo_vivienda
+INSERT INTO Tipo_vivienda (tipo) VALUES ('Casa propia'), ('Casa alquilada'), ('Departamento propio'), ('Departamento alquilado'), ('Casa de familiares'), ('Casa prestada'), ('Vivienda social'), ('Vivienda rural'), ('Pensión'), ('Inquilinato'), ('Hotel/pensión transitoria'), ('Usurpada'), ('En situación de calle'), ('Otro');

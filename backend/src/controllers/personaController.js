@@ -1,5 +1,8 @@
 const personaService = require("../services/personaService");
 const historialService = require("../services/historialService");
+const interesesService = require("../services/interesesService");
+const saludService = require("../services/saludService");
+const condicionesVidaService = require("../services/condicionesVidaService");
 
 const getPersonas = async (req, res) => {
   try {
@@ -14,13 +17,17 @@ const createPersona = async (req, res) => {
   try {
     const nueva = await personaService.createPersona(req.body);
 
-    // Armo la intervención con el usuario actual
-    const intervencion = `El usuario ${req.user.nombre} ingresó a ${nueva.nombre} (${nueva.dni}) al sistema`;
+    // Crear registros asociados vacíos
+    await interesesService.crearIntereses(nueva.dni);
+    await saludService.crearSalud(nueva.dni);
+    await condicionesVidaService.crearCondicionesVida(nueva.dni);
 
+    // Historial
+    const intervencion = `El usuario ${req.user.nombre} ingresó a ${nueva.nombre} (${nueva.dni}) al sistema`;
     await historialService.createHistorial({
       dni: nueva.dni,
       intervencion,
-      resultado: "Alta exitosa",
+      resultado: "Alta de persona y registros asociados exitosa",
     });
 
     res.status(201).json(nueva);
