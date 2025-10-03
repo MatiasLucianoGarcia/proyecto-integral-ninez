@@ -1,7 +1,6 @@
 const controlMedicoService = require('../services/controlMedicoService');
 const historialService = require('../services/historialService');
 
-// POST
 const crearControlMedico = async (req, res) => {
   try {
     const nuevoControl = await controlMedicoService.crearControlMedico(
@@ -10,7 +9,7 @@ const crearControlMedico = async (req, res) => {
       req.body.observaciones
     );
 
-    // Intervención
+    // Intervención para historial
     const intervencion = `El usuario ${req.user.nombre} añadió un control médico para esta persona`;
 
     await historialService.createHistorial({
@@ -23,7 +22,9 @@ const crearControlMedico = async (req, res) => {
     res.status(201).json(nuevoControl);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear control médico', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al crear control médico' });
   }
 };
 

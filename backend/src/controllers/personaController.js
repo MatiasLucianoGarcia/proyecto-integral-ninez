@@ -33,7 +33,9 @@ const createPersona = async (req, res) => {
     res.status(201).json(nueva);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error al crear persona", error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al crear persona" });
   }
 };
 

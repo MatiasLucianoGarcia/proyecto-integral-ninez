@@ -10,19 +10,23 @@ const crearTrabajo = async (req, res) => {
       req.body.horario
     );
 
-    // Intervención
+    // Intervención con usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió información laboral para esta persona`;
 
+    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
       resultado: "Alta de trabajo exitosa",
+      fecha_carga: new Date(),
     });
 
     res.status(201).json(nuevoTrabajo);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear trabajo', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al crear trabajo' });
   }
 };
 

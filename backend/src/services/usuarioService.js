@@ -1,17 +1,24 @@
 const supabase = require('../config/db');
 const bcrypt = require('bcryptjs');
+const { validarRolExiste } = require("../helpers/rolHelper");
+const { validarEntidadExiste } = require("../helpers/entidadHelper");
 
 const createUsuario = async ({ nombre, contraseña, id_entidad, id_rol }) => {
+  // Validar existencia de rol y entidad
+  await validarRolExiste(id_rol);
+  await validarEntidadExiste(id_entidad);
+
   const hashedPassword = await bcrypt.hash(contraseña, 10);
 
   const { data, error } = await supabase
-    .from('usuario')
+    .from("usuario")
     .insert([{ nombre, contraseña: hashedPassword, id_entidad, id_rol }])
     .select();
 
   if (error) throw error;
   return data[0];
 };
+
 
 const getUsuarioById = async (id) => {
   const { data, error } = await supabase

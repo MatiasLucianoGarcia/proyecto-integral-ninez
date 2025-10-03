@@ -6,13 +6,12 @@ const crearContacto = async (req, res) => {
   try {
     const nuevoContacto = await contactoService.crearContacto(
       req.body.dni,
-      req.body.telefono,
+      req.body.telefono
     );
 
-    // Armo la intervención con el usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadio nueva informacion de contacto para esta persona`;
+    // Intervención para historial
+    const intervencion = `El usuario ${req.user.nombre} añadió nueva información de contacto para esta persona`;
 
-    // Agrego al historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
@@ -22,7 +21,9 @@ const crearContacto = async (req, res) => {
     res.status(201).json(nuevoContacto);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear Contacto', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al crear contacto' });
   }
 };
 

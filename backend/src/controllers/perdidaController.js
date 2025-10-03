@@ -9,19 +9,23 @@ const crearPerdida = async (req, res) => {
       req.body.descripcion
     );
 
-    // Intervención
+    // Intervención con usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió una pérdida para esta persona`;
 
+    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
       resultado: "Alta de pérdida exitosa",
+      fecha_carga: new Date(),
     });
 
     res.status(201).json(nuevaPerdida);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear pérdida', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al crear pérdida' });
   }
 };
 

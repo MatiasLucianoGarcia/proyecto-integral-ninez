@@ -1,10 +1,15 @@
 const supabase = require('../config/db');
+const { validarPersonaExiste } = require('../helpers/personaHelper');
 
 const crearControlMedico = async (dni, unidad_sanitaria, observaciones) => {
+  // Validar existencia de la persona
+  await validarPersonaExiste(dni);
+
   const { data, error } = await supabase
     .from('control_medico')
     .insert([{ dni, unidad_sanitaria, observaciones }])
     .select();
+
   if (error) throw error;
   return data[0];
 };

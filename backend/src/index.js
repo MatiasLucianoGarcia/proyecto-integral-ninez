@@ -21,6 +21,8 @@ const viviendaRoutes = require('./routes/viviendaRoutes')
 const saludRoutes = require('./routes/saludRoutes')
 const interesesRoutes = require('./routes/interesesRoutes')
 const condicionesVidaRoutes = require('./routes/condicionesVidaRoutes')
+const parentezcoRoutes = require('./routes/parentezcoRoutes')
+const familiaRoutes = require('./routes/familiaRoutes')
 
 //const supabase = require('./config/db'); // Importar el cliente de Supabase
 
@@ -50,6 +52,8 @@ app.use('/api/vivienda', viviendaRoutes);
 app.use('/api/salud', saludRoutes);
 app.use('/api/intereses', interesesRoutes);
 app.use('/api/condicionesVida', condicionesVidaRoutes);
+app.use('/api/parentezcos', parentezcoRoutes);
+app.use('/api/familia', familiaRoutes);
 
 // Bienvenida
 app.get('/', (req, res) => {

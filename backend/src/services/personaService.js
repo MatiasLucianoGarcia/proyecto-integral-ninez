@@ -1,4 +1,6 @@
 const supabase = require('../config/db');
+const { validarGeneroExiste } = require("../helpers/generoHelper");
+const { validarNacionalidadExiste } = require("../helpers/nacionalidadHelper");
 
 const getPersonas = async () => {
   const { data, error } = await supabase
@@ -17,14 +19,19 @@ const getPersonas = async () => {
 };
 
 const createPersona = async ({ dni, nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad }) => {
+  // Validar que existan genero y nacionalidad
+  await validarGeneroExiste(id_genero);
+  await validarNacionalidadExiste(id_nacionalidad);
+
   const { data, error } = await supabase
-    .from('persona')
+    .from("persona")
     .insert([{ dni, nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad }])
     .select();
 
   if (error) throw error;
   return data[0];
 };
+
 
 const updatePersona = async (dni, { nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad }) => {
   const { data, error } = await supabase

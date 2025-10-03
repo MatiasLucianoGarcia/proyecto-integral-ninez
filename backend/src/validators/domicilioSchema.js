@@ -37,15 +37,6 @@ const domicilioSchema = Joi.object({
       'string.max': 'El número no debe superar los 20 caracteres',
       'any.required': 'El número es obligatorio',
     }),
-
-  fecha_carga: Joi.date()
-    .iso()
-    .required()
-    .messages({
-      'date.base': 'La fecha de carga debe ser una fecha válida',
-      'date.format': 'La fecha debe estar en formato ISO (YYYY-MM-DD)',
-      'any.required': 'La fecha de carga es obligatoria',
-    }),
 });
 
 module.exports = domicilioSchema;

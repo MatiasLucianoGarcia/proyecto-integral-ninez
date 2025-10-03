@@ -6,9 +6,13 @@ const createUsuario = async (req, res) => {
     const nuevoUsuario = await usuarioService.createUsuario(req.body);
     res.status(201).json(nuevoUsuario);
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear usuario', error });
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al crear usuario" });
   }
 };
+
 
 // Obtener usuario por ID
 const getUsuarioById = async (req, res) => {

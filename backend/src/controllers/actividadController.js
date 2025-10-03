@@ -23,9 +23,13 @@ const crearActividad = async (req, res) => {
     res.status(201).json(nuevaActividad);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear actividad', error });
+    const status = error.status || 500;
+    res.status(status).json({
+      message: error.message || "Error al crear actividad",
+    });
   }
 };
+
 
 // GET
 const obtenerActividades = async (req, res) => {

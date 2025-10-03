@@ -11,19 +11,23 @@ const crearEscolaridad = async (req, res) => {
       req.body.año,
     );
 
-    // Intervención
+    // Intervención con usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió información de escolaridad para esta persona`;
 
+    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
       resultado: "Alta de escolaridad exitosa",
+      fecha_carga: new Date(),
     });
 
     res.status(201).json(nuevaEscolaridad);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear escolaridad', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al crear escolaridad' });
   }
 };
 

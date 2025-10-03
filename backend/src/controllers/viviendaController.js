@@ -10,19 +10,23 @@ const crearVivienda = async (req, res) => {
       req.body.observaciones
     );
 
-    // Intervención
+    // Intervención con usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió información de vivienda para esta persona`;
 
+    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
       resultado: "Alta de vivienda exitosa",
+      fecha_carga: new Date(),
     });
 
     res.status(201).json(nuevaVivienda);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear vivienda', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al crear vivienda" });
   }
 };
 

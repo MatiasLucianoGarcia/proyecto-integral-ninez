@@ -1,6 +1,10 @@
 const supabase = require('../config/db');
+const { validarPersonaExiste } = require('../helpers/personaHelper');
 
 const crearTrabajo = async (dni, descripcion, horario) => {
+  // Validar que la persona exista
+  await validarPersonaExiste(dni);
+
   const { data, error } = await supabase
     .from('trabajo')
     .insert([{ dni, descripcion, horario }])

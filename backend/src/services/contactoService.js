@@ -1,10 +1,15 @@
 const supabase = require('../config/db');
+const { validarPersonaExiste } = require('../helpers/personaHelper');
 
 const crearContacto = async (dni, telefono) => {
+  // Validar que la persona exista
+  await validarPersonaExiste(dni);
+
   const { data, error } = await supabase
     .from('contacto')
     .insert([{ dni, telefono }])
     .select();
+
   if (error) throw error;
   return data[0];
 };

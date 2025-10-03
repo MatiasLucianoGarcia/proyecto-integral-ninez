@@ -10,20 +10,23 @@ const crearDomicilio = async (req, res) => {
       req.body.numero,
     );
 
-    // Armo la intervención con el usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadio nueva informacion sobre el domicilio para esta persona`;
+    // Intervención con el usuario actual
+    const intervencion = `El usuario ${req.user.nombre} añadió nueva información de domicilio para esta persona`;
 
-    // Agrego al historial
+    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
       resultado: "Alta de domicilio exitosa",
+      fecha_carga: new Date(),
     });
 
     res.status(201).json(nuevoDomicilio);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al crear domicilio', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al crear domicilio' });
   }
 };
 
