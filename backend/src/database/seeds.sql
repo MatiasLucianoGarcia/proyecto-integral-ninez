@@ -79,11 +79,12 @@ CREATE TABLE IF NOT EXISTS Parentezco(
   descripcion VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS Familia(
+CREATE TABLE IF NOT EXISTS Familia (
   id SERIAL PRIMARY KEY,
   dni_p1 INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   dni_p2 INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
-  id_parentezco INTEGER REFERENCES Parentezco(id) ON DELETE CASCADE,
+  id_parentezco1 INTEGER REFERENCES Parentezco(id) ON DELETE CASCADE,
+  id_parentezco2 INTEGER REFERENCES Parentezco(id) ON DELETE CASCADE,
   observaciones TEXT
 );
 

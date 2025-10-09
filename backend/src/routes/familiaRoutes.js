@@ -9,5 +9,6 @@ router.get('/:dni', authenticate, familiaController.obtenerFamiliaPorDni);
 router.post('/', authenticate, authorizeRoles('Administrador'), validar(createFamiliaSchema), familiaController.crearFamilia);
 router.put('/:id', authenticate, authorizeRoles('Administrador'), validar(updateFamiliaSchema), familiaController.actualizarFamilia);
 router.delete('/:id', authenticate, authorizeRoles('Administrador'), familiaController.eliminarFamilia);
+router.get('/sugerir/:dni', authenticate, familiaController.sugerirFamilia);
 
 module.exports = router;

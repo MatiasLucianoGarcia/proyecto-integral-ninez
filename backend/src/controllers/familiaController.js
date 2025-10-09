@@ -44,9 +44,22 @@ const eliminarFamilia = async (req, res) => {
   }
 };
 
+const sugerirFamilia = async (req, res) => {
+  try {
+    const sugerencias = await familiaService.sugerirFamilia(req.params.dni);
+    res.json(sugerencias);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al sugerir familia", error: error.message });
+  }
+};
+
 module.exports = {
   obtenerFamiliaPorDni,
   crearFamilia,
   actualizarFamilia,
   eliminarFamilia,
+  sugerirFamilia,
 };

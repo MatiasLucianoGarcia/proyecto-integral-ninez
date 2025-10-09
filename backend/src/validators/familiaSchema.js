@@ -25,12 +25,19 @@ const createFamiliaSchema = Joi.object({
       'any.required': 'El DNI de la persona 2 es obligatorio',
       'any.invalid': 'Los DNI no pueden ser iguales',
     }),
-  id_parentezco: Joi.number()
+  id_parentezco1: Joi.number()
     .integer()
     .required()
     .messages({
-      'number.base': 'El parentezco debe ser un número',
-      'any.required': 'El parentezco es obligatorio',
+      'number.base': 'El parentezco 1 debe ser un número',
+      'any.required': 'El parentezco 1 es obligatorio',
+    }),
+  id_parentezco2: Joi.number()
+    .integer()
+    .required()
+    .messages({
+      'number.base': 'El parentezco 2 debe ser un número',
+      'any.required': 'El parentezco 2 es obligatorio',
     }),
   observaciones: Joi.string()
     .allow('', null)
@@ -41,10 +48,15 @@ const createFamiliaSchema = Joi.object({
 });
 
 const updateFamiliaSchema = Joi.object({
-  id_parentezco: Joi.number()
+  id_parentezco1: Joi.number()
     .integer()
     .messages({
-      'number.base': 'El parentezco debe ser un número',
+      'number.base': 'El parentezco 1 debe ser un número',
+    }),
+  id_parentezco2: Joi.number()
+    .integer()
+    .messages({
+      'number.base': 'El parentezco 2 debe ser un número',
     }),
   observaciones: Joi.string()
     .allow('', null)
