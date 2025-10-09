@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Usuario (
   id_rol INTEGER REFERENCES Rol(id) ON DELETE CASCADE
 );
 
--- RELACIONES QUE PERSONA NECESITA
+-- RELACIONES QUE PERSONA NECESITA AL SER CREADA
 
 -- Crear Tabla Nacionalidad
 CREATE TABLE IF NOT EXISTS Nacionalidad(
@@ -48,13 +48,16 @@ CREATE TABLE IF NOT EXISTS Persona (
   id_nacionalidad INTEGER REFERENCES Nacionalidad(id) ON DELETE CASCADE
 );
 
--- TABLAS QUE NECESITAN A PERSONA
+-- DATOS EXTRA DE CADA PERSONA
 
+-- vivienda va a usar a tipo de vivienda
 CREATE TABLE IF NOT EXISTS Tipo_vivienda (
   id SERIAL PRIMARY KEY,
   tipo VARCHAR(50) NOT NULL UNIQUE
 );
 
+-- Varios registros de Vivienda por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Vivienda (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -63,6 +66,7 @@ CREATE TABLE IF NOT EXISTS Vivienda (
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Hay un solo registro de condiciones de vida por persona
 CREATE TABLE IF NOT EXISTS Condiciones_vida(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -74,11 +78,15 @@ CREATE TABLE IF NOT EXISTS Condiciones_vida(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Familia va a usar a la tabla parentezco
 CREATE TABLE IF NOT EXISTS Parentezco(
   id SERIAL PRIMARY KEY,
   descripcion VARCHAR(50)
 );
 
+-- Dos personas se vinculan como familia
+-- No importa si hijo es dni1 y padre dni2 o viceversa (eso para cada parentezco) lo resuelve el endpoint
+-- Hay un endpoint para pedir que te sugiera posibles parentezcos (familia de tu familia que no tenes como familia)
 CREATE TABLE IF NOT EXISTS Familia (
   id SERIAL PRIMARY KEY,
   dni_p1 INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -88,6 +96,8 @@ CREATE TABLE IF NOT EXISTS Familia (
   observaciones TEXT
 );
 
+-- Varios registros de contacto por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Contacto(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -95,6 +105,8 @@ CREATE TABLE IF NOT EXISTS Contacto(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Varios registros de domicilio por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Domicilio(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -103,6 +115,8 @@ CREATE TABLE IF NOT EXISTS Domicilio(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Varios registros de trabajo por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Trabajo(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -111,6 +125,8 @@ CREATE TABLE IF NOT EXISTS Trabajo(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Varios registros de Escolaridad por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Escolaridad(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -120,6 +136,7 @@ CREATE TABLE IF NOT EXISTS Escolaridad(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Hay un solo registro de Salud por persona
 CREATE TABLE IF NOT EXISTS Salud(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -131,6 +148,8 @@ CREATE TABLE IF NOT EXISTS Salud(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Varios registros de Control medico por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Control_medico(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -139,6 +158,8 @@ CREATE TABLE IF NOT EXISTS Control_medico(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Varios registros de Control medico por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Actividades(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -148,6 +169,7 @@ CREATE TABLE IF NOT EXISTS Actividades(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Hay un solo registro de Salud por persona
 CREATE TABLE IF NOT EXISTS Intereses(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -157,6 +179,8 @@ CREATE TABLE IF NOT EXISTS Intereses(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
+-- Varios registros de Perdidas por persona
+-- Hay un endpoint que muestra el ultimo cargado
 CREATE TABLE IF NOT EXISTS Perdidas(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
@@ -164,46 +188,78 @@ CREATE TABLE IF NOT EXISTS Perdidas(
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS Efector(
+-------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS Programa (
   id SERIAL PRIMARY KEY,
-  nombre VARCHAR(100)
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT
 );
 
-CREATE TABLE IF NOT EXISTS Efectores_previos(
+CREATE TABLE IF NOT EXISTS Efector (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  area VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS Equipo_local (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Derecho_vulnerado (
+  id SERIAL PRIMARY KEY,
+  descripcion VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Servicio_local (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
-  id_efector INTEGER REFERENCES Efector(id) ON DELETE CASCADE,
-  observaciones TEXT,
+  id_equipo INTEGER REFERENCES Equipo_local(id) ON DELETE SET NULL,
+  fecha_ingreso DATE NOT NULL,
+  motivo_ingreso TEXT,
+  id_efector INTEGER REFERENCES Efector(id) ON DELETE SET NULL,
+  id_derecho INTEGER REFERENCES Derecho_vulnerado(id) ON DELETE SET NULL,
   fecha_carga TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS Efectores_posteriores(
-  id SERIAL PRIMARY KEY,
-  dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
-  id_efector INTEGER REFERENCES Efector(id) ON DELETE CASCADE,
-  observaciones TEXT,
-  fecha_carga TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS Derecho(
-  id SERIAL PRIMARY KEY,
-  nombre VARCHAR(100)
-);
-
-CREATE TABLE IF NOT EXISTS Servicio(
-  id SERIAL PRIMARY KEY,
-  id_equipo INTEGER REFERENCES Entidad(id) ON DELETE CASCADE,
-  fecha_ingreso DATE,
-  motivo TEXT,
-  id_efector INTEGER REFERENCES Efector(id) ON DELETE CASCADE,
-  derecho_vulnerado INTEGER REFERENCES Derecho(id) ON DELETE CASCADE,
-  fecha_carga TIMESTAMP DEFAULT NOW()
-);
-
+-- Historial parte 1 -> muestra la carga y modificacion de datos de las personas
 CREATE TABLE IF NOT EXISTS Historial(
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   intervencion TEXT,
   resultado TEXT,
+  fecha_carga TIMESTAMP DEFAULT NOW()
+);
+
+-- Historial parte 2 -> muestra el ingreso de la persona a programas
+CREATE TABLE IF NOT EXISTS Ingreso_programa (
+  id SERIAL PRIMARY KEY,
+  dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
+  id_programa INTEGER REFERENCES Programa(id) ON DELETE CASCADE,
+  id_efector INTEGER REFERENCES Efector(id) ON DELETE SET NULL,
+  dni_familiar INTEGER REFERENCES Persona(dni) ON DELETE SET NULL,
+  fecha_ingreso DATE NOT NULL,
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  observaciones TEXT
+);
+
+-- Historial parte 3 -> muestra la hoja de ruta de un NNA que entro en servicio local
+CREATE TABLE IF NOT EXISTS Hoja_ruta (
+  id SERIAL PRIMARY KEY,
+  id_servicio_local INTEGER REFERENCES Servicio_local(id) ON DELETE CASCADE,
+  fecha DATE NOT NULL,
+  actividad TEXT NOT NULL,
+  resultado TEXT,
+  fecha_carga TIMESTAMP DEFAULT NOW()
+);
+
+-- Historial parte 4 -> muestra el historial de articulaciones con otros efectores antes o despues de ingresar a un programa
+CREATE TABLE IF NOT EXISTS Articulacion (
+  id SERIAL PRIMARY KEY,
+  id_ingreso INTEGER REFERENCES Ingreso_programa(id) ON DELETE CASCADE,
+  id_efector INTEGER REFERENCES Efector(id) ON DELETE SET NULL,
+  observacion TEXT,
+  fecha_articulacion DATE,
   fecha_carga TIMESTAMP DEFAULT NOW()
 );

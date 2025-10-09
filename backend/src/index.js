@@ -23,6 +23,10 @@ const interesesRoutes = require('./routes/interesesRoutes')
 const condicionesVidaRoutes = require('./routes/condicionesVidaRoutes')
 const parentezcoRoutes = require('./routes/parentezcoRoutes')
 const familiaRoutes = require('./routes/familiaRoutes')
+const programaRoutes = require('./routes/programaRoutes')
+const efectorRoutes = require('./routes/efectorRoutes')
+const equipoLocalRoutes = require('./routes/equipoLocalRoutes')
+const derechoVulneradoRoutes = require('./routes/derechoVulneradoRoutes')
 
 //const supabase = require('./config/db'); // Importar el cliente de Supabase
 
@@ -54,6 +58,10 @@ app.use('/api/intereses', interesesRoutes);
 app.use('/api/condicionesVida', condicionesVidaRoutes);
 app.use('/api/parentezcos', parentezcoRoutes);
 app.use('/api/familia', familiaRoutes);
+app.use('/api/programas', programaRoutes);
+app.use('/api/efectores', efectorRoutes);
+app.use('/api/equipoLocal', equipoLocalRoutes);
+app.use('/api/derechoVulnerado', derechoVulneradoRoutes);
 
 // Bienvenida
 app.get('/', (req, res) => {
