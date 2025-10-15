@@ -11,7 +11,7 @@ const crearDomicilio = async (req, res) => {
     );
 
     // Intervención con el usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadió nueva información de domicilio para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió un nuevo domicilio para esta persona`;
 
     // Guardar en historial
     await historialService.createHistorial({

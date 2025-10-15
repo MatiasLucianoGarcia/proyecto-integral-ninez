@@ -10,7 +10,7 @@ const crearPerdida = async (req, res) => {
     );
 
     // Intervención con usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadió una pérdida para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió una nueva pérdida para esta persona`;
 
     // Guardar en historial
     await historialService.createHistorial({

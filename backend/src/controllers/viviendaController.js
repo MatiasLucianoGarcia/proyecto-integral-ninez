@@ -11,7 +11,7 @@ const crearVivienda = async (req, res) => {
     );
 
     // Intervención con usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadió información de vivienda para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió una nueva vivienda para esta persona`;
 
     // Guardar en historial
     await historialService.createHistorial({

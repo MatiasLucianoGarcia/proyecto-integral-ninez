@@ -31,6 +31,7 @@ const servicioLocalRoutes = require('./routes/servicioLocalRoutes')
 const hojaRutaRoutes = require('./routes/hojaRutaRoutes')
 const ingresoRoutes = require('./routes/ingresoRoutes')
 const articulacionRoutes = require('./routes/articulacionRoutes')
+const historialRoutes = require('./routes/historialRoutes')
 
 //const supabase = require('./config/db'); // Importar el cliente de Supabase
 
@@ -69,7 +70,8 @@ app.use('/api/derechoVulnerado', derechoVulneradoRoutes);
 app.use('/api/servicioLocal', servicioLocalRoutes);
 app.use('/api/hojaRuta', hojaRutaRoutes);
 app.use('/api/ingreso', ingresoRoutes);
-app.use('/api/articulacion', articulacionRoutes);
+app.use('/api/historial', historialRoutes);
+
 
 // Bienvenida
 app.get('/', (req, res) => {

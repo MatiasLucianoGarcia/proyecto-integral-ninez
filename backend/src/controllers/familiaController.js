@@ -1,4 +1,5 @@
 const familiaService = require('../services/familiaService');
+const historialService = require('../services/historialService');
 
 // Consultar por DNI
 const obtenerFamiliaPorDni = async (req, res) => {
@@ -14,6 +15,25 @@ const obtenerFamiliaPorDni = async (req, res) => {
 const crearFamilia = async (req, res) => {
   try {
     const nuevaFamilia = await familiaService.crearFamilia(req.body);
+
+    const intervencion = `El usuario ${req.user.nombre} añadió un nuevo familiar para esta persona`;
+
+    // Crear entrada en historial para la primera persona
+    await historialService.createHistorial({
+      dni: req.body.dni_p1,
+      intervencion,
+      resultado: "Alta de relación familiar exitosa",
+      fecha_carga: new Date(),
+    });
+
+    // Crear entrada en historial para la segunda persona
+    await historialService.createHistorial({
+      dni: req.body.dni_p2,
+      intervencion,
+      resultado: "Alta de relación familiar exitosa",
+      fecha_carga: new Date(),
+    });
+
     res.status(201).json(nuevaFamilia);
   } catch (error) {
     console.error(error);
@@ -22,7 +42,6 @@ const crearFamilia = async (req, res) => {
       .json({ message: error.message || "Error al crear familia" });
   }
 };
-
 
 // Actualizar familia
 const actualizarFamilia = async (req, res) => {

@@ -10,7 +10,7 @@ const crearContacto = async (req, res) => {
     );
 
     // Intervención para historial
-    const intervencion = `El usuario ${req.user.nombre} añadió nueva información de contacto para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió un nuevo contacto para esta persona`;
 
     await historialService.createHistorial({
       dni: req.body.dni,

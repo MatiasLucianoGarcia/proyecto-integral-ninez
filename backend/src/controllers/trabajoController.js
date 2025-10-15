@@ -11,7 +11,7 @@ const crearTrabajo = async (req, res) => {
     );
 
     // Intervención con usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadió información laboral para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió nueva información laboral para esta persona`;
 
     // Guardar en historial
     await historialService.createHistorial({

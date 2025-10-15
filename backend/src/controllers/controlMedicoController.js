@@ -10,7 +10,7 @@ const crearControlMedico = async (req, res) => {
     );
 
     // Intervención para historial
-    const intervencion = `El usuario ${req.user.nombre} añadió un control médico para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió un nuevo control médico para esta persona`;
 
     await historialService.createHistorial({
       dni: req.body.dni,

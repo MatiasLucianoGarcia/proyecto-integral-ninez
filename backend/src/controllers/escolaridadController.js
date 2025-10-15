@@ -12,7 +12,7 @@ const crearEscolaridad = async (req, res) => {
     );
 
     // Intervención con usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadió información de escolaridad para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió nueva informacion de escolaridad para esta persona`;
 
     // Guardar en historial
     await historialService.createHistorial({
