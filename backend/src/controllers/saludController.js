@@ -8,7 +8,9 @@ const obtenerSalud = async (req, res) => {
     res.json(salud);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener salud', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener salud',
+    });
   }
 };
 
@@ -22,14 +24,16 @@ const actualizarSalud = async (req, res) => {
     await historialService.createHistorial({
       dni,
       intervencion,
-      resultado: "Actualización de salud exitosa",
+      resultado: 'Actualización de salud exitosa',
       fecha_carga: new Date(),
     });
 
     res.json(actualizada);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al actualizar salud', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al actualizar salud',
+    });
   }
 };
 

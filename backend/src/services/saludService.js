@@ -26,6 +26,13 @@ const obtenerSalud = async (dni) => {
     .eq('dni', dni)
     .single();
 
+  // Si no existe registro, mostrar mensaje claro
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`La persona con DNI ${dni} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
   if (error) throw error;
   return data;
 };
@@ -38,6 +45,13 @@ const actualizarSalud = async (dni, { nombre, enfermedad_cronica, tratamiento_pr
     .eq('dni', dni)
     .select()
     .single();
+
+  // Si no existe el registro, devolver mensaje personalizado
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`La persona con DNI ${dni} no existe`);
+    err.status = 404;
+    throw err;
+  }
 
   if (error) throw error;
   return data;

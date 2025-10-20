@@ -70,6 +70,7 @@ app.use('/api/derechoVulnerado', derechoVulneradoRoutes);
 app.use('/api/servicioLocal', servicioLocalRoutes);
 app.use('/api/hojaRuta', hojaRutaRoutes);
 app.use('/api/ingreso', ingresoRoutes);
+app.use('/api/articulacion', articulacionRoutes);
 app.use('/api/historial', historialRoutes);
 
 

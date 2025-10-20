@@ -1,35 +1,41 @@
 const efectorService = require('../services/efectorService');
 
-// Crear un nuevo efector
+// Crear efector
 const crearEfector = async (req, res) => {
   try {
     const nuevoEfector = await efectorService.crearEfector(req.body);
     res.status(201).json(nuevoEfector);
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear efector', error });
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al crear efector' });
   }
 };
 
-// Obtener todos los efectores
+// Obtener todos
 const obtenerEfectores = async (req, res) => {
   try {
     const efectores = await efectorService.obtenerEfectores();
-    res.json(efectores);
+    res.status(200).json(efectores);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener efectores', error });
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener efectores' });
   }
 };
 
-// Obtener un efector por ID
+// Obtener por ID
 const obtenerEfectorPorId = async (req, res) => {
   try {
     const efector = await efectorService.obtenerEfectorPorId(req.params.id);
-    if (!efector) {
-      return res.status(404).json({ message: `El efector con id ${req.params.id} no existe` });
-    }
-    res.json(efector);
+    res.status(200).json(efector);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener efector', error });
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener efector' });
   }
 };
 
@@ -37,19 +43,25 @@ const obtenerEfectorPorId = async (req, res) => {
 const actualizarEfector = async (req, res) => {
   try {
     const efectorActualizado = await efectorService.actualizarEfector(req.params.id, req.body);
-    res.json(efectorActualizado);
+    res.status(200).json(efectorActualizado);
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar efector', error });
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al actualizar efector' });
   }
 };
 
 // Eliminar efector
 const eliminarEfector = async (req, res) => {
   try {
-    await efectorService.eliminarEfector(req.params.id);
-    res.json({ message: 'Efector eliminado' });
+    const resultado = await efectorService.eliminarEfector(req.params.id);
+    res.status(200).json(resultado);
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar efector', error });
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al eliminar efector' });
   }
 };
 

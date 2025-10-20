@@ -1,12 +1,13 @@
-// services/familiaService.js
 const supabase = require('../config/db');
 const { validarPersonaExiste } = require('../helpers/personaHelper');
 const { validarParentezcoExiste } = require('../helpers/parentezcoHelper');
 
 const uniq = (arr) => [...new Set(arr.filter(Boolean))];
 
-// Consultar familia por dni (robusto: trae familias, luego trae personas/parentezcos)
+// Consultar familia por dni
 const obtenerFamiliaPorDni = async (dni) => {
+  await validarPersonaExiste(Number(dni));
+
   const { data: familias, error } = await supabase
     .from('familia')
     .select(`
@@ -20,15 +21,12 @@ const obtenerFamiliaPorDni = async (dni) => {
     .or(`dni_p1.eq.${dni},dni_p2.eq.${dni}`);
 
   if (error) throw error;
-
   if (!familias || familias.length === 0) return [];
 
-  // 1) calcular lista de "otros"
   const otros = uniq(
     familias.map(f => (f.dni_p1 === Number(dni) ? f.dni_p2 : f.dni_p1))
   );
 
-  // 2) traer info completa de esas personas
   const { data: personasData, error: errPersonas } = await supabase
     .from('persona')
     .select(`
@@ -48,7 +46,6 @@ const obtenerFamiliaPorDni = async (dni) => {
     return acc;
   }, {});
 
-  // 3) obtener lista de parentezco ids necesarios y traer descripciones
   const parentezcoIds = uniq(
     familias.map(f => (f.dni_p1 === Number(dni) ? f.id_parentezco2 : f.id_parentezco1))
   ).filter(Boolean);
@@ -67,7 +64,6 @@ const obtenerFamiliaPorDni = async (dni) => {
     }, {});
   }
 
-  // 4) armar resultado
   const resultado = familias.map(f => {
     const soyP1 = f.dni_p1 === Number(dni);
     const dniContrario = soyP1 ? f.dni_p2 : f.dni_p1;
@@ -92,15 +88,11 @@ const obtenerFamiliaPorDni = async (dni) => {
 
 // Crear familia
 const crearFamilia = async ({ dni_p1, dni_p2, id_parentezco1, id_parentezco2, observaciones }) => {
-  // Validar personas
   await validarPersonaExiste(dni_p1);
   await validarPersonaExiste(dni_p2);
-
-  // Validar parentezcos
   await validarParentezcoExiste(id_parentezco1);
   await validarParentezcoExiste(id_parentezco2);
 
-  // Chequeo de duplicados (dni1-dni2 o dni2-dni1)
   const { data: existente, error: errorCheck } = await supabase
     .from('familia')
     .select('id')
@@ -115,7 +107,6 @@ const crearFamilia = async ({ dni_p1, dni_p2, id_parentezco1, id_parentezco2, ob
     throw err;
   }
 
-  // Crear nuevo registro
   const { data, error } = await supabase
     .from('familia')
     .insert([{ dni_p1, dni_p2, id_parentezco1, id_parentezco2, observaciones }])
@@ -127,6 +118,19 @@ const crearFamilia = async ({ dni_p1, dni_p2, id_parentezco1, id_parentezco2, ob
 
 // Actualizar familia
 const actualizarFamilia = async (id, campos) => {
+  const { data: existe, error: errCheck } = await supabase
+    .from('familia')
+    .select('id')
+    .eq('id', id)
+    .single();
+
+  if (errCheck && errCheck.code === 'PGRST116') {
+    const err = new Error(`La relación familiar con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+  if (errCheck) throw errCheck;
+
   const { data, error } = await supabase
     .from('familia')
     .update(campos)
@@ -137,15 +141,31 @@ const actualizarFamilia = async (id, campos) => {
   return data[0];
 };
 
-// Borrar familia
+// Eliminar familia
 const eliminarFamilia = async (id) => {
+  const { data: existe, error: errCheck } = await supabase
+    .from('familia')
+    .select('id')
+    .eq('id', id)
+    .single();
+
+  if (errCheck && errCheck.code === 'PGRST116') {
+    const err = new Error(`La relación familiar con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+  if (errCheck) throw errCheck;
+
   const { error } = await supabase.from('familia').delete().eq('id', id);
   if (error) throw error;
+
+  return { message: 'Relación familiar eliminada correctamente' };
 };
 
 // Sugerir familia
 const sugerirFamilia = async (dni) => {
-  // 1. traer familiares directos
+  await validarPersonaExiste(Number(dni));
+
   const { data: familiares1, error: errorF1 } = await supabase
     .from('familia')
     .select('dni_p1, dni_p2')
@@ -157,7 +177,6 @@ const sugerirFamilia = async (dni) => {
 
   if (idsFamiliares1.length === 0) return [];
 
-  // 2. familiares de esos familiares
   const orExpr = idsFamiliares1.map(fid => `dni_p1.eq.${fid},dni_p2.eq.${fid}`).join(',');
   const { data: familias2, error: errorF2 } = await supabase
     .from('familia')
@@ -167,14 +186,11 @@ const sugerirFamilia = async (dni) => {
   if (errorF2) throw errorF2;
 
   const idsFamiliares2 = uniq(familias2.map(f => [f.dni_p1, f.dni_p2]).flat());
-
-  // 3. posibles candidatos
   let posibles = idsFamiliares2.filter(id => id !== Number(dni) && !idsFamiliares1.includes(id));
   posibles = uniq(posibles);
 
   if (posibles.length === 0) return [];
 
-  // 4. excluir ya relacionados
   const orRel = posibles
     .map(fid => `and(dni_p1.eq.${dni},dni_p2.eq.${fid}),and(dni_p1.eq.${fid},dni_p2.eq.${dni})`)
     .join(',');
@@ -190,7 +206,6 @@ const sugerirFamilia = async (dni) => {
 
   if (finales.length === 0) return [];
 
-  // 5. traer info de personas finales
   const { data: personas, error: errPersonas } = await supabase
     .from('persona')
     .select(`

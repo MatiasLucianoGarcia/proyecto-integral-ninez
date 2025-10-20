@@ -4,6 +4,7 @@ const interesesService = require("../services/interesesService");
 const saludService = require("../services/saludService");
 const condicionesVidaService = require("../services/condicionesVidaService");
 
+// GET
 const getPersonas = async (req, res) => {
   try {
     const personas = await personaService.getPersonas();
@@ -13,16 +14,15 @@ const getPersonas = async (req, res) => {
   }
 };
 
+// POST
 const createPersona = async (req, res) => {
   try {
     const nueva = await personaService.createPersona(req.body);
 
-    // Crear registros asociados vacíos
     await interesesService.crearIntereses(nueva.dni);
     await saludService.crearSalud(nueva.dni);
     await condicionesVidaService.crearCondicionesVida(nueva.dni);
 
-    // Historial
     const intervencion = `El usuario ${req.user.nombre} ingresó a ${nueva.nombre} (${nueva.dni}) al sistema`;
     await historialService.createHistorial({
       dni: nueva.dni,
@@ -33,30 +33,35 @@ const createPersona = async (req, res) => {
     res.status(201).json(nueva);
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || "Error al crear persona" });
+    res.status(error.status || 500).json({
+      message: error.message || "Error al crear persona",
+    });
   }
 };
 
+// PUT
 const updatePersona = async (req, res) => {
   try {
-    const actualizada = await personaService.updatePersona(
-      req.params.dni,
-      req.body
-    );
+    const actualizada = await personaService.updatePersona(req.params.dni, req.body);
     res.json(actualizada);
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar persona", error });
+    console.error(error);
+    res.status(error.status || 500).json({
+      message: error.message || "Error al actualizar persona",
+    });
   }
 };
 
+// DELETE
 const deletePersona = async (req, res) => {
   try {
-    await personaService.deletePersona(req.params.dni);
-    res.json({ message: "Persona eliminada" });
+    const resultado = await personaService.deletePersona(req.params.dni);
+    res.json(resultado);
   } catch (error) {
-    res.status(500).json({ message: "Error al eliminar persona", error });
+    console.error(error);
+    res.status(error.status || 500).json({
+      message: error.message || "Error al eliminar persona",
+    });
   }
 };
 

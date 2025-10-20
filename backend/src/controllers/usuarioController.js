@@ -7,12 +7,11 @@ const createUsuario = async (req, res) => {
     res.status(201).json(nuevoUsuario);
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || "Error al crear usuario" });
+    res.status(error.status || 500).json({
+      message: error.message || "Error al crear usuario",
+    });
   }
 };
-
 
 // Obtener usuario por ID
 const getUsuarioById = async (req, res) => {
@@ -20,8 +19,10 @@ const getUsuarioById = async (req, res) => {
     const usuario = await usuarioService.getUsuarioById(req.params.id);
     res.json(usuario);
   } catch (error) {
-    const status = error.status || 500;
-    res.status(status).json({ message: error.message || 'Error al obtener usuario', error });
+    console.error(error);
+    res.status(error.status || 500).json({
+      message: error.message || "Error al obtener usuario",
+    });
   }
 };
 
@@ -31,7 +32,10 @@ const updateUsuario = async (req, res) => {
     const usuarioActualizado = await usuarioService.updateUsuario(req.params.id, req.body);
     res.json(usuarioActualizado);
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar usuario', error });
+    console.error(error);
+    res.status(error.status || 500).json({
+      message: error.message || "Error al actualizar usuario",
+    });
   }
 };
 
@@ -41,7 +45,10 @@ const deleteUsuario = async (req, res) => {
     await usuarioService.deleteUsuario(req.params.id);
     res.json({ message: 'Usuario eliminado' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar usuario', error });
+    console.error(error);
+    res.status(error.status || 500).json({
+      message: error.message || "Error al eliminar usuario",
+    });
   }
 };
 

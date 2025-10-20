@@ -8,7 +8,7 @@ const obtenerIntereses = async (req, res) => {
     res.json(intereses);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener intereses', error });
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
@@ -29,7 +29,7 @@ const actualizarIntereses = async (req, res) => {
     res.json(actualizados);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al actualizar intereses', error });
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 

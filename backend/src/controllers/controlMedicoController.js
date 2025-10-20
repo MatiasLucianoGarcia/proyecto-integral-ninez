@@ -1,6 +1,7 @@
 const controlMedicoService = require('../services/controlMedicoService');
 const historialService = require('../services/historialService');
 
+// Crear control médico
 const crearControlMedico = async (req, res) => {
   try {
     const nuevoControl = await controlMedicoService.crearControlMedico(
@@ -9,13 +10,13 @@ const crearControlMedico = async (req, res) => {
       req.body.observaciones
     );
 
-    // Intervención para historial
+    // Registrar en historial
     const intervencion = `El usuario ${req.user.nombre} añadió un nuevo control médico para esta persona`;
 
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
-      resultado: "Alta de control médico exitosa",
+      resultado: 'Alta de control médico exitosa',
       fecha_carga: new Date(),
     });
 
@@ -28,39 +29,45 @@ const crearControlMedico = async (req, res) => {
   }
 };
 
-// GET
+// Obtener controles por DNI
 const obtenerControlesMedicos = async (req, res) => {
   try {
     const dni = req.params.dni;
     const controles = await controlMedicoService.obtenerControlesMedicos(dni);
-    res.json(controles);
+    res.status(200).json(controles);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener controles médicos', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener controles médicos' });
   }
 };
 
-// DELETE
+// Eliminar control médico por ID
 const eliminarControlMedico = async (req, res) => {
   try {
     const id = req.params.id;
-    await controlMedicoService.eliminarControlMedico(id);
-    res.json({ message: 'Control médico eliminado' });
+    const resultado = await controlMedicoService.eliminarControlMedico(id);
+    res.status(200).json(resultado);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar control médico', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al eliminar control médico' });
   }
 };
 
-// GET último registro
+// Obtener último control médico por DNI
 const obtenerUltimoControlMedicoPorDni = async (req, res) => {
   try {
     const dni = req.params.dni;
     const control = await controlMedicoService.obtenerUltimoControlMedicoPorDni(dni);
-    res.json(control);
+    res.status(200).json(control);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener último control médico', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener último control médico' });
   }
 };
 
@@ -68,5 +75,5 @@ module.exports = {
   crearControlMedico,
   obtenerControlesMedicos,
   eliminarControlMedico,
-  obtenerUltimoControlMedicoPorDni
+  obtenerUltimoControlMedicoPorDni,
 };

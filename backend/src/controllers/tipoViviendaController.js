@@ -23,10 +23,15 @@ const obtenerTiposVivienda = async (req, res) => {
 // Actualizar un tipo de vivienda
 const actualizarTipoVivienda = async (req, res) => {
   try {
-    const tipoActualizado = await tipoViviendaService.actualizarTipoVivienda(req.params.id, req.body.tipo);
+    const tipoActualizado = await tipoViviendaService.actualizarTipoVivienda(
+      req.params.id,
+      req.body.tipo
+    );
     res.json(tipoActualizado);
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar tipo de vivienda', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al actualizar tipo de vivienda',
+    });
   }
 };
 
@@ -36,7 +41,9 @@ const eliminarTipoVivienda = async (req, res) => {
     await tipoViviendaService.eliminarTipoVivienda(req.params.id);
     res.json({ message: 'Tipo de vivienda eliminado' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar tipo de vivienda', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al eliminar tipo de vivienda',
+    });
   }
 };
 

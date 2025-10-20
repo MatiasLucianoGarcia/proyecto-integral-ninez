@@ -13,15 +13,30 @@ const crearPrograma = async ({ nombre, descripcion }) => {
 
 // Obtener todos los programas
 const obtenerProgramas = async () => {
-  const { data, error } = await supabase.from('programa').select('*').order('id', { ascending: true });
+  const { data, error } = await supabase
+    .from('programa')
+    .select('*')
+    .order('id', { ascending: true });
+
   if (error) throw error;
   return data;
 };
 
 // Obtener programa por ID
 const obtenerProgramaPorId = async (id) => {
-  const { data, error } = await supabase.from('programa').select('*').eq('id', id).single();
-  if (error && error.code !== 'PGRST116') throw error;
+  const { data, error } = await supabase
+    .from('programa')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`El programa con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (error) throw error;
   return data;
 };
 
@@ -31,16 +46,40 @@ const actualizarPrograma = async (id, { nombre, descripcion }) => {
     .from('programa')
     .update({ nombre, descripcion })
     .eq('id', id)
-    .select();
+    .select()
+    .single();
+
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`El programa con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
 
   if (error) throw error;
-  return data[0];
+  return data;
 };
 
 // Eliminar programa
 const eliminarPrograma = async (id) => {
+  // Verificamos existencia antes de eliminar
+  const { data: existente, error: checkError } = await supabase
+    .from('programa')
+    .select('id')
+    .eq('id', id)
+    .single();
+
+  if (checkError && checkError.code === 'PGRST116') {
+    const err = new Error(`El programa con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (checkError) throw checkError;
+
   const { error } = await supabase.from('programa').delete().eq('id', id);
   if (error) throw error;
+
+  return { message: 'Programa eliminado correctamente' };
 };
 
 module.exports = {

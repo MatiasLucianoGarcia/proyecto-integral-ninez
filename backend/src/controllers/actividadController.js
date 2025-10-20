@@ -23,23 +23,23 @@ const crearActividad = async (req, res) => {
     res.status(201).json(nuevaActividad);
   } catch (error) {
     console.error(error);
-    const status = error.status || 500;
-    res.status(status).json({
-      message: error.message || "Error al crear actividad",
-    });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al crear actividad" });
   }
 };
-
 
 // GET
 const obtenerActividades = async (req, res) => {
   try {
     const dni = req.params.dni;
     const actividades = await actividadService.obtenerActividades(dni);
-    res.json(actividades);
+    res.status(200).json(actividades);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener actividades', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al obtener actividades" });
   }
 };
 
@@ -47,11 +47,13 @@ const obtenerActividades = async (req, res) => {
 const eliminarActividad = async (req, res) => {
   try {
     const id = req.params.id;
-    await actividadService.eliminarActividad(id);
-    res.json({ message: 'Actividad eliminada' });
+    const resultado = await actividadService.eliminarActividad(id);
+    res.status(200).json(resultado);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar actividad', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al eliminar actividad" });
   }
 };
 
@@ -60,10 +62,12 @@ const obtenerUltimaActividadPorDni = async (req, res) => {
   try {
     const dni = req.params.dni;
     const actividad = await actividadService.obtenerUltimaActividadPorDni(dni);
-    res.json(actividad);
+    res.status(200).json(actividad);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener última actividad', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al obtener última actividad" });
   }
 };
 
@@ -71,5 +75,5 @@ module.exports = {
   crearActividad,
   obtenerActividades,
   eliminarActividad,
-  obtenerUltimaActividadPorDni
+  obtenerUltimaActividadPorDni,
 };

@@ -21,13 +21,36 @@ const actualizarTipoVivienda = async (id, tipo) => {
     .from('tipo_vivienda')
     .update({ tipo })
     .eq('id', id)
-    .select();
+    .select()
+    .single();
+
+  // Si no hay coincidencia, mostrar mensaje claro
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`La vivienda con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
 
   if (error) throw error;
-  return data[0];
+  return data;
 };
 
 const eliminarTipoVivienda = async (id) => {
+  // Verificamos si existe antes de eliminar
+  const { data: existente, error: errCheck } = await supabase
+    .from('tipo_vivienda')
+    .select('id')
+    .eq('id', id)
+    .single();
+
+  if (errCheck && errCheck.code === 'PGRST116') {
+    const err = new Error(`La vivienda con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (errCheck) throw errCheck;
+
   const { error } = await supabase.from('tipo_vivienda').delete().eq('id', id);
   if (error) throw error;
 };

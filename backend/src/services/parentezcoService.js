@@ -11,7 +11,7 @@ const crearParentezco = async (descripcion) => {
 };
 
 const obtenerParentezcos = async () => {
-  const { data, error } = await supabase.from('parentezco').select('*');
+  const { data, error } = await supabase.from('parentezco').select('*').order('id', { ascending: true });
   if (error) throw error;
   return data;
 };
@@ -24,12 +24,32 @@ const actualizarParentezco = async (id, descripcion) => {
     .select();
 
   if (error) throw error;
+
+  if (!data || data.length === 0) {
+    const err = new Error(`No existe parentezco con ID ${id}`);
+    err.status = 404;
+    throw err;
+  }
+
   return data[0];
 };
 
 const eliminarParentezco = async (id) => {
-  const { error } = await supabase.from('parentezco').delete().eq('id', id);
+  const { data, error } = await supabase
+    .from('parentezco')
+    .delete()
+    .eq('id', id)
+    .select();
+
   if (error) throw error;
+
+  if (!data || data.length === 0) {
+    const err = new Error(`No existe parentezco con ID ${id}`);
+    err.status = 404;
+    throw err;
+  }
+
+  return { message: 'Parentezco eliminado correctamente' };
 };
 
 module.exports = {

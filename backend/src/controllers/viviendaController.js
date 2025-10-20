@@ -1,7 +1,7 @@
 const viviendaService = require('../services/viviendaService');
 const historialService = require('../services/historialService');
 
-// POST
+// POST - Crear vivienda
 const crearVivienda = async (req, res) => {
   try {
     const nuevaVivienda = await viviendaService.crearVivienda(
@@ -10,10 +10,8 @@ const crearVivienda = async (req, res) => {
       req.body.observaciones
     );
 
-    // Intervención con usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió una nueva vivienda para esta persona`;
 
-    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
@@ -30,7 +28,7 @@ const crearVivienda = async (req, res) => {
   }
 };
 
-// GET
+// GET - Obtener viviendas por DNI
 const obtenerViviendas = async (req, res) => {
   try {
     const dni = req.params.dni;
@@ -38,11 +36,13 @@ const obtenerViviendas = async (req, res) => {
     res.json(viviendas);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener viviendas', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al obtener viviendas" });
   }
 };
 
-// DELETE
+// DELETE - Eliminar vivienda
 const eliminarVivienda = async (req, res) => {
   try {
     const id = req.params.id;
@@ -50,11 +50,13 @@ const eliminarVivienda = async (req, res) => {
     res.json({ message: 'Vivienda eliminada' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar vivienda', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al eliminar vivienda" });
   }
 };
 
-// GET último registro
+// GET - Última vivienda por DNI
 const obtenerUltimaViviendaPorDni = async (req, res) => {
   try {
     const dni = req.params.dni;
@@ -62,7 +64,9 @@ const obtenerUltimaViviendaPorDni = async (req, res) => {
     res.json(vivienda);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener última vivienda', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Error al obtener última vivienda" });
   }
 };
 

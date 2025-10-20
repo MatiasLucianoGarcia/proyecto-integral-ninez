@@ -5,7 +5,7 @@ const crearParentezco = async (req, res) => {
     const nuevoParentezco = await parentezcoService.crearParentezco(req.body.descripcion);
     res.status(201).json(nuevoParentezco);
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear parentezco', error });
+    res.status(error.status || 500).json({ message: error.message || 'Error al crear parentezco' });
   }
 };
 
@@ -14,7 +14,7 @@ const obtenerParentezcos = async (req, res) => {
     const parentezcos = await parentezcoService.obtenerParentezcos();
     res.json(parentezcos);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener parentezcos', error });
+    res.status(error.status || 500).json({ message: error.message || 'Error al obtener parentezcos' });
   }
 };
 
@@ -26,16 +26,16 @@ const actualizarParentezco = async (req, res) => {
     );
     res.json(parentezcoActualizado);
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar parentezco', error });
+    res.status(error.status || 500).json({ message: error.message || 'Error al actualizar parentezco' });
   }
 };
 
 const eliminarParentezco = async (req, res) => {
   try {
-    await parentezcoService.eliminarParentezco(req.params.id);
-    res.json({ message: 'Parentezco eliminado' });
+    const resultado = await parentezcoService.eliminarParentezco(req.params.id);
+    res.json(resultado);
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar parentezco', error });
+    res.status(error.status || 500).json({ message: error.message || 'Error al eliminar parentezco' });
   }
 };
 

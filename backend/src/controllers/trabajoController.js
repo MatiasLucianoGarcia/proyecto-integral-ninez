@@ -1,7 +1,7 @@
 const trabajoService = require('../services/trabajoService');
 const historialService = require('../services/historialService');
 
-// POST
+// POST - Crear trabajo
 const crearTrabajo = async (req, res) => {
   try {
     const nuevoTrabajo = await trabajoService.crearTrabajo(
@@ -10,10 +10,8 @@ const crearTrabajo = async (req, res) => {
       req.body.horario
     );
 
-    // Intervención con usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió nueva información laboral para esta persona`;
 
-    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
@@ -24,13 +22,13 @@ const crearTrabajo = async (req, res) => {
     res.status(201).json(nuevoTrabajo);
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || 'Error al crear trabajo' });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al crear trabajo',
+    });
   }
 };
 
-// GET
+// GET - Obtener trabajos por DNI
 const obtenerTrabajos = async (req, res) => {
   try {
     const dni = req.params.dni;
@@ -38,11 +36,13 @@ const obtenerTrabajos = async (req, res) => {
     res.json(trabajos);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener trabajos', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener trabajos',
+    });
   }
 };
 
-// DELETE
+// DELETE - Eliminar trabajo por ID
 const eliminarTrabajo = async (req, res) => {
   try {
     const id = req.params.id;
@@ -50,11 +50,13 @@ const eliminarTrabajo = async (req, res) => {
     res.json({ message: 'Trabajo eliminado' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar trabajo', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al eliminar trabajo',
+    });
   }
 };
 
-// GET último
+// GET - Obtener último trabajo por DNI
 const obtenerUltimoTrabajoPorDni = async (req, res) => {
   try {
     const dni = req.params.dni;
@@ -62,7 +64,9 @@ const obtenerUltimoTrabajoPorDni = async (req, res) => {
     res.json(trabajo);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener último trabajo', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener último trabajo',
+    });
   }
 };
 
@@ -70,5 +74,5 @@ module.exports = {
   crearTrabajo,
   obtenerTrabajos,
   eliminarTrabajo,
-  obtenerUltimoTrabajoPorDni
+  obtenerUltimoTrabajoPorDni,
 };

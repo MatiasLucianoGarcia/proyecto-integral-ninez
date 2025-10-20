@@ -8,30 +8,28 @@ const crearEscolaridad = async (req, res) => {
       req.body.dni,
       req.body.escuela,
       req.body.nivel,
-      req.body.año,
+      req.body.año
     );
 
-    // Intervención con usuario actual
-    const intervencion = `El usuario ${req.user.nombre} añadió nueva informacion de escolaridad para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} añadió nueva información de escolaridad para esta persona`;
 
-    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
-      resultado: "Alta de escolaridad exitosa",
+      resultado: 'Alta de escolaridad exitosa',
       fecha_carga: new Date(),
     });
 
     res.status(201).json(nuevaEscolaridad);
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || 'Error al crear escolaridad' });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al crear escolaridad',
+    });
   }
 };
 
-// GET
+// GET todas por DNI
 const obtenerEscolaridades = async (req, res) => {
   try {
     const dni = req.params.dni;
@@ -39,31 +37,39 @@ const obtenerEscolaridades = async (req, res) => {
     res.json(escolaridades);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener escolaridades', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener escolaridades',
+    });
   }
 };
 
-// DELETE
+// DELETE por ID
 const eliminarEscolaridad = async (req, res) => {
   try {
     const id = req.params.id;
-    await escolaridadService.eliminarEscolaridad(id);
-    res.json({ message: 'Escolaridad eliminada' });
+    const resultado = await escolaridadService.eliminarEscolaridad(id);
+    res.json(resultado);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar escolaridad', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al eliminar escolaridad',
+    });
   }
 };
 
-// GET último registro
+// GET última escolaridad por DNI
 const obtenerUltimaEscolaridadPorDni = async (req, res) => {
   try {
     const dni = req.params.dni;
     const escolaridad = await escolaridadService.obtenerUltimaEscolaridadPorDni(dni);
-    res.json(escolaridad);
+
+    // Si existe la persona pero no tiene registros, devuelve null (como está bien)
+    res.json(escolaridad || {});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener última escolaridad', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener última escolaridad',
+    });
   }
 };
 
@@ -71,5 +77,5 @@ module.exports = {
   crearEscolaridad,
   obtenerEscolaridades,
   eliminarEscolaridad,
-  obtenerUltimaEscolaridadPorDni
+  obtenerUltimaEscolaridadPorDni,
 };

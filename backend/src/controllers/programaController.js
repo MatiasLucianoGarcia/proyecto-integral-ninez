@@ -6,7 +6,9 @@ const crearPrograma = async (req, res) => {
     const nuevoPrograma = await programaService.crearPrograma(req.body);
     res.status(201).json(nuevoPrograma);
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear programa', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al crear programa',
+    });
   }
 };
 
@@ -24,10 +26,11 @@ const obtenerProgramas = async (req, res) => {
 const obtenerProgramaPorId = async (req, res) => {
   try {
     const programa = await programaService.obtenerProgramaPorId(req.params.id);
-    if (!programa) return res.status(404).json({ message: 'Programa no encontrado' });
     res.json(programa);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener programa', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener programa',
+    });
   }
 };
 
@@ -35,20 +38,23 @@ const obtenerProgramaPorId = async (req, res) => {
 const actualizarPrograma = async (req, res) => {
   try {
     const programaActualizado = await programaService.actualizarPrograma(req.params.id, req.body);
-    if (!programaActualizado) return res.status(404).json({ message: 'Programa no encontrado' });
     res.json(programaActualizado);
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar programa', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al actualizar programa',
+    });
   }
 };
 
 // Eliminar programa
 const eliminarPrograma = async (req, res) => {
   try {
-    await programaService.eliminarPrograma(req.params.id);
-    res.json({ message: 'Programa eliminado correctamente' });
+    const result = await programaService.eliminarPrograma(req.params.id);
+    res.json(result);
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar programa', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al eliminar programa',
+    });
   }
 };
 

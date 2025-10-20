@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 const { validarRolExiste } = require("../helpers/rolHelper");
 const { validarEntidadExiste } = require("../helpers/entidadHelper");
 
+// Crear usuario
 const createUsuario = async ({ nombre, contraseña, id_entidad, id_rol }) => {
-  // Validar existencia de rol y entidad
   await validarRolExiste(id_rol);
   await validarEntidadExiste(id_entidad);
 
@@ -19,7 +19,7 @@ const createUsuario = async ({ nombre, contraseña, id_entidad, id_rol }) => {
   return data[0];
 };
 
-
+// Obtener usuario por ID
 const getUsuarioById = async (id) => {
   const { data, error } = await supabase
     .from('usuario')
@@ -27,10 +27,18 @@ const getUsuarioById = async (id) => {
     .eq('id', id)
     .single();
 
-  if (error || !data) throw { status: 404, message: 'Usuario no encontrado', error };
+  // Si no existe, mensaje personalizado
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`El usuario con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (error) throw error;
   return data;
 };
 
+// Actualizar usuario
 const updateUsuario = async (id, { nombre, contraseña, id_entidad, id_rol }) => {
   let updateFields = { nombre, id_entidad, id_rol };
 
@@ -45,11 +53,34 @@ const updateUsuario = async (id, { nombre, contraseña, id_entidad, id_rol }) =>
     .select()
     .single();
 
-  if (error || !data) throw error;
+  // Si el usuario no existe
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`El usuario con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (error) throw error;
   return data;
 };
 
+// Eliminar usuario
 const deleteUsuario = async (id) => {
+  // Verificar si el usuario existe antes de eliminar
+  const { data: existe, error: checkError } = await supabase
+    .from('usuario')
+    .select('id')
+    .eq('id', id)
+    .single();
+
+  if (checkError && checkError.code === 'PGRST116') {
+    const err = new Error(`El usuario con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (checkError) throw checkError;
+
   const { error } = await supabase.from('usuario').delete().eq('id', id);
   if (error) throw error;
 };

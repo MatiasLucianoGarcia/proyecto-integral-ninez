@@ -5,10 +5,12 @@ const obtenerCondicionesVida = async (req, res) => {
   try {
     const dni = req.params.dni;
     const condiciones = await condicionesVidaService.obtenerCondicionesVida(dni);
-    res.json(condiciones);
+    res.status(200).json(condiciones);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener condiciones de vida', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener condiciones de vida' });
   }
 };
 
@@ -26,10 +28,12 @@ const actualizarCondicionesVida = async (req, res) => {
       fecha_carga: new Date(),
     });
 
-    res.json(actualizadas);
+    res.status(200).json(actualizadas);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al actualizar condiciones de vida', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al actualizar condiciones de vida' });
   }
 };
 

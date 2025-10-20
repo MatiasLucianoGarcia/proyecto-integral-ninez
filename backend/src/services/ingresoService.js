@@ -10,7 +10,7 @@ const crearIngreso = async ({ dni, id_programa, id_efector, dni_familiar, fecha_
   if (dni_familiar) await validarPersonaExiste(dni_familiar);
   if (id_efector) await validarEfectorExiste(id_efector);
 
-  // Verificar si ya existe ese ingreso para el mismo DNI y programa
+  // Verificar duplicado
   const { data: existente, error: errorExistente } = await supabase
     .from('ingreso_programa')
     .select('id')
@@ -56,7 +56,7 @@ const obtenerIngresoPorId = async (id) => {
   if (error && error.code !== 'PGRST116') throw error;
 
   if (!data) {
-    const err = new Error(`No hay ningun ingreso con ese id`);
+    const err = new Error(`No hay ningún ingreso con el ID ${id}`);
     err.status = 404;
     throw err;
   }
@@ -66,11 +66,15 @@ const obtenerIngresoPorId = async (id) => {
 
 // Obtener ingresos por DNI
 const obtenerIngresosPorDni = async (dni) => {
-  const { data: persona } = await supabase.from('persona').select('dni').eq('dni', dni).single();
+  const { data: persona } = await supabase
+    .from('persona')
+    .select('dni')
+    .eq('dni', dni)
+    .single();
 
   if (!persona) {
-    const err = new Error(`No hay ninguna persona con ese DNI`);
-    err.status = 400;
+    const err = new Error(`No hay ninguna persona con el DNI ${dni}`);
+    err.status = 404;
     throw err;
   }
 
@@ -80,7 +84,7 @@ const obtenerIngresosPorDni = async (dni) => {
     .eq('dni', dni);
 
   if (error) throw error;
-  return data; // puede venir []
+  return data; // Puede ser []
 };
 
 // Actualizar ingreso
@@ -101,7 +105,7 @@ const actualizarIngreso = async (id, campos) => {
   if (error) throw error;
 
   if (!data || data.length === 0) {
-    const err = new Error(`No hay ningun ingreso con ese id`);
+    const err = new Error(`No hay ningún ingreso con el ID ${id}`);
     err.status = 404;
     throw err;
   }
@@ -120,7 +124,7 @@ const eliminarIngreso = async (id) => {
   if (error) throw error;
 
   if (!data || data.length === 0) {
-    const err = new Error(`No hay ningun ingreso con ese id`);
+    const err = new Error(`No hay ningún ingreso con el ID ${id}`);
     err.status = 404;
     throw err;
   }

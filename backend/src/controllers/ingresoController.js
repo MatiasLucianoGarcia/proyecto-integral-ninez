@@ -13,7 +13,8 @@ const getAllIngresos = async (req, res) => {
     const ingresos = await obtenerTodosLosIngresos();
     res.json(ingresos);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(error.status || 500).json({ message: error.message || 'Error al obtener ingresos' });
   }
 };
 
@@ -24,7 +25,8 @@ const getIngresoById = async (req, res) => {
     const ingreso = await obtenerIngresoPorId(id);
     res.json(ingreso);
   } catch (error) {
-    res.status(error.status || 400).json({ message: error.message });
+    console.error(error);
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
@@ -35,7 +37,8 @@ const getIngresosByDni = async (req, res) => {
     const ingresos = await obtenerIngresosPorDni(dni);
     res.json(ingresos);
   } catch (error) {
-    res.status(error.status || 400).json({ message: error.message });
+    console.error(error);
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
@@ -45,7 +48,8 @@ const createIngreso = async (req, res) => {
     const nuevo = await crearIngreso(req.body);
     res.status(201).json(nuevo);
   } catch (error) {
-    res.status(error.status || 400).json({ message: error.message });
+    console.error(error);
+    res.status(error.status || 500).json({ message: error.message || 'Error al crear ingreso' });
   }
 };
 
@@ -56,7 +60,8 @@ const updateIngreso = async (req, res) => {
     const actualizado = await actualizarIngreso(id, req.body);
     res.json(actualizado);
   } catch (error) {
-    res.status(error.status || 400).json({ message: error.message });
+    console.error(error);
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
@@ -67,7 +72,8 @@ const deleteIngreso = async (req, res) => {
     await eliminarIngreso(id);
     res.json({ message: 'Ingreso eliminado correctamente' });
   } catch (error) {
-    res.status(error.status || 400).json({ message: error.message });
+    console.error(error);
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 

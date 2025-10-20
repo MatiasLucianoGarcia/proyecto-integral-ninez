@@ -1,7 +1,7 @@
 const domicilioService = require('../services/domicilioService');
 const historialService = require('../services/historialService');
 
-// POST
+// POST - Crear domicilio
 const crearDomicilio = async (req, res) => {
   try {
     const nuevoDomicilio = await domicilioService.crearDomicilio(
@@ -10,10 +10,8 @@ const crearDomicilio = async (req, res) => {
       req.body.numero,
     );
 
-    // Intervención con el usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió un nuevo domicilio para esta persona`;
 
-    // Guardar en historial
     await historialService.createHistorial({
       dni: req.body.dni,
       intervencion,
@@ -24,44 +22,51 @@ const crearDomicilio = async (req, res) => {
     res.status(201).json(nuevoDomicilio);
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || 'Error al crear domicilio' });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al crear domicilio',
+    });
   }
 };
 
-// GET
+// GET - Obtener domicilios por DNI
 const obtenerDomicilios = async (req, res) => {
   try {
     const dni = req.params.dni;
     const domicilios = await domicilioService.obtenerDomicilios(dni);
-    res.json(domicilios);
+    res.status(200).json(domicilios);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener domicilios', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener domicilios',
+    });
   }
 };
 
-// DELETE
+// DELETE - Eliminar domicilio por ID
 const eliminarDomicilio = async (req, res) => {
   try {
     const id = req.params.id;
-    await domicilioService.eliminarDomicilio(id);
-    res.json({ message: 'Domicilio eliminado' });
+    const resultado = await domicilioService.eliminarDomicilio(id);
+    res.status(200).json(resultado);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar domicilio', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al eliminar domicilio',
+    });
   }
 };
 
+// GET - Obtener el último domicilio por DNI
 const obtenerUltimoDomicilioPorDni = async (req, res) => {
   try {
     const dni = req.params.dni;
     const domicilio = await domicilioService.obtenerUltimoDomicilioPorDni(dni);
-    res.json(domicilio);
+    res.status(200).json(domicilio || {});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener último domicilio', error });
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener último domicilio',
+    });
   }
 };
 
@@ -69,5 +74,5 @@ module.exports = {
   crearDomicilio,
   obtenerDomicilios,
   eliminarDomicilio,
-  obtenerUltimoDomicilioPorDni
+  obtenerUltimoDomicilioPorDni,
 };

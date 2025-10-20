@@ -5,7 +5,7 @@ const obtenerNacionalidades = async (req, res) => {
     const data = await nacionalidadService.getNacionalidades();
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
@@ -15,7 +15,7 @@ const crearNacionalidad = async (req, res) => {
     const nueva = await nacionalidadService.createNacionalidad(nombre);
     res.status(201).json(nueva);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
@@ -26,7 +26,7 @@ const actualizarNacionalidad = async (req, res) => {
     const actualizada = await nacionalidadService.updateNacionalidad(id, nombre);
     res.json(actualizada);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
@@ -36,7 +36,7 @@ const eliminarNacionalidad = async (req, res) => {
     const resultado = await nacionalidadService.deleteNacionalidad(id);
     res.json(resultado);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 

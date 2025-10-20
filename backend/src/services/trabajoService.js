@@ -15,6 +15,9 @@ const crearTrabajo = async (dni, descripcion, horario) => {
 };
 
 const obtenerTrabajos = async (dni) => {
+  // Verificar que la persona exista
+  await validarPersonaExiste(dni);
+
   const { data, error } = await supabase
     .from('trabajo')
     .select('*')
@@ -25,15 +28,29 @@ const obtenerTrabajos = async (dni) => {
 };
 
 const eliminarTrabajo = async (id) => {
-  const { error } = await supabase
+  // Verificar si el trabajo existe antes de eliminar
+  const { data: existente, error: checkError } = await supabase
     .from('trabajo')
-    .delete()
-    .eq('id', id);
+    .select('id')
+    .eq('id', id)
+    .single();
 
+  if (checkError && checkError.code === 'PGRST116') {
+    const err = new Error(`El trabajo con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (checkError) throw checkError;
+
+  const { error } = await supabase.from('trabajo').delete().eq('id', id);
   if (error) throw error;
 };
 
 const obtenerUltimoTrabajoPorDni = async (dni) => {
+  // Verificar que la persona exista
+  await validarPersonaExiste(dni);
+
   const { data, error } = await supabase
     .from('trabajo')
     .select('*')
@@ -49,5 +66,5 @@ module.exports = {
   crearTrabajo,
   obtenerTrabajos,
   eliminarTrabajo,
-  obtenerUltimoTrabajoPorDni
+  obtenerUltimoTrabajoPorDni,
 };

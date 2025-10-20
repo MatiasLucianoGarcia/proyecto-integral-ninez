@@ -28,14 +28,16 @@ const crearContacto = async (req, res) => {
 };
 
 // GET
-const obtenerContactos= async (req, res) => {
+const obtenerContactos = async (req, res) => {
   try {
     const dni = req.params.dni;
     const contactos = await contactoService.obtenerContactos(dni);
-    res.json(contactos);
+    res.status(200).json(contactos);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener contactos', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener contactos' });
   }
 };
 
@@ -43,22 +45,27 @@ const obtenerContactos= async (req, res) => {
 const eliminarContacto = async (req, res) => {
   try {
     const id = req.params.id;
-    await contactoService.eliminarContacto(id);
-    res.json({ message: 'Contacto eliminado' });
+    const resultado = await contactoService.eliminarContacto(id);
+    res.status(200).json(resultado);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar Contacto', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al eliminar contacto' });
   }
 };
 
+// GET última
 const obtenerUltimoContactoPorDni = async (req, res) => {
   try {
     const dni = req.params.dni;
     const contacto = await contactoService.obtenerUltimoContactoPorDni(dni);
-    res.json(contacto);
+    res.status(200).json(contacto);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener último contacto', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener último contacto' });
   }
 };
 
@@ -66,5 +73,5 @@ module.exports = {
   crearContacto,
   obtenerContactos,
   eliminarContacto,
-  obtenerUltimoContactoPorDni
+  obtenerUltimoContactoPorDni,
 };

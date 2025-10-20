@@ -1,20 +1,16 @@
 const perdidaService = require('../services/perdidaService');
 const historialService = require('../services/historialService');
 
-// POST
+// Crear pérdida
 const crearPerdida = async (req, res) => {
   try {
-    const nuevaPerdida = await perdidaService.crearPerdida(
-      req.body.dni,
-      req.body.descripcion
-    );
+    const { dni, descripcion } = req.body;
+    const nuevaPerdida = await perdidaService.crearPerdida(dni, descripcion);
 
-    // Intervención con usuario actual
     const intervencion = `El usuario ${req.user.nombre} añadió una nueva pérdida para esta persona`;
 
-    // Guardar en historial
     await historialService.createHistorial({
-      dni: req.body.dni,
+      dni,
       intervencion,
       resultado: "Alta de pérdida exitosa",
       fecha_carga: new Date(),
@@ -29,39 +25,45 @@ const crearPerdida = async (req, res) => {
   }
 };
 
-// GET todas
+// Obtener pérdidas por DNI
 const obtenerPerdidas = async (req, res) => {
   try {
-    const dni = req.params.dni;
+    const { dni } = req.params;
     const perdidas = await perdidaService.obtenerPerdidas(dni);
-    res.json(perdidas);
+    res.status(200).json(perdidas);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener pérdidas', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener pérdidas' });
   }
 };
 
-// DELETE
+// Eliminar pérdida
 const eliminarPerdida = async (req, res) => {
   try {
-    const id = req.params.id;
-    await perdidaService.eliminarPerdida(id);
-    res.json({ message: 'Pérdida eliminada' });
+    const { id } = req.params;
+    const resultado = await perdidaService.eliminarPerdida(id);
+    res.status(200).json(resultado);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al eliminar pérdida', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al eliminar pérdida' });
   }
 };
 
-// GET última
+// Obtener última pérdida por DNI
 const obtenerUltimaPerdidaPorDni = async (req, res) => {
   try {
-    const dni = req.params.dni;
+    const { dni } = req.params;
     const perdida = await perdidaService.obtenerUltimaPerdidaPorDni(dni);
-    res.json(perdida);
+    res.status(200).json(perdida);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener última pérdida', error });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || 'Error al obtener última pérdida' });
   }
 };
 
@@ -69,5 +71,5 @@ module.exports = {
   crearPerdida,
   obtenerPerdidas,
   eliminarPerdida,
-  obtenerUltimaPerdidaPorDni
+  obtenerUltimaPerdidaPorDni,
 };
