@@ -6,9 +6,9 @@ import { DashboardSidebarService } from '../../services/dashboard-sidebar.servic
 @Component({
 	selector: 'app-sidebar',
 	templateUrl: './sidebar.component.html',
-	styleUrl: './sidebar.component.scss',
-	imports: [MatSidenavModule, MatButtonModule],
+	styleUrls: ['./sidebar.component.scss'],
 	standalone: true,
+	imports: [MatSidenavModule, MatButtonModule],
 })
 export class SidebarComponent {
 	private dashboardSidebarService: DashboardSidebarService = inject(DashboardSidebarService);

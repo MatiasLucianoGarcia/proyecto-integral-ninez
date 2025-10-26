@@ -11,6 +11,7 @@ export class SessionGuard implements CanActivate {
 	canActivate(): boolean {
 		const user = this.userDataService.getUser();
 		if (user) {
+			console.log('User is logged in:', user);
 			return true;
 		} else {
 			this.router.navigate(['/login']);

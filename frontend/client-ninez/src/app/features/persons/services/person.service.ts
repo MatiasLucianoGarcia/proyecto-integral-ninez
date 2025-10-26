@@ -14,4 +14,8 @@ export class PersonService {
 	getPersons(): Observable<Persona[]> {
 		return this.http.get<Persona[]>('http://localhost:8080/api/personas');
 	}
+
+	getPersonByDNI(dni: string): Observable<Persona> {
+		return this.http.get<Persona>(`http://localhost:8080/api/personas/${dni}`);
+	}
 }

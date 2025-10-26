@@ -1,12 +1,10 @@
-const supabase = require('../config/db');
+const supabase = require("../config/db");
 const { validarGeneroExiste } = require("../helpers/generoHelper");
 const { validarNacionalidadExiste } = require("../helpers/nacionalidadHelper");
 
 // Obtener todas las personas
 const getPersonas = async () => {
-  const { data, error } = await supabase
-    .from('persona')
-    .select(`
+  const { data, error } = await supabase.from("persona").select(`
       dni,
       nombre,
       apellido,
@@ -20,13 +18,22 @@ const getPersonas = async () => {
 };
 
 // Crear persona
-const createPersona = async ({ dni, nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad }) => {
+const createPersona = async ({
+  dni,
+  nombre,
+  apellido,
+  fecha_nacimiento,
+  id_genero,
+  id_nacionalidad,
+}) => {
   await validarGeneroExiste(id_genero);
   await validarNacionalidadExiste(id_nacionalidad);
 
   const { data, error } = await supabase
     .from("persona")
-    .insert([{ dni, nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad }])
+    .insert([
+      { dni, nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad },
+    ])
     .select();
 
   // Si el DNI ya existe
@@ -41,15 +48,24 @@ const createPersona = async ({ dni, nombre, apellido, fecha_nacimiento, id_gener
 };
 
 // Actualizar persona
-const updatePersona = async (dni, { nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad }) => {
+const updatePersona = async (
+  dni,
+  { nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad }
+) => {
   try {
     if (id_genero) await validarGeneroExiste(id_genero);
     if (id_nacionalidad) await validarNacionalidadExiste(id_nacionalidad);
 
     const { data, error } = await supabase
-      .from('persona')
-      .update({ nombre, apellido, fecha_nacimiento, id_genero, id_nacionalidad })
-      .eq('dni', dni)
+      .from("persona")
+      .update({
+        nombre,
+        apellido,
+        fecha_nacimiento,
+        id_genero,
+        id_nacionalidad,
+      })
+      .eq("dni", dni)
       .select()
       .single();
 
@@ -77,7 +93,6 @@ const updatePersona = async (dni, { nombre, apellido, fecha_nacimiento, id_gener
 
     if (error) throw error;
     return data;
-
   } catch (error) {
     throw error;
   }
@@ -86,9 +101,9 @@ const updatePersona = async (dni, { nombre, apellido, fecha_nacimiento, id_gener
 // Eliminar persona
 const deletePersona = async (dni) => {
   const { data: existente, error: errCheck } = await supabase
-    .from('persona')
-    .select('dni')
-    .eq('dni', dni)
+    .from("persona")
+    .select("dni")
+    .eq("dni", dni)
     .single();
 
   if (errCheck && errCheck.code === "PGRST116") {
@@ -99,10 +114,29 @@ const deletePersona = async (dni) => {
 
   if (errCheck) throw errCheck;
 
-  const { error } = await supabase.from('persona').delete().eq('dni', dni);
+  const { error } = await supabase.from("persona").delete().eq("dni", dni);
   if (error) throw error;
 
   return { message: "Persona eliminada correctamente" };
+};
+
+const getPersonaByDNI = async (dni) => {
+  const { data, error } = await supabase
+    .from("persona")
+    .select(
+      `
+      dni,
+      nombre,
+      apellido,
+      fecha_nacimiento,
+      genero(nombre),
+      nacionalidad(nombre)
+    `
+    )
+    .eq("dni", dni)
+    .single();
+  if (error) throw error;
+  return data;
 };
 
 module.exports = {
@@ -110,4 +144,5 @@ module.exports = {
   createPersona,
   updatePersona,
   deletePersona,
+  getPersonaByDNI,
 };

@@ -65,9 +65,24 @@ const deletePersona = async (req, res) => {
   }
 };
 
+const getPersonaByDNI = async (req, res) => {
+  try {
+    const persona = await personaService.getPersonaByDNI(req.params.dni);
+    if (persona) {
+      console.log("Persona encontrada:", persona);
+      res.json(persona);
+    } else {
+      res.status(404).json({ message: "Persona no encontrada" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener persona", error });
+  }
+};
+
 module.exports = {
   getPersonas,
   createPersona,
   updatePersona,
   deletePersona,
+  getPersonaByDNI,
 };
