@@ -8,7 +8,7 @@ import { PersonFormComponent } from '../person-form';
 
 @Component({
 	selector: 'app-persons-list',
-	imports: [PersonCardComponent, MatButtonModule, MatIconModule, g],
+	imports: [PersonCardComponent, MatButtonModule, MatIconModule, PersonFormComponent],
 	templateUrl: './persons-list.component.html',
 	styleUrl: './persons-list.component.scss',
 })

@@ -24,5 +24,6 @@ router.put(
 );
 router.delete("/:dni", authenticate, personaController.deletePersona);
 router.get("/:dni", authenticate, personaController.getPersonaByDNI);
+router.post("/search", authenticate, personaController.searchPersonas);
 
 module.exports = router;

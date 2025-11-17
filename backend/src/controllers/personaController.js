@@ -42,7 +42,10 @@ const createPersona = async (req, res) => {
 // PUT
 const updatePersona = async (req, res) => {
   try {
-    const actualizada = await personaService.updatePersona(req.params.dni, req.body);
+    const actualizada = await personaService.updatePersona(
+      req.params.dni,
+      req.body
+    );
     res.json(actualizada);
   } catch (error) {
     console.error(error);
@@ -79,10 +82,30 @@ const getPersonaByDNI = async (req, res) => {
   }
 };
 
+const searchPersonas = async (req, res) => {
+  try {
+    const { dni, nombre } = req.body;
+
+    const filtros = {};
+    if (dni) filtros.dni = dni; // Pasar DNI como texto directamente
+    if (nombre) filtros.nombre = nombre;
+
+    const personas = await personaService.searchPersonas(filtros);
+    res.json(personas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error al buscar personas",
+      error,
+    });
+  }
+};
+
 module.exports = {
   getPersonas,
   createPersona,
   updatePersona,
   deletePersona,
   getPersonaByDNI,
+  searchPersonas,
 };

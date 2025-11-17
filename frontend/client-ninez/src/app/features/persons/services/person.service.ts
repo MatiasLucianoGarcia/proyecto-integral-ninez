@@ -18,4 +18,11 @@ export class PersonService {
 	getPersonByDNI(dni: string): Observable<Persona> {
 		return this.http.get<Persona>(`http://localhost:8080/api/personas/${dni}`);
 	}
+
+	searchPersons(dni?: string, nombre?: string): Observable<Persona[]> {
+		return this.http.post<Persona[]>('http://localhost:8080/api/personas/search', {
+			...(dni ? { dni } : {}),
+			...(nombre ? { nombre } : {}),
+		});
+	}
 }

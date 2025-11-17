@@ -1,0 +1,108 @@
+// $primary-color: #4caf50;
+// $secondary-color: #212121;
+// $text-color: #ffffff;
+// $background-color: #121212;
+
+// .container {
+// 	display: flex;
+// 	flex-direction: column;
+// 	align-items: center;
+// 	justify-content: center;
+// 	height: 100vh;
+// 	background-color: $background-color;
+// 	padding: 20px;
+// 	border-radius: 12px;
+// 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+// }
+
+// .search-form {
+// 	display: flex;
+// 	gap: 20px;
+// 	align-items: center;
+// 	flex-wrap: wrap;
+// 	background-color: $secondary-color;
+// 	padding: 20px;
+// 	border-radius: 8px;
+// 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+// }
+
+// mat-label {
+// 	color: $text-color;
+// }
+
+// // input {
+// // 	color: $text-color;
+// // }
+
+// button {
+// 	height: 56px;
+// 	padding: 0 24px;
+// 	font-size: 16px;
+// 	font-weight: bold;
+// 	color: $text-color;
+// 	background-color: $primary-color;
+// 	border: none;
+// 	border-radius: 8px;
+// 	cursor: pointer;
+// 	transition: background-color 0.3s;
+
+// 	&:hover {
+// 		background-color: darken($primary-color, 10%);
+// 	}
+// }
+
+// p {
+// 	margin-top: 20px;
+// 	font-size: 18px;
+// 	font-weight: bold;
+// 	color: $text-color;
+// }
+
+// mat-card {
+// 	margin-bottom: 16px;
+// 	padding: 16px;
+// 	border-radius: 8px;
+// 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+// 	background-color: $secondary-color;
+// 	color: $text-color;
+// }
+
+// mat-card-title {
+// 	font-size: 20px;
+// 	font-weight: bold;
+// 	color: $text-color;
+// }
+
+// mat-card-content {
+// 	color: $text-color;
+// }
+
+.search-container {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	margin: 1rem;
+	border: 1px solid gray;
+	border-radius: 5px;
+	padding: 1rem;
+	background-color: rgba(0, 100, 100, 0.3);
+}
+
+.search-form {
+	display: flex;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-bottom: 24px;
+}
+
+.list-container {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+	max-width: 600px;
+	border: 1px solid rgba(1, 255, 255, 0.4);
+	border-radius: 5px;
+	background-color: gray;
+}

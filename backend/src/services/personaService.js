@@ -139,10 +139,54 @@ const getPersonaByDNI = async (dni) => {
   return data;
 };
 
+// Buscar personas por coincidencia parcial de DNI o nombre
+const searchPersonas = async (filtros) => {
+  if (!filtros?.dni && !filtros?.nombre) {
+    return [];
+  }
+
+  let query = supabase.from("persona").select(`
+      dni,
+      nombre,
+      apellido,
+      fecha_nacimiento,
+      genero(nombre),
+      nacionalidad(nombre)
+    `);
+
+  if (filtros?.dni) {
+    const dniPrefix = parseInt(filtros.dni, 10);
+    if (!isNaN(dniPrefix)) {
+      const dniLength = filtros.dni.length;
+      const dniUpperBound = (dniPrefix + 1) * Math.pow(10, 9 - dniLength); // Calcular límite superior del rango
+      query = query.gte("dni", dniPrefix).lt("dni", dniUpperBound); // Buscar en el rango de prefijo
+    } else {
+      throw new Error("El valor de DNI debe ser numérico.");
+    }
+  }
+
+  if (filtros?.nombre) {
+    query = query.ilike("nombre", `%${filtros.nombre}%`); // Aplicar filtro para nombre
+  }
+
+  // Ejecutar la consulta y manejar errores
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error en la consulta de searchPersonas:", error);
+    throw error;
+  }
+
+  console.log("Resultados de searchPersonas:", data);
+
+  return data;
+};
+
 module.exports = {
   getPersonas,
   createPersona,
   updatePersona,
   deletePersona,
   getPersonaByDNI,
+  searchPersonas,
 };
