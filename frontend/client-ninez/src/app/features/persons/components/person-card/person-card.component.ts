@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Persona } from '../../domain';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -14,5 +15,24 @@ import { MatIconModule } from '@angular/material/icon';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonCardComponent {
+	private router = inject(Router);
 	person = input.required<Persona>();
+
+	onViewDetails(): void {
+		this.router.navigate(['/person-form'], {
+			queryParams: {
+				mode: 'view',
+				dni: this.person().dni,
+			},
+		});
+	}
+
+	onEdit(): void {
+		this.router.navigate(['/person-form'], {
+			queryParams: {
+				mode: 'edit',
+				dni: this.person().dni,
+			},
+		});
+	}
 }

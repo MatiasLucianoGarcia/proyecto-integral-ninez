@@ -11,6 +11,11 @@ export const routes: Routes = [
 		canActivate: [SessionGuard],
 		loadChildren: () => import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
 	},
+	{
+		path: 'person-form',
+		canActivate: [SessionGuard],
+		loadComponent: () => import('./features/persons/components/person-form/person-form.component').then((m) => m.PersonFormComponent),
+	},
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
 	{ path: '**', redirectTo: 'login' },
 ];

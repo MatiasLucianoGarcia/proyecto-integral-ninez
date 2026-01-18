@@ -1,46 +1,176 @@
-<form [formGroup]="personaForm" (ngSubmit)="onSubmit()" class="max-w-lg mx-auto p-4 bg-white rounded shadow">
-	<div class="mb-4">
-		<label for="dni" class="block text-sm font-medium">DNI</label>
-		<input
-			id="dni"
-			type="text"
-			formControlName="dni"
-			class="mt-1 block w-full border rounded px-2 py-1"
-			[class.border-red-500]="personaForm.get('dni')?.invalid && personaForm.get('dni')?.touched"
-		/>
-		<div *ngIf="personaForm.get('dni')?.invalid && personaForm.get('dni')?.touched" class="text-red-500 text-xs">
-			DNI requerido (mínimo 7 dígitos)
+<div class="form-wrapper">
+	<!-- Header -->
+	<div class="form-header">
+		<button mat-icon-button class="back-button" (click)="goBack()" aria-label="Volver">
+			<mat-icon>arrow_back</mat-icon>
+		</button>
+		<div class="header-content">
+			<div class="title-section">
+				<mat-icon class="title-icon">
+					{{ isCreateMode ? 'person_add' : isEditMode ? 'edit' : 'visibility' }}
+				</mat-icon>
+				<div>
+					<h1 class="title">{{ formTitle }}</h1>
+					<p class="subtitle">
+						{{
+							isCreateMode
+								? 'Complete los datos de la nueva persona'
+								: isEditMode
+								? 'Modifique los datos necesarios'
+								: 'Información de la persona'
+						}}
+					</p>
+				</div>
+			</div>
+			@if(!isViewMode) {
+			<mat-chip class="mode-chip" [highlighted]="true">
+				<mat-icon>{{ isCreateMode ? 'add_circle' : 'edit_note' }}</mat-icon>
+				{{ isCreateMode ? 'Modo Creación' : 'Modo Edición' }}
+			</mat-chip>
+			}
 		</div>
 	</div>
 
-	<div *ngIf="cargando" class="mb-2 text-blue-500">Buscando persona...</div>
-	<div *ngIf="personaExistente" class="mb-2 text-green-600">Persona encontrada. Puede editar los datos.</div>
-	<div *ngIf="!personaExistente && personaForm.get('dni')?.valid" class="mb-2 text-yellow-600">
-		No existe persona con ese DNI. Complete los datos para crearla.
+	<!-- Loading State -->
+	@if(loading()) {
+	<div class="loading-container">
+		<mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+		<p>Cargando información...</p>
 	</div>
+	} @else {
+	<!-- Form Content -->
+	<div class="form-content">
+		<form [formGroup]="personForm" (ngSubmit)="onSubmit()">
+			<!-- Datos Personales Card -->
+			<mat-card class="form-section">
+				<mat-card-header>
+					<mat-card-title class="section-title">
+						<mat-icon class="section-icon">badge</mat-icon>
+						Datos Personales
+					</mat-card-title>
+				</mat-card-header>
+				<mat-card-content>
+					<div class="form-grid">
+						<!-- DNI -->
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>DNI</mat-label>
+							<input
+								matInput
+								formControlName="dni"
+								placeholder="12345678"
+								type="text"
+								maxlength="8"
+								[readonly]="isEditMode || isViewMode"
+							/>
+							<mat-icon matPrefix class="field-icon">fingerprint</mat-icon>
+							@if(personForm.get('dni')?.hasError('required')) {
+							<mat-error>El DNI es requerido</mat-error>
+							} @if(personForm.get('dni')?.hasError('pattern')) {
+							<mat-error>DNI inválido (7-8 dígitos)</mat-error>
+							}
+						</mat-form-field>
 
-	<div class="mb-4">
-		<label for="nombre" class="block text-sm font-medium">Nombre</label>
-		<input id="nombre" type="text" formControlName="nombre" class="mt-1 block w-full border rounded px-2 py-1" />
-	</div>
-	<div class="mb-4">
-		<label for="apellido" class="block text-sm font-medium">Apellido</label>
-		<input id="apellido" type="text" formControlName="apellido" class="mt-1 block w-full border rounded px-2 py-1" />
-	</div>
-	<div class="mb-4">
-		<label for="fecha_nacimiento" class="block text-sm font-medium">Fecha de nacimiento</label>
-		<input id="fecha_nacimiento" type="date" formControlName="fecha_nacimiento" class="mt-1 block w-full border rounded px-2 py-1" />
-	</div>
-	<div class="mb-4">
-		<label for="genero" class="block text-sm font-medium">Género</label>
-		<input id="genero" type="text" formControlName="genero" class="mt-1 block w-full border rounded px-2 py-1" />
-	</div>
-	<div class="mb-4">
-		<label for="nacionalidad" class="block text-sm font-medium">Nacionalidad</label>
-		<input id="nacionalidad" type="text" formControlName="nacionalidad" class="mt-1 block w-full border rounded px-2 py-1" />
-	</div>
+						<!-- Nombre -->
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>Nombre</mat-label>
+							<input matInput formControlName="nombre" placeholder="Juan" [readonly]="isViewMode" />
+							<mat-icon matPrefix class="field-icon">person</mat-icon>
+							@if(personForm.get('nombre')?.hasError('required')) {
+							<mat-error>El nombre es requerido</mat-error>
+							} @if(personForm.get('nombre')?.hasError('minlength')) {
+							<mat-error>Mínimo 2 caracteres</mat-error>
+							}
+						</mat-form-field>
 
-	<button type="submit" [disabled]="!personaForm.valid" class="bg-blue-600 text-white px-4 py-2 rounded">
-		{{ personaExistente ? 'Actualizar' : 'Crear' }}
-	</button>
-</form>
+						<!-- Apellido -->
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>Apellido</mat-label>
+							<input matInput formControlName="apellido" placeholder="Pérez" [readonly]="isViewMode" />
+							<mat-icon matPrefix class="field-icon">person_outline</mat-icon>
+							@if(personForm.get('apellido')?.hasError('required')) {
+							<mat-error>El apellido es requerido</mat-error>
+							} @if(personForm.get('apellido')?.hasError('minlength')) {
+							<mat-error>Mínimo 2 caracteres</mat-error>
+							}
+						</mat-form-field>
+
+						<!-- Fecha de Nacimiento -->
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>Fecha de Nacimiento</mat-label>
+							<input
+								matInput
+								[matDatepicker]="picker"
+								formControlName="fecha_nacimiento"
+								placeholder="DD/MM/YYYY"
+								[readonly]="isViewMode"
+							/>
+							<mat-icon matPrefix class="field-icon">cake</mat-icon>
+							@if(!isViewMode) {
+							<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+							}
+							<mat-datepicker #picker></mat-datepicker>
+							@if(personForm.get('fecha_nacimiento')?.hasError('required')) {
+							<mat-error>La fecha de nacimiento es requerida</mat-error>
+							}
+						</mat-form-field>
+
+						<!-- Género -->
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>Género</mat-label>
+							@if(isViewMode) {
+							<input matInput formControlName="genero" readonly />
+							} @else {
+							<mat-select formControlName="genero" placeholder="Seleccione">
+								@for(genero of generos; track genero.nombre) {
+								<mat-option [value]="genero.nombre">
+									{{ genero.nombre }}
+								</mat-option>
+								}
+							</mat-select>
+							}
+							<mat-icon matPrefix class="field-icon">wc</mat-icon>
+							@if(personForm.get('genero')?.hasError('required')) {
+							<mat-error>El género es requerido</mat-error>
+							}
+						</mat-form-field>
+
+						<!-- Nacionalidad -->
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>Nacionalidad</mat-label>
+							@if(isViewMode) {
+							<input matInput formControlName="nacionalidad" readonly />
+							} @else {
+							<mat-select formControlName="nacionalidad" placeholder="Seleccione">
+								@for(nacionalidad of nacionalidades; track nacionalidad.nombre) {
+								<mat-option [value]="nacionalidad.nombre">
+									{{ nacionalidad.nombre }}
+								</mat-option>
+								}
+							</mat-select>
+							}
+							<mat-icon matPrefix class="field-icon">flag</mat-icon>
+							@if(personForm.get('nacionalidad')?.hasError('required')) {
+							<mat-error>La nacionalidad es requerida</mat-error>
+							}
+						</mat-form-field>
+					</div>
+				</mat-card-content>
+			</mat-card>
+
+			<!-- Action Buttons -->
+			<div class="form-actions">
+				@if(!isViewMode) {
+				<button mat-raised-button color="primary" type="submit" class="submit-button" [disabled]="personForm.invalid || loading()">
+					<mat-icon>{{ isCreateMode ? 'add' : 'save' }}</mat-icon>
+					{{ submitButtonText }}
+				</button>
+				}
+				<button mat-stroked-button type="button" class="cancel-button" (click)="onCancel()">
+					<mat-icon>{{ isViewMode ? 'close' : 'cancel' }}</mat-icon>
+					{{ isViewMode ? 'Cerrar' : 'Cancelar' }}
+				</button>
+			</div>
+		</form>
+	</div>
+	}
+</div>

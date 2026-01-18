@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { A11yModule } from '@angular/cdk/a11y';
 import { PersonCardComponent } from '../person-card';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-search-person',
@@ -36,6 +37,7 @@ export class SearchPersonComponent {
 
 	private fb = inject(NonNullableFormBuilder);
 	private personService = inject(PersonService);
+	private router = inject(Router);
 
 	searchForm = this.fb.group({
 		dni: [''],
@@ -64,6 +66,14 @@ export class SearchPersonComponent {
 		// Método opcional para búsquedas manuales
 		const { dni, nombre } = this.searchForm.value;
 		this.persons$ = this.personService.searchPersons(dni, nombre);
+	}
+
+	onAddPerson(): void {
+		this.router.navigate(['/person-form'], {
+			queryParams: {
+				mode: 'create',
+			},
+		});
 	}
 
 	onSelectPerson(person: Persona) {
