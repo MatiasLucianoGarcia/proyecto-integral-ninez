@@ -87,7 +87,7 @@ const searchPersonas = async (req, res) => {
     const { dni, nombre } = req.body;
 
     const filtros = {};
-    if (dni) filtros.dni = dni; // Pasar DNI como texto directamente
+    if (dni) filtros.dni = dni;
     if (nombre) filtros.nombre = nombre;
 
     const personas = await personaService.searchPersonas(filtros);

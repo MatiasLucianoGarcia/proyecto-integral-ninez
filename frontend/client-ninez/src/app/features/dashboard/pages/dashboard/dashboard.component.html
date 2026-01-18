@@ -1,12 +1,12 @@
 <app-nav-bar (menuClick)="drawer.toggle()" />
 <mat-drawer-container class="dashboard-container" autosize>
-	<mat-drawer #drawer class="dashboard-sidenav" mode="side">
+	<mat-drawer #drawer class="dashboard-sidenav" mode="side" [opened]="false">
 		<app-sidebar />
 	</mat-drawer>
-	<div class="dashboard-content">
-		<ng-content></ng-content>
-		<p>dashboard works!</p>
-		<!-- <app-persons-list /> -->
-		<app-search-person />
-	</div>
+	<main class="dashboard-content">
+		<div class="content-wrapper">
+			<ng-content></ng-content>
+			<app-search-person />
+		</div>
+	</main>
 </mat-drawer-container>

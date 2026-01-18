@@ -4,60 +4,178 @@
 	// @tailwind utilities;
 }
 
+/* Variables CSS para tema consistente */
+:root {
+	/* Colores principales */
+	--primary-color: #2563eb;
+	--primary-dark: #1e40af;
+	--primary-light: #3b82f6;
+	--secondary-color: #10b981;
+	--secondary-dark: #059669;
+	--secondary-light: #34d399;
+
+	/* Fondos */
+	--bg-primary: #f8fafc;
+	--bg-secondary: #ffffff;
+	--bg-tertiary: #f1f5f9;
+	--bg-dark: #0f172a;
+	--bg-card: #ffffff;
+
+	/* Textos */
+	--text-primary: #0f172a;
+	--text-secondary: #475569;
+	--text-tertiary: #94a3b8;
+	--text-light: #ffffff;
+
+	/* Bordes */
+	--border-color: #e2e8f0;
+	--border-light: #f1f5f9;
+
+	/* Sombras */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+	--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+	/* Espaciado */
+	--spacing-xs: 0.5rem;
+	--spacing-sm: 0.75rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-2xl: 3rem;
+
+	/* Radio de bordes */
+	--radius-sm: 0.375rem;
+	--radius-md: 0.5rem;
+	--radius-lg: 0.75rem;
+	--radius-xl: 1rem;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
 body {
-	background-color: #121212;
-	color: #e0e0e0;
-	font-family: 'Roboto', sans-serif;
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+	font-size: 16px;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 /* Links */
 a {
-	color: #80deea; // Cyan clarito
+	color: var(--primary-color);
+	text-decoration: none;
+	transition: color 0.2s ease;
 }
 
 a:hover {
-	color: #ffb74d; // Naranja suave
+	color: var(--primary-dark);
 }
 
-/* MatCard */
-.mat-card {
-	background-color: #1e1e1e;
-	color: #fff;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-	border-radius: 12px;
+/* Material Card personalizado */
+.mat-mdc-card {
+	background-color: var(--bg-card) !important;
+	color: var(--text-primary) !important;
+	box-shadow: var(--shadow-md) !important;
+	border-radius: var(--radius-lg) !important;
+	border: 1px solid var(--border-color);
+	transition: all 0.3s ease;
 }
 
-/* Inputs */
-.mat-form-field-appearance-outline .mat-form-field-outline {
-	color: #80deea;
+.mat-mdc-card:hover {
+	box-shadow: var(--shadow-lg) !important;
+	transform: translateY(-2px);
 }
 
-/* Botón primario */
-.mat-raised-button.mat-primary {
-	background-color: #00acc1;
-	color: #fff;
+/* Material Form Fields */
+.mat-mdc-form-field {
+	width: 100%;
 }
 
-.mat-raised-button.mat-primary:hover {
-	background-color: #00838f;
+.mat-mdc-text-field-wrapper {
+	background-color: var(--bg-secondary);
+	border-radius: var(--radius-md);
 }
 
-/* Botón deshabilitado visible */
+/* Botones Material */
+.mat-mdc-raised-button.mat-primary {
+	background-color: var(--primary-color) !important;
+	color: var(--text-light) !important;
+	box-shadow: var(--shadow-sm) !important;
+	transition: all 0.2s ease;
+	border-radius: var(--radius-md) !important;
+	font-weight: 500;
+}
+
+.mat-mdc-raised-button.mat-primary:hover {
+	background-color: var(--primary-dark) !important;
+	box-shadow: var(--shadow-md) !important;
+	transform: translateY(-1px);
+}
+
+.mat-mdc-fab,
+.mat-mdc-mini-fab {
+	box-shadow: var(--shadow-lg) !important;
+	transition: all 0.2s ease;
+}
+
+.mat-mdc-fab:hover,
+.mat-mdc-mini-fab:hover {
+	box-shadow: var(--shadow-xl) !important;
+	transform: scale(1.05);
+}
+
+/* Botón deshabilitado */
 button[disabled],
-.mat-button-disabled {
-	background-color: rgba(255, 255, 255, 0.1) !important;
-	color: rgba(255, 255, 255, 0.4) !important;
-	border: 1px solid rgba(255, 255, 255, 0.2);
+.mat-mdc-button-disabled {
+	background-color: var(--bg-tertiary) !important;
+	color: var(--text-tertiary) !important;
+	border: 1px solid var(--border-color) !important;
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 /* SnackBar */
 .custom-snackbar {
-	background-color: #333 !important;
-	color: #fff !important;
+	background-color: var(--bg-dark) !important;
+	color: var(--text-light) !important;
 }
 
-body {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--text-tertiary);
+	border-radius: var(--radius-md);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--text-secondary);
+}
+
+/* Toolbar Material */
+.mat-toolbar {
+	background-color: var(--bg-secondary) !important;
+	color: var(--text-primary) !important;
+	box-shadow: var(--shadow-sm) !important;
 }

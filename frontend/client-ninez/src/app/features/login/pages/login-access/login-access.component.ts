@@ -8,13 +8,23 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
 	selector: 'app-login-access',
 	standalone: true,
 	templateUrl: './login-access.component.html',
 	styleUrls: ['./login-access.component.scss'],
-	imports: [CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCardModule, ReactiveFormsModule],
+	imports: [
+		CommonModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatButtonModule,
+		MatIconModule,
+		MatCardModule,
+		MatCheckboxModule,
+		ReactiveFormsModule,
+	],
 })
 export class LoginAccessComponent {
 	private fb: FormBuilder = inject(FormBuilder);

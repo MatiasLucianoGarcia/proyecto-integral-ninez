@@ -1,14 +1,48 @@
-<mat-toolbar>
-	<button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="menuClick.emit()">
-		<mat-icon>menu</mat-icon>
-	</button>
-	<span>BBSIN App</span>
-	<span class="example-spacer"></span>
-	<button mat-icon-button class="example-icon account_circle" aria-label="Example icon-button with heart icon" [matMenuTriggerFor]="menu">
-		<mat-icon>account_circle</mat-icon>
-	</button>
-	<mat-menu #menu="matMenu">
-		<button mat-menu-item>Item 1</button>
-		<button mat-menu-item (click)="logout()">Cerrar Sesion</button>
+<mat-toolbar class="navbar">
+	<div class="navbar-content">
+		<div class="navbar-left">
+			<button mat-icon-button class="menu-button" aria-label="Abrir menú de navegación" (click)="menuClick.emit()">
+				<mat-icon>menu</mat-icon>
+			</button>
+			<div class="brand">
+				<mat-icon class="brand-icon">shield</mat-icon>
+				<span class="brand-name">BBSIN App</span>
+				<span class="brand-subtitle">Sistema de Gestión</span>
+			</div>
+		</div>
+
+		<div class="navbar-right">
+			<button mat-icon-button class="notification-button" aria-label="Notificaciones">
+				<mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+			</button>
+
+			<button mat-icon-button class="account-button" aria-label="Menú de usuario" [matMenuTriggerFor]="userMenu">
+				<mat-icon>account_circle</mat-icon>
+			</button>
+		</div>
+	</div>
+
+	<mat-menu #userMenu="matMenu" class="user-menu">
+		<div class="user-info">
+			<mat-icon class="user-avatar">account_circle</mat-icon>
+			<div class="user-details">
+				<span class="user-name">Usuario</span>
+				<span class="user-role">Administrador</span>
+			</div>
+		</div>
+		<mat-divider></mat-divider>
+		<button mat-menu-item>
+			<mat-icon>person</mat-icon>
+			<span>Mi Perfil</span>
+		</button>
+		<button mat-menu-item>
+			<mat-icon>settings</mat-icon>
+			<span>Configuración</span>
+		</button>
+		<mat-divider></mat-divider>
+		<button mat-menu-item (click)="logout()" class="logout-item">
+			<mat-icon>logout</mat-icon>
+			<span>Cerrar Sesión</span>
+		</button>
 	</mat-menu>
 </mat-toolbar>

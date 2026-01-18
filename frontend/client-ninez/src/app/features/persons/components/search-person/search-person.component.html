@@ -1,18 +1,72 @@
-<div class="container">
-	<div class="search-container">
-		<h2>Buscar Persona</h2>
+<div class="search-wrapper">
+	<!-- Header Section -->
+	<div class="search-header">
+		<div class="header-content">
+			<div class="title-section">
+				<mat-icon class="title-icon">person_search</mat-icon>
+				<div>
+					<h1 class="title">Buscar Persona</h1>
+					<p class="subtitle">Ingrese el DNI para buscar en el sistema</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Search Form -->
+	<div class="search-section">
 		<form class="search-form" [formGroup]="searchForm" (ngSubmit)="onSearch()">
-			<mat-form-field appearance="fill">
-				<mat-label>DNI</mat-label>
-				<input matInput formControlName="dni" placeholder="Ingrese el DNI" />
+			<mat-form-field appearance="outline" class="search-input">
+				<mat-label>Número de DNI</mat-label>
+				<input matInput formControlName="dni" placeholder="Ej: 12345678" type="text" maxlength="8" />
+				<mat-icon matPrefix>badge</mat-icon>
+				@if(searchForm.get('dni')?.value) {
+				<button mat-icon-button matSuffix type="button" (click)="searchForm.patchValue({ dni: '' })" aria-label="Limpiar">
+					<mat-icon>close</mat-icon>
+				</button>
+				}
 			</mat-form-field>
-			<button matFab color="primary" type="submit"><mat-icon>search</mat-icon></button>
+
+			<button mat-fab extended color="primary" type="submit" class="search-button">
+				<mat-icon>search</mat-icon>
+				Buscar
+			</button>
 		</form>
-		<div class="list-container">
-			<button class="">Agregar Persona +</button>
-			@for(person of persons$|async; track person.dni){
+	</div>
+
+	<!-- Action Bar -->
+	<div class="action-bar">
+		<button mat-raised-button color="primary" class="add-person-button">
+			<mat-icon>person_add</mat-icon>
+			Agregar Persona
+		</button>
+	</div>
+
+	<!-- Results Section -->
+	<div class="results-section">
+		@if((persons$ | async)?.length === 0 && searchForm.get('dni')?.value) {
+		<div class="empty-state">
+			<mat-icon class="empty-icon">search_off</mat-icon>
+			<h3>No se encontraron resultados</h3>
+			<p>No hay personas registradas con ese DNI</p>
+		</div>
+		} @else if((persons$ | async)?.length) {
+		<div class="results-header">
+			<h3 class="results-title">
+				Resultados de búsqueda
+				<span class="results-count">({{ (persons$ | async)?.length }})</span>
+			</h3>
+		</div>
+		<div class="results-grid">
+			@for(person of persons$ | async; track person.dni) {
 			<app-person-card [person]="person" />
 			}
 		</div>
+		} @else {
+		<div class="placeholder-state">
+			<mat-icon class="placeholder-icon">person_search</mat-icon>
+			<h3>Comience su búsqueda</h3>
+			<p>Ingrese un DNI para buscar personas en el sistema</p>
+		</div>
+		}
 	</div>
 </div>

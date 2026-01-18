@@ -1,24 +1,68 @@
-<mat-drawer-container class="example-container" autosize>
-	<!-- <mat-drawer #drawer class="example-sidenav" mode="side">
-		<p>Auto-resizing sidenav</p>
+<div class="sidebar">
+	<div class="sidebar-header">
+		<h2 class="sidebar-title">Navegación</h2>
+	</div>
 
-		<p>Hola</p>
-		<p>Hola</p>
-		<p>Hola</p>
-		<p>Hola</p>
-		<p>Hola</p>
-		<p>Hola</p>
-		@if (showSidebar()) {
-		<p>Lorem, ipsum dolor sit amet consectetur.</p>
-		} -->
-	<!-- <button (click)="showFiller = !showFiller" matButton="elevated">Toggle extra text</button> -->
-	<!-- </mat-drawer> -->
+	<nav class="sidebar-nav">
+		<div class="nav-section">
+			<h3 class="section-title">Principal</h3>
+			<a class="nav-item active" routerLink="/dashboard">
+				<mat-icon class="nav-icon">dashboard</mat-icon>
+				<span class="nav-label">Dashboard</span>
+			</a>
+			<a class="nav-item" routerLink="/personas">
+				<mat-icon class="nav-icon">people</mat-icon>
+				<span class="nav-label">Personas</span>
+			</a>
+		</div>
 
-	<!-- El contenido del sidebar se controla desde el dashboard -->
-	<p>Hola</p>
-	<p>Hola</p>
-	<p>Hola</p>
-	<p>Hola</p>
-	<p>Hola</p>
-	<p>Hola</p>
-</mat-drawer-container>
+		<div class="nav-section">
+			<h3 class="section-title">Gestión</h3>
+			<a class="nav-item" routerLink="/familias">
+				<mat-icon class="nav-icon">family_restroom</mat-icon>
+				<span class="nav-label">Familias</span>
+			</a>
+			<a class="nav-item" routerLink="/programas">
+				<mat-icon class="nav-icon">school</mat-icon>
+				<span class="nav-label">Programas</span>
+			</a>
+			<a class="nav-item" routerLink="/articulaciones">
+				<mat-icon class="nav-icon">link</mat-icon>
+				<span class="nav-label">Articulaciones</span>
+			</a>
+		</div>
+
+		<div class="nav-section">
+			<h3 class="section-title">Reportes</h3>
+			<a class="nav-item" routerLink="/reportes">
+				<mat-icon class="nav-icon">assessment</mat-icon>
+				<span class="nav-label">Reportes</span>
+			</a>
+			<a class="nav-item" routerLink="/estadisticas">
+				<mat-icon class="nav-icon">bar_chart</mat-icon>
+				<span class="nav-label">Estadísticas</span>
+			</a>
+		</div>
+
+		<div class="nav-section">
+			<h3 class="section-title">Sistema</h3>
+			<a class="nav-item" routerLink="/usuarios">
+				<mat-icon class="nav-icon">manage_accounts</mat-icon>
+				<span class="nav-label">Usuarios</span>
+			</a>
+			<a class="nav-item" routerLink="/configuracion">
+				<mat-icon class="nav-icon">settings</mat-icon>
+				<span class="nav-label">Configuración</span>
+			</a>
+		</div>
+	</nav>
+
+	<div class="sidebar-footer">
+		<div class="help-card">
+			<mat-icon class="help-icon">help_outline</mat-icon>
+			<h4 class="help-title">¿Necesitas ayuda?</h4>
+			<p class="help-text">Consulta nuestra documentación</p>
+			<button mat-stroked-button class="help-button">Ver guía</button>
+		</div>
+	</div>
+</div>

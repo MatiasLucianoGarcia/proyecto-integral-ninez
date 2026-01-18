@@ -158,8 +158,8 @@ const searchPersonas = async (filtros) => {
     const dniPrefix = parseInt(filtros.dni, 10);
     if (!isNaN(dniPrefix)) {
       const dniLength = filtros.dni.length;
-      const dniUpperBound = (dniPrefix + 1) * Math.pow(10, 9 - dniLength); // Calcular límite superior del rango
-      query = query.gte("dni", dniPrefix).lt("dni", dniUpperBound); // Buscar en el rango de prefijo
+      const dniUpperBound = (dniPrefix + 1) * Math.pow(10, 9 - dniLength);
+      query = query.gte("dni", dniPrefix).lt("dni", dniUpperBound);
     } else {
       throw new Error("El valor de DNI debe ser numérico.");
     }
