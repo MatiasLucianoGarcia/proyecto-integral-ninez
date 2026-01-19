@@ -13,8 +13,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PersonService } from '../../services/person.service';
+import { FamilyService } from '../../services/family.service';
 import { Persona } from '../../domain/persona.model';
+import { FamilyMember } from '../../domain/familia.model';
+import { FamilyTreeComponent } from '../family-tree/family-tree.component';
+import { AddFamilyDialogComponent } from '../add-family-dialog/add-family-dialog.component';
 
 type FormMode = 'create' | 'edit' | 'view';
 
@@ -35,6 +42,10 @@ type FormMode = 'create' | 'edit' | 'view';
 		MatProgressSpinnerModule,
 		MatChipsModule,
 		MatDividerModule,
+		MatTabsModule,
+		MatDialogModule,
+		MatSnackBarModule,
+		FamilyTreeComponent,
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -42,13 +53,18 @@ type FormMode = 'create' | 'edit' | 'view';
 export class PersonFormComponent implements OnInit {
 	private fb = inject(FormBuilder);
 	private personService = inject(PersonService);
+	private familyService = inject(FamilyService);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
+	private dialog = inject(MatDialog);
+	private snackBar = inject(MatSnackBar);
 
 	personForm!: FormGroup;
 	mode = signal<FormMode>('create');
 	loading = signal(false);
 	personDni = signal<string | null>(null);
+	familyMembers = signal<FamilyMember[]>([]);
+	loadingFamily = signal(false);
 
 	// Opciones para los selects (en producción vendrían del backend)
 	generos = [{ nombre: 'Masculino' }, { nombre: 'Femenino' }, { nombre: 'Otro' }];
@@ -93,6 +109,7 @@ export class PersonFormComponent implements OnInit {
 			if (dni) {
 				this.personDni.set(dni);
 				this.loadPersonData(dni);
+				this.loadFamilyData(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -120,6 +137,114 @@ export class PersonFormComponent implements OnInit {
 				this.loading.set(false);
 				console.error('Error al cargar persona:', error);
 			},
+		});
+	}
+
+	private loadFamilyData(dni: string): void {
+		this.loadingFamily.set(true);
+		this.familyService.getFamilyByDNI(Number(dni)).subscribe({
+			next: (family) => {
+				this.loadingFamily.set(false);
+				this.familyMembers.set(family);
+			},
+			error: (error) => {
+				this.loadingFamily.set(false);
+				console.error('Error al cargar familia:', error);
+				this.familyMembers.set([]);
+			},
+		});
+	}
+
+	onEditFamilyMember(member: FamilyMember): void {
+		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
+			width: '600px',
+			data: {
+				mode: 'edit',
+				currentPersonDni: Number(this.personDni()),
+				familyMember: {
+					dni_p1: Number(this.personDni()),
+					dni_p2: member.persona.dni,
+					id_parentezco1: member.parentezco.id,
+					id_parentezco2: member.parentezco.id,
+					observaciones: member.observaciones,
+				},
+			},
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.familyService.updateFamilyRelation(member.id, result).subscribe({
+					next: () => {
+						this.snackBar.open('Familiar actualizado exitosamente', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loadFamilyData(this.personDni()!);
+					},
+					error: (error) => {
+						console.error('Error al actualizar familiar:', error);
+						this.snackBar.open('Error al actualizar familiar', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+				});
+			}
+		});
+	}
+
+	onDeleteFamilyMember(member: FamilyMember): void {
+		const confirmed = confirm(`¿Está seguro de eliminar la relación familiar con ${member.persona.nombre} ${member.persona.apellido}?`);
+
+		if (confirmed) {
+			this.familyService.deleteFamilyRelation(member.id).subscribe({
+				next: () => {
+					this.snackBar.open('Familiar eliminado exitosamente', 'Cerrar', {
+						duration: 3000,
+					});
+					this.loadFamilyData(this.personDni()!);
+				},
+				error: (error) => {
+					console.error('Error al eliminar familiar:', error);
+					this.snackBar.open('Error al eliminar familiar', 'Cerrar', {
+						duration: 3000,
+					});
+				},
+			});
+		}
+	}
+
+	onViewFamilyMember(member: FamilyMember): void {
+		// Navegar al detalle de la persona familiar
+		this.router.navigate(['/person-form'], {
+			queryParams: { mode: 'view', dni: member.persona.dni },
+		});
+	}
+
+	onAddFamilyMember(): void {
+		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
+			width: '600px',
+			data: {
+				mode: 'create',
+				currentPersonDni: Number(this.personDni()),
+			},
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.familyService.createFamilyRelation(result).subscribe({
+					next: () => {
+						this.snackBar.open('Familiar agregado exitosamente', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loadFamilyData(this.personDni()!);
+					},
+					error: (error) => {
+						console.error('Error al agregar familiar:', error);
+						this.snackBar.open('Error al agregar familiar', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+				});
+			}
 		});
 	}
 

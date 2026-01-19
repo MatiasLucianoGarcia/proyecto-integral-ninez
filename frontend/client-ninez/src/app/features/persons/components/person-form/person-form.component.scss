@@ -287,6 +287,137 @@
 	}
 }
 
+/* Tabs Styles */
+.form-tabs {
+	background-color: transparent;
+
+	::ng-deep {
+		.mat-mdc-tab-labels {
+			background-color: var(--bg-card);
+			border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+			box-shadow: var(--shadow-sm);
+		}
+
+		.mat-mdc-tab-label {
+			min-width: 160px;
+			height: 64px;
+			padding: 0 var(--spacing-xl);
+			font-weight: 500;
+			color: var(--text-secondary);
+			opacity: 1;
+
+			.tab-icon {
+				margin-right: var(--spacing-sm);
+			}
+
+			.family-count {
+				margin-left: var(--spacing-xs);
+				padding: 2px var(--spacing-xs);
+				background-color: var(--primary-color);
+				color: var(--text-light);
+				border-radius: var(--radius-full);
+				font-size: 0.75rem;
+				font-weight: 600;
+			}
+
+			&.mdc-tab--active {
+				color: var(--primary-color);
+
+				.mat-icon {
+					color: var(--primary-color);
+				}
+			}
+		}
+
+		.mat-mdc-tab-body-wrapper {
+			background-color: var(--bg-card);
+			border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+			box-shadow: var(--shadow-md);
+		}
+	}
+}
+
+.tab-content {
+	padding: var(--spacing-2xl);
+	animation: fadeIn 0.3s ease-in;
+
+	@media (max-width: 768px) {
+		padding: var(--spacing-lg);
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Family Tab Styles */
+.family-tab-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: var(--spacing-2xl);
+	padding-bottom: var(--spacing-lg);
+	border-bottom: 2px solid var(--border-color);
+
+	@media (max-width: 768px) {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--spacing-md);
+	}
+}
+
+.header-info {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+}
+
+.header-icon {
+	font-size: 48px;
+	width: 48px;
+	height: 48px;
+	color: var(--primary-color);
+}
+
+.family-title {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin: 0;
+}
+
+.family-subtitle {
+	font-size: 1rem;
+	color: var(--text-secondary);
+	margin: var(--spacing-xs) 0 0 0;
+}
+
+.add-family-button {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	padding: 0 var(--spacing-xl);
+	height: 48px;
+	font-weight: 500;
+	box-shadow: var(--shadow-md);
+	transition: all 0.3s ease;
+
+	&:hover {
+		box-shadow: var(--shadow-lg);
+		transform: translateY(-2px);
+	}
+
+	@media (max-width: 768px) {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
 /* View Mode Specific Styles */
 :host-context(.view-mode) {
 	.form-field {

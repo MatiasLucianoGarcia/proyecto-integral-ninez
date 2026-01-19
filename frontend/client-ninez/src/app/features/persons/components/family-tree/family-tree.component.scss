@@ -1,0 +1,232 @@
+.family-tree-wrapper {
+	width: 100%;
+	animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Empty State */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: var(--spacing-2xl);
+	text-align: center;
+	background-color: var(--bg-secondary);
+	border-radius: var(--radius-lg);
+	border: 2px dashed var(--border-color);
+	min-height: 300px;
+
+	h3 {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+	}
+
+	p {
+		font-size: 1rem;
+		color: var(--text-secondary);
+		margin: 0;
+		max-width: 500px;
+	}
+}
+
+.empty-icon {
+	font-size: 80px;
+	width: 80px;
+	height: 80px;
+	color: var(--text-tertiary);
+	opacity: 0.5;
+}
+
+/* Family Grid */
+.family-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: var(--spacing-lg);
+	animation: fadeIn 0.4s ease-in;
+
+	@media (max-width: 768px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Family Member Card */
+.family-member-card {
+	background-color: var(--bg-card);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+	transition: all 0.3s ease;
+	display: flex;
+	flex-direction: column;
+
+	&:hover:not(.view-only) {
+		box-shadow: var(--shadow-xl);
+		transform: translateY(-4px);
+		border-color: var(--primary-light);
+	}
+
+	&.view-only {
+		cursor: default;
+	}
+}
+
+.card-header {
+	padding: var(--spacing-lg);
+	background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+	border-bottom: 1px solid var(--border-color);
+}
+
+.avatar-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--spacing-md);
+}
+
+.member-avatar {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, var(--text-tertiary) 0%, var(--text-secondary) 100%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: var(--shadow-lg);
+	transition: all 0.3s ease;
+
+	&.primary {
+		background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+	}
+
+	&.accent {
+		background: linear-gradient(135deg, var(--secondary-light) 0%, var(--secondary-color) 100%);
+	}
+
+	&.warn {
+		background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+	}
+
+	mat-icon {
+		color: var(--text-light);
+		font-size: 40px;
+		width: 40px;
+		height: 40px;
+	}
+}
+
+.relation-chip {
+	background-color: rgba(37, 99, 235, 0.1) !important;
+	color: var(--primary-color) !important;
+	font-weight: 600;
+	font-size: 0.875rem;
+	padding: var(--spacing-xs) var(--spacing-md);
+}
+
+.member-info {
+	padding: var(--spacing-lg);
+	flex: 1;
+}
+
+.member-name {
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin: 0 0 var(--spacing-md) 0;
+	text-align: center;
+}
+
+.info-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--spacing-sm);
+}
+
+.info-item {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+	padding: var(--spacing-sm);
+	background-color: var(--bg-tertiary);
+	border-radius: var(--radius-md);
+	font-size: 0.875rem;
+
+	&.full-width {
+		grid-column: 1 / -1;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+.info-icon {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	color: var(--primary-color);
+	flex-shrink: 0;
+}
+
+.info-label {
+	font-weight: 600;
+	color: var(--text-secondary);
+	flex-shrink: 0;
+}
+
+.info-value {
+	color: var(--text-primary);
+	font-weight: 500;
+}
+
+.card-actions {
+	display: flex;
+	justify-content: space-around;
+	padding: var(--spacing-md);
+	border-top: 1px solid var(--border-color);
+	background-color: var(--bg-tertiary);
+
+	button {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--spacing-xs);
+
+		mat-icon {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
+		}
+	}
+}
+
+/* Animations */
+.family-member-card {
+	animation: slideIn 0.3s ease-out backwards;
+}
+
+@keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@for $i from 1 through 20 {
+	.family-member-card:nth-child(#{$i}) {
+		animation-delay: #{$i * 0.05}s;
+	}
+}

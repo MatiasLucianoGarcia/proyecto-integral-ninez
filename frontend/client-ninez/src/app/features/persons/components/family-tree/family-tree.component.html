@@ -1,0 +1,81 @@
+<div class="family-tree-wrapper">
+	@if(familyMembers().length === 0) {
+	<div class="empty-state">
+		<mat-icon class="empty-icon">family_restroom</mat-icon>
+		<h3>No hay familiares registrados</h3>
+		<p>
+			{{ isViewMode() ? 'Esta persona no tiene familiares cargados en el sistema' : 'Agregue familiares usando el botón "Agregar Familiar"' }}
+		</p>
+	</div>
+	} @else {
+	<div class="family-grid">
+		@for(member of familyMembers(); track member.id || member.persona.dni) {
+		<mat-card class="family-member-card" [class.view-only]="isViewMode()">
+			<div class="card-header">
+				<div class="avatar-section">
+					<div
+						class="member-avatar"
+						[class.primary]="getRelationColor(member.parentezco.descripcion) === 'primary'"
+						[class.accent]="getRelationColor(member.parentezco.descripcion) === 'accent'"
+						[class.warn]="getRelationColor(member.parentezco.descripcion) === 'warn'"
+					>
+						<mat-icon>{{ getRelationIcon(member.parentezco.descripcion) }}</mat-icon>
+					</div>
+					<mat-chip class="relation-chip" [highlighted]="true">
+						{{ member.parentezco.descripcion }}
+					</mat-chip>
+				</div>
+			</div>
+
+			<mat-card-content class="member-info">
+				<h3 class="member-name">{{ member.persona.apellido }}, {{ member.persona.nombre }}</h3>
+
+				<div class="info-grid">
+					<div class="info-item">
+						<mat-icon class="info-icon">badge</mat-icon>
+						<span class="info-label">DNI:</span>
+						<span class="info-value">{{ member.persona.dni }}</span>
+					</div>
+
+					@if(member.persona.fecha_nacimiento) {
+					<div class="info-item">
+						<mat-icon class="info-icon">cake</mat-icon>
+						<span class="info-label">Edad:</span>
+						<span class="info-value">{{ calculateAge(member.persona.fecha_nacimiento) }} años</span>
+					</div>
+					} @if(member.persona.genero) {
+					<div class="info-item">
+						<mat-icon class="info-icon">wc</mat-icon>
+						<span class="info-label">Género:</span>
+						<span class="info-value">{{ member.persona.genero.nombre }}</span>
+					</div>
+					} @if(member.observaciones) {
+					<div class="info-item full-width">
+						<mat-icon class="info-icon">note</mat-icon>
+						<span class="info-label">Observaciones:</span>
+						<span class="info-value">{{ member.observaciones }}</span>
+					</div>
+					}
+				</div>
+			</mat-card-content>
+
+			<mat-card-actions class="card-actions">
+				<button mat-button color="primary" (click)="onView(member)" matTooltip="Ver detalles">
+					<mat-icon>visibility</mat-icon>
+					Ver
+				</button>
+				@if(!isViewMode()) {
+				<button mat-button (click)="onEdit(member)" matTooltip="Editar relación">
+					<mat-icon>edit</mat-icon>
+					Editar
+				</button>
+				<button mat-button color="warn" (click)="onDelete(member)" matTooltip="Eliminar relación">
+					<mat-icon>delete</mat-icon>
+				</button>
+				}
+			</mat-card-actions>
+		</mat-card>
+		}
+	</div>
+	}
+</div>
