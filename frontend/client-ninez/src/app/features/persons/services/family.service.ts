@@ -11,19 +11,19 @@ export class FamilyService {
 	private apiUrl = 'http://localhost:8080/api';
 
 	getFamilyByDNI(dni: number): Observable<FamilyMember[]> {
-		return this.http.get<FamilyMember[]>(`${this.apiUrl}/familias/${dni}`);
+		return this.http.get<FamilyMember[]>(`${this.apiUrl}/familia/${dni}`);
 	}
 
 	createFamilyRelation(familyData: CreateFamilyMember): Observable<any> {
-		return this.http.post(`${this.apiUrl}/familias`, familyData);
+		return this.http.post(`${this.apiUrl}/familia`, familyData);
 	}
 
 	updateFamilyRelation(id: number, familyData: Partial<CreateFamilyMember>): Observable<any> {
-		return this.http.put(`${this.apiUrl}/familias/${id}`, familyData);
+		return this.http.put(`${this.apiUrl}/familia/${id}`, familyData);
 	}
 
 	deleteFamilyRelation(id: number): Observable<any> {
-		return this.http.delete(`${this.apiUrl}/familias/${id}`);
+		return this.http.delete(`${this.apiUrl}/familia/${id}`);
 	}
 
 	getParentezcoTypes(): Observable<Parentezco[]> {
@@ -31,6 +31,6 @@ export class FamilyService {
 	}
 
 	suggestFamily(dni: number): Observable<any[]> {
-		return this.http.get<any[]>(`${this.apiUrl}/familias/sugerir/${dni}`);
+		return this.http.get<any[]>(`${this.apiUrl}/familia/sugerir/${dni}`);
 	}
 }
