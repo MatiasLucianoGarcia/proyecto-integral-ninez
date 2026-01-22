@@ -146,41 +146,42 @@ const searchPersonas = async (filtros) => {
   }
 
   let query = supabase.from("persona").select(`
-      dni,
-      nombre,
-      apellido,
-      fecha_nacimiento,
-      genero(nombre),
-      nacionalidad(nombre)
-    `);
+    dni,
+    nombre,
+    apellido,
+    fecha_nacimiento,
+    genero(nombre),
+    nacionalidad(nombre)
+  `);
 
   if (filtros?.dni) {
-    const dniPrefix = parseInt(filtros.dni, 10);
-    if (!isNaN(dniPrefix)) {
-      const dniLength = filtros.dni.length;
-      const dniUpperBound = (dniPrefix + 1) * Math.pow(10, 9 - dniLength);
-      query = query.gte("dni", dniPrefix).lt("dni", dniUpperBound);
-    } else {
-      throw new Error("El valor de DNI debe ser numérico.");
+    if (!/^\d+$/.test(filtros.dni)) {
+      throw new Error("El valor de DNI debe ser numérico");
     }
+
+    const dniStr = filtros.dni;
+    const dniNum = parseInt(dniStr, 10);
+
+    const MAX_DNI_LENGTH = 8; // ajustá si usás otro largo
+    const factor = Math.pow(10, MAX_DNI_LENGTH - dniStr.length);
+
+    const desde = dniNum * factor;
+    const hasta = (dniNum + 1) * factor;
+
+    query = query.gte("dni", desde).lt("dni", hasta);
   }
 
   if (filtros?.nombre) {
-    query = query.ilike("nombre", `%${filtros.nombre}%`); // Aplicar filtro para nombre
+    query = query.ilike("nombre", `%${filtros.nombre}%`);
   }
 
-  // Ejecutar la consulta y manejar errores
   const { data, error } = await query;
 
-  if (error) {
-    console.error("Error en la consulta de searchPersonas:", error);
-    throw error;
-  }
-
-  console.log("Resultados de searchPersonas:", data);
+  if (error) throw error;
 
   return data;
 };
+
 
 module.exports = {
   getPersonas,
