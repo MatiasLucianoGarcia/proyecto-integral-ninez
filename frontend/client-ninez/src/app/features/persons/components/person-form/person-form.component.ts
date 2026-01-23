@@ -22,6 +22,8 @@ import { Persona } from '../../domain/persona.model';
 import { FamilyMember } from '../../domain/familia.model';
 import { FamilyTreeComponent } from '../family-tree/family-tree.component';
 import { AddFamilyDialogComponent } from '../add-family-dialog/add-family-dialog.component';
+import { SuggestedPersonCardComponent } from '../suggested-person-card/suggested-person-card.component';
+
 
 type FormMode = 'create' | 'edit' | 'view';
 
@@ -46,6 +48,7 @@ type FormMode = 'create' | 'edit' | 'view';
 		MatDialogModule,
 		MatSnackBarModule,
 		FamilyTreeComponent,
+		SuggestedPersonCardComponent,
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -65,6 +68,8 @@ export class PersonFormComponent implements OnInit {
 	personDni = signal<string | null>(null);
 	familyMembers = signal<FamilyMember[]>([]);
 	loadingFamily = signal(false);
+	suggestedFamily = signal<Persona[]>([]);
+	loadingSuggestedFamily = signal(false);
 
 	// Opciones para los selects (en producción vendrían del backend)
 	generos = [{ nombre: 'Masculino' }, { nombre: 'Femenino' }, { nombre: 'Otro' }];
@@ -110,6 +115,7 @@ export class PersonFormComponent implements OnInit {
 				this.personDni.set(dni);
 				this.loadPersonData(dni);
 				this.loadFamilyData(dni);
+				this.loadSuggestedFamily(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -316,4 +322,54 @@ export class PersonFormComponent implements OnInit {
 	get submitButtonText(): string {
 		return this.isCreateMode ? 'Crear Persona' : 'Guardar Cambios';
 	}
+
+	private loadSuggestedFamily(dni: string): void {
+		this.loadingSuggestedFamily.set(true);
+		this.familyService.suggestFamily(Number(dni)).subscribe({
+			next: (suggestions) => {
+				this.suggestedFamily.set(suggestions);
+				this.loadingSuggestedFamily.set(false);
+			},
+			error: (error) => {
+				console.error('Error al cargar sugerencias de familiares:', error);
+				this.suggestedFamily.set([]);
+				this.loadingSuggestedFamily.set(false);
+			},
+		});
+	}
+
+	addSuggestedFamily(suggestion: Persona): void {
+		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
+			width: '600px',
+			data: {
+				mode: 'create',
+				currentPersonDni: Number(this.personDni()),
+				familyMember: {
+					dni_p1: Number(this.personDni()),
+					dni_p2: suggestion.dni,
+					id_parentezco1: null,
+					id_parentezco2: null,
+					observaciones: '',
+				},
+			},
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.familyService.createFamilyRelation(result).subscribe({
+					next: () => {
+						this.snackBar.open('Familiar añadido exitosamente', 'Cerrar', { duration: 3000 });
+						this.loadFamilyData(this.personDni()!);
+						this.loadSuggestedFamily(this.personDni()!); // recargar sugerencias
+					},
+					error: (error) => {
+						console.error('Error al añadir familiar:', error);
+						this.snackBar.open('Error al añadir familiar', 'Cerrar', { duration: 3000 });
+					},
+				});
+			}
+		});
+	}
+
+
 }

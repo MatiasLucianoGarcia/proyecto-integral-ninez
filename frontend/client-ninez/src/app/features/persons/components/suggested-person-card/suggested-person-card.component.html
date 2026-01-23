@@ -1,0 +1,33 @@
+<mat-card class="suggested-person-card">
+	<div class="card-content">
+		<div class="card-avatar">
+			<mat-icon>person</mat-icon>
+		</div>
+
+		<div class="card-info">
+			<h3 class="name">{{ person.apellido }}, {{ person.nombre }}</h3>
+
+			<p class="detail">
+				<mat-icon>badge</mat-icon>
+				DNI: {{ person.dni }}
+			</p>
+
+			<p class="detail">
+				<mat-icon>cake</mat-icon>
+				Fecha Nacimiento: {{ person.fecha_nacimiento | date:'dd/MM/yyyy' }}
+			</p>
+		</div>
+	</div>
+
+	<mat-card-actions class="card-actions">
+		<button
+			mat-button
+			color="primary"
+			class="action-button"
+			(click)="add.emit(person)"
+		>
+			<mat-icon>person_add</mat-icon>
+			Agregar
+		</button>
+	</mat-card-actions>
+</mat-card>

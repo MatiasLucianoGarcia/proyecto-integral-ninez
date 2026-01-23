@@ -23,7 +23,7 @@
 				</div>
 			</div>
 			@if(!isViewMode) {
-			<mat-chip class="mode-chip" [highlighted]="true">
+			<mat-chip class="mode-chip" *ngIf="!isViewMode" [highlighted]="true">
 				<mat-icon>{{ isCreateMode ? 'add_circle' : 'edit_note' }}</mat-icon>
 				{{ isCreateMode ? 'Modo Creación' : 'Modo Edición' }}
 			</mat-chip>
@@ -123,12 +123,10 @@
 									@if(isViewMode) {
 									<input matInput formControlName="genero" readonly />
 									} @else {
-									<mat-select formControlName="genero" placeholder="Seleccione">
-										@for(genero of generos; track genero.nombre) {
-										<mat-option [value]="genero.nombre">
+									<mat-select formControlName="genero" placeholder="Seleccione" *ngIf="!isViewMode">
+										<mat-option *ngFor="let genero of generos" [value]="genero.nombre">
 											{{ genero.nombre }}
 										</mat-option>
-										}
 									</mat-select>
 									}
 									<mat-icon matPrefix class="field-icon">wc</mat-icon>
@@ -225,9 +223,34 @@
 					></app-family-tree>
 					}
 				</div>
+
+				<!-- SUGERERENCIAS -->
+
+				<div class="suggested-family-section">
+					<div class="family-tab-header suggested-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">person_search</mat-icon>
+							<div>
+								<h2 class="family-title">Sugerencias de Familia</h2>
+								<p class="family-subtitle">Personas posiblemente relacionadas</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="suggested-list">
+						<app-suggested-person-card
+							*ngFor="let suggestion of suggestedFamily()"
+							[person]="suggestion"
+							(add)="addSuggestedFamily($event)"
+						/>
+					</div>
+				</div>
+
+
 			</mat-tab>
 			}
 		</mat-tab-group>
 	</div>
+	
 	}
 </div>

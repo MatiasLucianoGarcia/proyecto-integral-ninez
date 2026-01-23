@@ -455,3 +455,21 @@
 		transform: translateX(5px);
 	}
 }
+
+.suggested-family-section {
+	margin-top: 24px;
+	padding: 16px 24px;
+	background-color: var(--surface-color);
+	border-radius: 12px;
+}
+
+.suggested-header {
+	margin-bottom: var(--spacing-lg);
+}
+
+.suggested-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 16px;
+	margin-top: 16px;
+}
