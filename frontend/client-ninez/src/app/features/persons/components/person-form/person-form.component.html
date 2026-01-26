@@ -242,6 +242,7 @@
 							*ngFor="let suggestion of suggestedFamily()"
 							[person]="suggestion"
 							(add)="addSuggestedFamily($event)"
+							(view)="onViewSuggestedPerson($event)"
 						/>
 					</div>
 				</div>

@@ -8,7 +8,17 @@ INSERT INTO Rol (nombre_rol) VALUES ('Administrador'), ('Proteccion'), ('Promoci
 INSERT INTO Usuario (id_entidad, nombre, contraseña, id_rol) VALUES ((SELECT id FROM Entidad WHERE nombre = 'Municipalidad Bahia Blanca'), 'AdministradorMunicipalidad', '$2b$12$qXp4JJXpccVuAhQmF8ExW.xaitUapMlIiMD4FVGVqBwDe6ktGinCW', (SELECT id FROM Rol WHERE nombre_rol = 'Administrador'));
 
 -- Insertar en la tabla Parentezco
-INSERT INTO Parentezco (descripcion) VALUES ('Padre'), ('Madre'), ('Hermano'), ('Hermana'), ('Abuelo'), ('Abuela'), ('Tío'), ('Tía'), ('Primo'), ('Prima'), ('Tutor');
+INSERT INTO Parentezco (id, descripcion) VALUES (1, 'Padre'), (2, 'Madre'), (3, 'Hijo/Hija'), (4, 'Hermano/Hermana'), (5, 'Abuelo/Abuela'), (6, 'Nieto/Nieta'), (7, 'Tío/Tía'), (8, 'Sobrino/Sobrina'), (9, 'Primo/Prima'), (10, 'Tutor'), (11, 'Tutoreado');
+UPDATE Parentezco SET id_inverso = 3 WHERE id IN (1, 2); -- Padre/Madre -> Hijo/Hija
+UPDATE Parentezco SET id_inverso = 1 WHERE id = 3;      -- Hijo/Hija -> Padre (convención)
+UPDATE Parentezco SET id_inverso = 4 WHERE id = 4;      -- Hermano/Hermana
+UPDATE Parentezco SET id_inverso = 6 WHERE id = 5;      -- Abuelo/Abuela -> Nieto/Nieta
+UPDATE Parentezco SET id_inverso = 5 WHERE id = 6;
+UPDATE Parentezco SET id_inverso = 8 WHERE id = 7;      -- Tío/Tía -> Sobrino/Sobrina
+UPDATE Parentezco SET id_inverso = 7 WHERE id = 8;
+UPDATE Parentezco SET id_inverso = 9 WHERE id = 9;      -- Primo/Prima
+UPDATE Parentezco SET id_inverso = 11 WHERE id = 10;    -- Tutor -> Tutoreado
+UPDATE Parentezco SET id_inverso = 10 WHERE id = 11;
 
 -- Insertar en la tabla Efector
 INSERT INTO Efector (nombre) VALUES ('Salud'), ('Educación'), ('Servicio Local'), ('Programas'), ('Organizaciones Sociales'), ('Merenderos');

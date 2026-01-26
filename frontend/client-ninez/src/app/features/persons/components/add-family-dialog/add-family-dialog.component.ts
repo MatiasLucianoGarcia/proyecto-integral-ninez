@@ -17,9 +17,10 @@ import { Persona } from '../../domain/persona.model';
 import { Parentezco, CreateFamilyMember } from '../../domain/familia.model';
 
 export interface FamilyDialogData {
-	mode: 'create' | 'edit';
-	currentPersonDni: number;
-	familyMember?: CreateFamilyMember;
+  mode: 'create' | 'edit';
+  currentPersonDni: number;
+  prefilledDni?: number;
+  familyMember?: CreateFamilyMember;
 }
 
 @Component({
@@ -58,22 +59,25 @@ export class AddFamilyDialogComponent implements OnInit {
 		this.loadParentezcoTypes();
 		this.initForm();
 		this.setupPersonSearch();
+
+		if (this.data.prefilledDni) {
+			this.loadPrefilledPerson(this.data.prefilledDni);
+		}
 	}
+
 
 	private initForm(): void {
 		this.familyForm = this.fb.group({
-			dni: ['', [Validators.required, Validators.pattern(/^\d{7,8}$/)]],
+			dni: [
+			this.data.prefilledDni ?? '',
+			[Validators.required, Validators.pattern(/^\d{7,8}$/)],
+			],
 			id_parentezco: ['', Validators.required],
 			observaciones: [''],
 		});
 
-		// Si es modo edición, cargar los datos
-		if (this.data.mode === 'edit' && this.data.familyMember) {
-			this.familyForm.patchValue({
-				dni: this.data.familyMember.dni_p2,
-				id_parentezco: this.data.familyMember.id_parentezco1,
-				observaciones: this.data.familyMember.observaciones,
-			});
+		if (this.data.prefilledDni) {
+			this.familyForm.get('dni')?.disable();
 		}
 	}
 
@@ -129,15 +133,12 @@ export class AddFamilyDialogComponent implements OnInit {
 		if (this.familyForm.valid) {
 			const formValue = this.familyForm.getRawValue();
 
-			const familyMember: CreateFamilyMember = {
-				dni_p1: this.data.currentPersonDni,
-				dni_p2: Number(formValue.dni),
-				id_parentezco1: formValue.id_parentezco,
-				id_parentezco2: this.getInverseParentezco(formValue.id_parentezco), // Calcular relación inversa
-				observaciones: formValue.observaciones || null,
-			};
-
-			this.dialogRef.close(familyMember);
+			this.dialogRef.close({
+			dni_origen: this.data.currentPersonDni,
+			dni_destino: Number(formValue.dni),
+			id_parentezco: formValue.id_parentezco,
+			observaciones: formValue.observaciones || null,
+			});
 		}
 	}
 
@@ -169,5 +170,20 @@ export class AddFamilyDialogComponent implements OnInit {
 
 	get dialogTitle(): string {
 		return this.isEditMode ? 'Editar Familiar' : 'Agregar Familiar';
+	}
+
+	private loadPrefilledPerson(dni: number): void {
+		this.searchingPerson.set(true);
+
+		this.personService.getPersonByDNI(dni.toString()).subscribe({
+			next: (persona) => {
+			this.searchingPerson.set(false);
+			this.selectedPerson.set(persona);
+			},
+			error: () => {
+			this.searchingPerson.set(false);
+			this.selectedPerson.set(null);
+			},
+		});
 	}
 }

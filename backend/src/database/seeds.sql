@@ -79,21 +79,22 @@ CREATE TABLE IF NOT EXISTS Condiciones_vida(
 );
 
 -- Familia va a usar a la tabla parentezco
-CREATE TABLE IF NOT EXISTS Parentezco(
+CREATE TABLE Parentezco (
   id SERIAL PRIMARY KEY,
-  descripcion VARCHAR(50)
+  descripcion VARCHAR(50) NOT NULL,
+  id_inverso INTEGER REFERENCES Parentezco(id)
 );
 
 -- Dos personas se vinculan como familia
 -- No importa si hijo es dni1 y padre dni2 o viceversa (eso para cada parentezco) lo resuelve el endpoint
 -- Hay un endpoint para pedir que te sugiera posibles parentezcos (familia de tu familia que no tenes como familia)
-CREATE TABLE IF NOT EXISTS Familia (
+CREATE TABLE Familia (
   id SERIAL PRIMARY KEY,
-  dni_p1 INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
-  dni_p2 INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
-  id_parentezco1 INTEGER REFERENCES Parentezco(id) ON DELETE CASCADE,
-  id_parentezco2 INTEGER REFERENCES Parentezco(id) ON DELETE CASCADE,
-  observaciones TEXT
+  dni_origen INTEGER NOT NULL REFERENCES Persona(dni) ON DELETE CASCADE,
+  dni_destino INTEGER NOT NULL REFERENCES Persona(dni) ON DELETE CASCADE,
+  id_parentezco INTEGER NOT NULL REFERENCES Parentezco(id) ON DELETE CASCADE,
+  observaciones TEXT,
+  UNIQUE (dni_origen, dni_destino)
 );
 
 -- Varios registros de contacto por persona

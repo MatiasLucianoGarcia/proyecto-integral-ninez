@@ -15,24 +15,24 @@ const obtenerFamiliaPorDni = async (req, res) => {
   }
 };
 
-// Crear familia (sin tocar, ya andaba bien)
+// Crear familia
 const crearFamilia = async (req, res) => {
   try {
     const nuevaFamilia = await familiaService.crearFamilia(req.body);
 
-    const intervencion = `El usuario ${req.user.nombre} añadió un nuevo familiar para esta persona`;
+    const intervencion = `El usuario ${req.user.nombre} creó una relación familiar`;
 
     await historialService.createHistorial({
-      dni: req.body.dni_p1,
+      dni: req.body.dni_origen,
       intervencion,
-      resultado: "Alta de relación familiar exitosa",
+      resultado: 'Alta de relación familiar exitosa',
       fecha_carga: new Date(),
     });
 
     await historialService.createHistorial({
-      dni: req.body.dni_p2,
+      dni: req.body.dni_destino,
       intervencion,
-      resultado: "Alta de relación familiar exitosa",
+      resultado: 'Alta de relación familiar exitosa',
       fecha_carga: new Date(),
     });
 
@@ -40,7 +40,7 @@ const crearFamilia = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(error.status || 500).json({
-      message: error.message || "Error al crear familia",
+      message: error.message || 'Error al crear familia',
     });
   }
 };
@@ -82,7 +82,7 @@ const sugerirFamilia = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(error.status || 500).json({
-      message: error.message || "Error al sugerir familia",
+      message: error.message || 'Error al sugerir familia',
     });
   }
 };

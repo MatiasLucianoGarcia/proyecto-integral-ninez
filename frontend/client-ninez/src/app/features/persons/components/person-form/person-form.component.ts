@@ -225,6 +225,15 @@ export class PersonFormComponent implements OnInit {
 		});
 	}
 
+	onViewSuggestedPerson(person: Persona): void {
+		this.router.navigate(['/person-form'], {
+			queryParams: {
+				mode: 'view',
+				dni: person.dni,
+			},
+		});
+	}
+
 	onAddFamilyMember(): void {
 		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
 			width: '600px',
@@ -342,34 +351,20 @@ export class PersonFormComponent implements OnInit {
 		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
 			width: '600px',
 			data: {
-				mode: 'create',
-				currentPersonDni: Number(this.personDni()),
-				familyMember: {
-					dni_p1: Number(this.personDni()),
-					dni_p2: suggestion.dni,
-					id_parentezco1: null,
-					id_parentezco2: null,
-					observaciones: '',
-				},
+			mode: 'create',
+			currentPersonDni: Number(this.personDni()),
+			prefilledDni: suggestion.dni,
 			},
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {
 			if (result) {
-				this.familyService.createFamilyRelation(result).subscribe({
-					next: () => {
-						this.snackBar.open('Familiar añadido exitosamente', 'Cerrar', { duration: 3000 });
-						this.loadFamilyData(this.personDni()!);
-						this.loadSuggestedFamily(this.personDni()!); // recargar sugerencias
-					},
-					error: (error) => {
-						console.error('Error al añadir familiar:', error);
-						this.snackBar.open('Error al añadir familiar', 'Cerrar', { duration: 3000 });
-					},
-				});
+			this.familyService.createFamilyRelation(result).subscribe(() => {
+				this.loadFamilyData(this.personDni()!);
+				this.loadSuggestedFamily(this.personDni()!);
+			});
 			}
 		});
 	}
-
 
 }

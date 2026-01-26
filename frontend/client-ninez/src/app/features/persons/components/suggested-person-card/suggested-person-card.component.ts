@@ -21,6 +21,7 @@ export class SuggestedPersonCardComponent {
 	@Input({ required: true }) person!: Persona;
 
 	@Output() add = new EventEmitter<Persona>();
+	@Output() view = new EventEmitter<Persona>();
 
 	onAdd(): void {
 		this.add.emit(this.person);
