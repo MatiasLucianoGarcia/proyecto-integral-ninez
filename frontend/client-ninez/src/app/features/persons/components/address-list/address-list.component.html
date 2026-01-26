@@ -1,0 +1,21 @@
+<div class="address-grid">
+    @for(domicilio of domicilios(); track domicilio.id) {
+    <mat-card class="address-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar class="address-icon">home</mat-icon>
+            <mat-card-title>{{ domicilio.nombre }} {{ domicilio.numero }}</mat-card-title>
+            <mat-card-subtitle>Domicilio registrado</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-actions align="end" *ngIf="!isViewMode()">
+            <button mat-icon-button color="warn" (click)="onDelete(domicilio)" matTooltip="Eliminar domicilio">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+    } @empty {
+    <div class="empty-state">
+        <mat-icon class="empty-icon">location_off</mat-icon>
+        <p>No hay domicilios registrados</p>
+    </div>
+    }
+</div>

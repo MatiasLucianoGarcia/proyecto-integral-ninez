@@ -13,11 +13,11 @@
 					<h1 class="title">{{ formTitle }}</h1>
 					<p class="subtitle">
 						{{
-							isCreateMode
-								? 'Complete los datos de la nueva persona'
-								: isEditMode
-								? 'Modifique los datos necesarios'
-								: 'Información de la persona'
+						isCreateMode
+						? 'Complete los datos de la nueva persona'
+						: isEditMode
+						? 'Modifique los datos necesarios'
+						: 'Información de la persona'
 						}}
 					</p>
 				</div>
@@ -63,14 +63,8 @@
 								<!-- DNI -->
 								<mat-form-field appearance="outline" class="form-field">
 									<mat-label>DNI</mat-label>
-									<input
-										matInput
-										formControlName="dni"
-										placeholder="12345678"
-										type="text"
-										maxlength="8"
-										[readonly]="isEditMode || isViewMode"
-									/>
+									<input matInput formControlName="dni" placeholder="12345678" type="text"
+										maxlength="8" [readonly]="isEditMode || isViewMode" />
 									<mat-icon matPrefix class="field-icon">fingerprint</mat-icon>
 									@if(personForm.get('dni')?.hasError('required')) {
 									<mat-error>El DNI es requerido</mat-error>
@@ -82,7 +76,8 @@
 								<!-- Nombre -->
 								<mat-form-field appearance="outline" class="form-field">
 									<mat-label>Nombre</mat-label>
-									<input matInput formControlName="nombre" placeholder="Juan" [readonly]="isViewMode" />
+									<input matInput formControlName="nombre" placeholder="Juan"
+										[readonly]="isViewMode" />
 									<mat-icon matPrefix class="field-icon">person</mat-icon>
 									@if(personForm.get('nombre')?.hasError('required')) {
 									<mat-error>El nombre es requerido</mat-error>
@@ -94,7 +89,8 @@
 								<!-- Apellido -->
 								<mat-form-field appearance="outline" class="form-field">
 									<mat-label>Apellido</mat-label>
-									<input matInput formControlName="apellido" placeholder="Pérez" [readonly]="isViewMode" />
+									<input matInput formControlName="apellido" placeholder="Pérez"
+										[readonly]="isViewMode" />
 									<mat-icon matPrefix class="field-icon">person_outline</mat-icon>
 									@if(personForm.get('apellido')?.hasError('required')) {
 									<mat-error>El apellido es requerido</mat-error>
@@ -106,7 +102,8 @@
 								<!-- Fecha de Nacimiento -->
 								<mat-form-field appearance="outline" class="form-field">
 									<mat-label>Fecha de Nacimiento</mat-label>
-									<input matInput g formControlName="fecha_nacimiento" placeholder="DD/MM/YYYY" [readonly]="isViewMode" />
+									<input matInput g formControlName="fecha_nacimiento" placeholder="DD/MM/YYYY"
+										[readonly]="isViewMode" />
 									<mat-icon matPrefix class="field-icon">cake</mat-icon>
 									@if(!isViewMode) {
 									<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -161,7 +158,8 @@
 					<!-- Action Buttons -->
 					<div class="form-actions">
 						@if(!isViewMode) {
-						<button mat-raised-button color="primary" type="submit" class="submit-button" [disabled]="personForm.invalid || loading()">
+						<button mat-raised-button color="primary" type="submit" class="submit-button"
+							[disabled]="personForm.invalid || loading()">
 							<mat-icon>{{ isCreateMode ? 'add' : 'save' }}</mat-icon>
 							{{ submitButtonText }}
 						</button>
@@ -192,12 +190,14 @@
 							<div>
 								<h2 class="family-title">Grupo Familiar</h2>
 								<p class="family-subtitle">
-									{{ familyMembers().length > 0 ? 'Familiares registrados' : 'No hay familiares registrados' }}
+									{{ familyMembers().length > 0 ? 'Familiares registrados' : 'No hay familiares
+									registrados' }}
 								</p>
 							</div>
 						</div>
 						@if(!isViewMode) {
-						<button mat-raised-button color="primary" class="add-family-button" (click)="onAddFamilyMember()">
+						<button mat-raised-button color="primary" class="add-family-button"
+							(click)="onAddFamilyMember()">
 							<mat-icon>person_add</mat-icon>
 							Agregar Familiar
 						</button>
@@ -214,13 +214,9 @@
 
 					<!-- Family Tree Component -->
 					@if(!loadingFamily()) {
-					<app-family-tree
-						[familyMembers]="familyMembers()"
-						[isViewMode]="isViewMode"
-						(editMember)="onEditFamilyMember($event)"
-						(deleteMember)="onDeleteFamilyMember($event)"
-						(viewMember)="onViewFamilyMember($event)"
-					></app-family-tree>
+					<app-family-tree [familyMembers]="familyMembers()" [isViewMode]="isViewMode"
+						(editMember)="onEditFamilyMember($event)" (deleteMember)="onDeleteFamilyMember($event)"
+						(viewMember)="onViewFamilyMember($event)"></app-family-tree>
 					}
 				</div>
 
@@ -238,20 +234,61 @@
 					</div>
 
 					<div class="suggested-list">
-						<app-suggested-person-card
-							*ngFor="let suggestion of suggestedFamily()"
-							[person]="suggestion"
-							(add)="addSuggestedFamily($event)"
-							(view)="onViewSuggestedPerson($event)"
-						/>
+						<app-suggested-person-card *ngFor="let suggestion of suggestedFamily()" [person]="suggestion"
+							(add)="addSuggestedFamily($event)" (view)="onViewSuggestedPerson($event)" />
 					</div>
 				</div>
 
 
 			</mat-tab>
 			}
+
+			<!-- Tab 3: Domicilio -->
+			@if(personDni()) {
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<mat-icon class="tab-icon">home</mat-icon>
+					Domicilio @if(domicilios().length > 0) {
+					<span class="family-count">({{ domicilios().length }})</span>
+					}
+				</ng-template>
+
+				<div class="tab-content">
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">home</mat-icon>
+							<div>
+								<h2 class="family-title">Domicilios</h2>
+								<p class="family-subtitle">
+									{{ domicilios().length > 0 ? 'Domicilios registrados' : 'No hay domicilios
+									registrados' }}
+								</p>
+							</div>
+						</div>
+						@if(!isViewMode) {
+						<button mat-raised-button color="primary" class="add-family-button" (click)="onAddDomicilio()">
+							<mat-icon>add_location_alt</mat-icon>
+							Agregar Domicilio
+						</button>
+						}
+					</div>
+
+					@if(loadingDomicilios()) {
+					<div class="loading-container">
+						<mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+						<p>Cargando domicilios...</p>
+					</div>
+					}
+
+					@if(!loadingDomicilios()) {
+					<app-address-list [domicilios]="domicilios()" [isViewMode]="isViewMode"
+						(deleteAddress)="onDeleteDomicilio($event)"></app-address-list>
+					}
+				</div>
+			</mat-tab>
+			}
 		</mat-tab-group>
 	</div>
-	
+
 	}
 </div>

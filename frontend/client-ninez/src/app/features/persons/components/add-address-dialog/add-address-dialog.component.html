@@ -1,0 +1,37 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <mat-icon class="header-icon">home</mat-icon>
+    <h2 class="dialog-title">Agregar Domicilio</h2>
+  </div>
+  <button mat-icon-button (click)="onCancel()" class="close-button">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="addressForm" class="address-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Calle / Nombre</mat-label>
+      <input matInput formControlName="nombre" placeholder="Ej: Av. San Martín">
+      <mat-icon matPrefix>signpost</mat-icon>
+      <mat-error *ngIf="addressForm.get('nombre')?.hasError('required')">El nombre es requerido</mat-error>
+      <mat-error *ngIf="addressForm.get('nombre')?.hasError('minlength')">Mínimo 2 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Número</mat-label>
+      <input matInput formControlName="numero" placeholder="Ej: 1234">
+      <mat-icon matPrefix>pin</mat-icon>
+      <mat-error *ngIf="addressForm.get('numero')?.hasError('required')">El número es requerido</mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<div class="dialog-actions">
+  <button mat-stroked-button (click)="onCancel()" class="cancel-button">
+    <mat-icon>close</mat-icon> Cancelar
+  </button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="addressForm.invalid" class="submit-button">
+    <mat-icon>add</mat-icon> Agregar
+  </button>
+</div>
