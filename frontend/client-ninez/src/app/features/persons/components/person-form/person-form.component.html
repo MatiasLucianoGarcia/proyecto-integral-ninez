@@ -212,6 +212,30 @@
 						<app-address-list [domicilios]="domicilios()" [isViewMode]="isViewMode"
 							(deleteAddress)="onDeleteDomicilio($event)"></app-address-list>
 						}
+
+						<!-- Contactos Section -->
+						<mat-divider class="section-divider" style="margin: 24px 0;"></mat-divider>
+						<div class="family-tab-header">
+							<div class="header-info">
+								<mat-icon class="header-icon">contact_phone</mat-icon>
+								<div>
+									<h2 class="family-title">Contactos</h2>
+									<p class="family-subtitle">
+										{{ contacts().length > 0 ? 'Teléfonos de contacto registrados' : 'No hay
+										contactos registrados' }}
+									</p>
+								</div>
+							</div>
+							@if(!isViewMode) {
+							<button mat-raised-button color="primary" class="add-family-button"
+								(click)="onAddContact()">
+								<mat-icon>add_call</mat-icon>
+								Agregar Contacto
+							</button>
+							}
+						</div>
+						<app-contact-list [contacts]="contacts()" [isViewMode]="isViewMode"
+							(deleteContact)="onDeleteContact($any($event))"></app-contact-list>
 					</div>
 					}
 				</div>

@@ -1,0 +1,30 @@
+<div class="contact-list-wrapper">
+
+
+    <div class="list-container" *ngIf="contacts.length > 0; else emptyState">
+        <mat-card *ngFor="let contact of contacts" class="contact-card">
+            <div class="contact-content">
+                <div class="icon-container">
+                    <mat-icon>phone</mat-icon>
+                </div>
+                <div class="info">
+                    <span class="label">Teléfono</span>
+                    <span class="value">{{ contact.telefono }}</span>
+                </div>
+            </div>
+            <div class="actions" *ngIf="!isViewMode">
+                <button mat-icon-button color="warn" (click)="onDelete(contact.id)" matTooltip="Eliminar contacto">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </mat-card>
+    </div>
+
+    <ng-template #emptyState>
+        <div class="empty-state">
+            <mat-icon class="empty-icon">contact_phone</mat-icon>
+            <p>{{ isViewMode ? 'No hay contactos registrados' : 'No hay contactos registrados. Agregue uno nuevo.' }}
+            </p>
+        </div>
+    </ng-template>
+</div>

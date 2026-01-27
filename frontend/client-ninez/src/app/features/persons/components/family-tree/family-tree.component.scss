@@ -7,6 +7,7 @@
 	from {
 		opacity: 0;
 	}
+
 	to {
 		opacity: 1;
 	}
@@ -126,11 +127,16 @@
 }
 
 .relation-chip {
-	background-color: rgba(37, 99, 235, 0.1) !important;
-	color: var(--primary-color) !important;
+	background-color: var(--primary-color) !important;
+	--mdc-chip-elevated-container-color: var(--primary-color);
+	color: #ffffff !important;
 	font-weight: 600;
 	font-size: 0.875rem;
 	padding: var(--spacing-xs) var(--spacing-md);
+	border: none;
+	--mdc-chip-outline-width: 0;
+	--mdc-chip-outline-color: transparent;
+	box-shadow: none;
 }
 
 .member-info {
@@ -219,6 +225,7 @@
 		opacity: 0;
 		transform: translateY(20px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);

@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Agregar Contacto</h2>
+<div mat-dialog-content>
+    <form [formGroup]="contactForm" class="contact-form">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="telefono" placeholder="Ej: 5491112345678" type="tel">
+            <mat-hint>Ingrese solo números (11 a 15 dígitos)</mat-hint>
+            <mat-error *ngIf="contactForm.get('telefono')?.hasError('required')">
+                El teléfono es obligatorio
+            </mat-error>
+            <mat-error *ngIf="contactForm.get('telefono')?.hasError('pattern')">
+                Debe tener entre 11 y 15 dígitos numéricos
+            </mat-error>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="contactForm.invalid">Guardar</button>
+</div>

@@ -27,9 +27,14 @@ import { DomicilioService } from '../../services/domicilio.service';
 import { Domicilio } from '../../domain/domicilio.model';
 import { AddressListComponent } from '../address-list/address-list.component';
 import { AddAddressDialogComponent } from '../add-address-dialog/add-address-dialog.component';
+
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { UserDataService } from '../../../../features/login/data/user-data.service';
 import { RolEnum } from '../../../../features/login/domain/enums/role-enum';
+import { Contact } from '../../domain/contact.model';
+import { ContactService } from '../../services/contact.service';
+import { AddContactDialogComponent } from '../add-contact-dialog/add-contact-dialog.component';
+import { ContactListComponent } from '../contact-list/contact-list.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -56,6 +61,7 @@ type FormMode = 'create' | 'edit' | 'view';
 		FamilyTreeComponent,
 		SuggestedPersonCardComponent,
 		AddressListComponent,
+		ContactListComponent,
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -81,6 +87,72 @@ export class PersonFormComponent implements OnInit {
 	loadingSuggestedFamily = signal(false);
 	domicilios = signal<Domicilio[]>([]);
 	loadingDomicilios = signal(false);
+	contacts = signal<Contact[]>([]);
+	contactService = inject(ContactService);
+
+	private loadContacts(dni: number): void {
+		this.contactService.getContacts(dni).subscribe({
+			next: (data) => {
+				this.contacts.set(data);
+			},
+			error: (err) => {
+				console.error('Error cargando contactos', err);
+			},
+		});
+	}
+
+	onAddContact(): void {
+		if (!this.personDni()) return;
+		const dni = Number(this.personDni());
+
+		const dialogRef = this.dialog.open(AddContactDialogComponent, {
+			width: '400px',
+			data: { dni },
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.loadContacts(dni);
+				this.snackBar.open('Contacto agregado correctamente', 'Cerrar', {
+					duration: 3000,
+				});
+			}
+		});
+	}
+
+	onDeleteContact(id: number): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '350px',
+			data: {
+				title: 'Eliminar Contacto',
+				message: '¿Está seguro que desea eliminar este contacto?',
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.contactService.deleteContact(id).subscribe({
+					next: () => {
+						const dni = Number(this.personDni());
+						if (dni) {
+							this.loadContacts(dni);
+						}
+						this.snackBar.open('Contacto eliminado correctamente', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+					error: (error) => {
+						console.error('Error al eliminar contacto:', error);
+						this.snackBar.open('Error al eliminar contacto', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+				});
+			}
+		});
+	}
 
 	// Opciones para los selects (en producción vendrían del backend)
 	generos = [{ nombre: 'Masculino' }, { nombre: 'Femenino' }, { nombre: 'Otro' }];
@@ -160,6 +232,7 @@ export class PersonFormComponent implements OnInit {
 		this.personService.getPersonByDNI(dni).subscribe({
 			next: (persona) => {
 				this.loading.set(false);
+				this.loadContacts(Number(persona.dni));
 				this.personForm.patchValue({
 					dni: persona.dni,
 					nombre: persona.nombre,

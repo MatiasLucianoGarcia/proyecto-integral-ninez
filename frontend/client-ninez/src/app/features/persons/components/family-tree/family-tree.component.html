@@ -4,7 +4,8 @@
 		<mat-icon class="empty-icon">family_restroom</mat-icon>
 		<h3>No hay familiares registrados</h3>
 		<p>
-			{{ isViewMode() ? 'Esta persona no tiene familiares cargados en el sistema' : 'Agregue familiares usando el botón "Agregar Familiar"' }}
+			{{ isViewMode() ? 'Esta persona no tiene familiares cargados en el sistema' : 'Agregue familiares usando el
+			botón "Agregar Familiar"' }}
 		</p>
 	</div>
 	} @else {
@@ -13,15 +14,13 @@
 		<mat-card class="family-member-card" [class.view-only]="isViewMode()">
 			<div class="card-header">
 				<div class="avatar-section">
-					<div
-						class="member-avatar"
+					<div class="member-avatar"
 						[class.primary]="getRelationColor(member.parentezco.descripcion) === 'primary'"
 						[class.accent]="getRelationColor(member.parentezco.descripcion) === 'accent'"
-						[class.warn]="getRelationColor(member.parentezco.descripcion) === 'warn'"
-					>
+						[class.warn]="getRelationColor(member.parentezco.descripcion) === 'warn'">
 						<mat-icon>{{ getRelationIcon(member.parentezco.descripcion) }}</mat-icon>
 					</div>
-					<mat-chip class="relation-chip" [highlighted]="true">
+					<mat-chip class="relation-chip">
 						{{ member.parentezco.descripcion }}
 					</mat-chip>
 				</div>
