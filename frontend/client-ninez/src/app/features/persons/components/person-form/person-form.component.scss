@@ -132,7 +132,7 @@
 
 /* Form Content */
 .form-content {
-	max-width: 1200px;
+	max-width: 1400px;
 	margin: var(--spacing-2xl) auto;
 	padding: 0 var(--spacing-xl);
 	animation: fadeIn 0.4s ease-in;
@@ -299,9 +299,9 @@
 		}
 
 		.mat-mdc-tab-label {
-			min-width: 160px;
+			min-width: 100px;
 			height: 64px;
-			padding: 0 var(--spacing-xl);
+			padding: 0 var(--spacing-md);
 			font-weight: 500;
 			color: var(--text-secondary);
 			opacity: 1;

@@ -6,10 +6,10 @@ const validar = require('../middlewares/validatorMiddleware');
 const { createServicioLocalSchema, updateServicioLocalSchema } = require('../validators/servicioLocalSchema');
 
 // Todos los autenticados
-router.get('/', authenticate, servicioLocalController.getAllServicioLocal);
-router.get('/dni/:dni', authenticate, servicioLocalController.getServiciosLocalesByDni);
-router.get('/:id', authenticate, servicioLocalController.getServicioLocalById);
-router.post('/', authenticate, validar(createServicioLocalSchema), servicioLocalController.createServicioLocal);
+router.get('/', authenticate, authorizeRoles('Administrador', 'Proteccion'), servicioLocalController.getAllServicioLocal);
+router.get('/dni/:dni', authenticate, authorizeRoles('Administrador', 'Proteccion'), servicioLocalController.getServiciosLocalesByDni);
+router.get('/:id', authenticate, authorizeRoles('Administrador', 'Proteccion'), servicioLocalController.getServicioLocalById);
+router.post('/', authenticate, authorizeRoles('Administrador', 'Proteccion'), validar(createServicioLocalSchema), servicioLocalController.createServicioLocal);
 
 // Solo administradores
 router.put('/:id', authenticate, authorizeRoles('Administrador'), validar(updateServicioLocalSchema), servicioLocalController.updateServicioLocal);

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PersonService } from '../../services/person.service';
 import { FamilyService } from '../../services/family.service';
@@ -28,6 +28,8 @@ import { Domicilio } from '../../domain/domicilio.model';
 import { AddressListComponent } from '../address-list/address-list.component';
 import { AddAddressDialogComponent } from '../add-address-dialog/add-address-dialog.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { UserDataService } from '../../../../features/login/data/user-data.service';
+import { RolEnum } from '../../../../features/login/domain/enums/role-enum';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -50,12 +52,10 @@ type FormMode = 'create' | 'edit' | 'view';
 		MatChipsModule,
 		MatDividerModule,
 		MatTabsModule,
-		MatDialogModule,
 		MatSnackBarModule,
 		FamilyTreeComponent,
 		SuggestedPersonCardComponent,
 		AddressListComponent,
-		ConfirmDialogComponent,
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -69,6 +69,7 @@ export class PersonFormComponent implements OnInit {
 	private router = inject(Router);
 	private dialog = inject(MatDialog);
 	private snackBar = inject(MatSnackBar);
+	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
 	mode = signal<FormMode>('create');
@@ -98,6 +99,24 @@ export class PersonFormComponent implements OnInit {
 	ngOnInit(): void {
 		this.initForm();
 		this.loadRouteData();
+	}
+
+	get canViewServicioLocal(): boolean {
+		const user = this.userDataService.getUser();
+		if (!user || !user.rol) return false;
+
+		// Handle case where rol is an object (from backend) or a string (expected frontend model)
+		let roleName = '';
+		const rol: any = user.rol;
+
+		if (typeof rol === 'string') {
+			roleName = rol;
+		} else if (typeof rol === 'object' && rol.nombre_rol) {
+			roleName = rol.nombre_rol;
+		}
+
+		const normalizedRole = roleName.toLowerCase();
+		return normalizedRole === 'administrador' || normalizedRole === 'proteccion';
 	}
 
 	private initForm(): void {
@@ -213,7 +232,7 @@ export class PersonFormComponent implements OnInit {
 			width: '400px',
 			data: {
 				title: 'Eliminar Familiar',
-				message: `¿Está seguro de eliminar la relación familiar con ${member.persona.nombre} ${member.persona.apellido}?`,
+				message: '¿Está seguro de eliminar la relación familiar con ' + member.persona.nombre + ' ' + member.persona.apellido + '?',
 				confirmText: 'Eliminar',
 				cancelText: 'Cancelar'
 			}
@@ -437,7 +456,7 @@ export class PersonFormComponent implements OnInit {
 			width: '400px',
 			data: {
 				title: 'Eliminar Domicilio',
-				message: `¿Está seguro de eliminar el domicilio ${domicilio.nombre} ${domicilio.numero}?`,
+				message: '¿Está seguro de eliminar el domicilio ' + domicilio.nombre + ' ' + domicilio.numero + '?',
 				confirmText: 'Eliminar',
 				cancelText: 'Cancelar'
 			}
@@ -462,5 +481,4 @@ export class PersonFormComponent implements OnInit {
 			}
 		});
 	}
-
 }
