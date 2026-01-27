@@ -6,7 +6,7 @@ const validar = require('../middlewares/validatorMiddleware');
 const { createGeneroSchema, updateGeneroSchema } = require('../validators/generoSchema');
 
 // ABM solo para Administrador
-router.get('/', authenticate, authorizeRoles('Administrador'), generoController.obtenerGeneros);
+router.get('/', authenticate, generoController.obtenerGeneros);
 router.post('/', authenticate, authorizeRoles('Administrador'), validar(createGeneroSchema), generoController.crearGenero);
 router.put('/:id', authenticate, authorizeRoles('Administrador'), validar(updateGeneroSchema), generoController.actualizarGenero);
 router.delete('/:id', authenticate, authorizeRoles('Administrador'), generoController.eliminarGenero);

@@ -107,8 +107,8 @@
 									<!-- Fecha de Nacimiento -->
 									<mat-form-field appearance="outline" class="form-field">
 										<mat-label>Fecha de Nacimiento</mat-label>
-										<input matInput g formControlName="fecha_nacimiento" placeholder="DD/MM/YYYY"
-											[readonly]="isViewMode" />
+										<input matInput [matDatepicker]="picker" formControlName="fecha_nacimiento"
+											placeholder="DD/MM/YYYY" [readonly]="isViewMode" (click)="picker.open()" />
 										<mat-icon matPrefix class="field-icon">cake</mat-icon>
 										@if(!isViewMode) {
 										<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -127,9 +127,11 @@
 										} @else {
 										<mat-select formControlName="genero" placeholder="Seleccione"
 											*ngIf="!isViewMode">
-											<mat-option *ngFor="let genero of generos" [value]="genero.nombre">
+											@for (genero of generos(); track genero.id) {
+											<mat-option [value]="genero.id">
 												{{ genero.nombre }}
 											</mat-option>
+											}
 										</mat-select>
 										}
 										<mat-icon matPrefix class="field-icon">wc</mat-icon>
@@ -145,8 +147,8 @@
 										<input matInput formControlName="nacionalidad" readonly />
 										} @else {
 										<mat-select formControlName="nacionalidad" placeholder="Seleccione">
-											@for(nacionalidad of nacionalidades; track nacionalidad.nombre) {
-											<mat-option [value]="nacionalidad.nombre">
+											@for(nacionalidad of nacionalidades(); track nacionalidad.id) {
+											<mat-option [value]="nacionalidad.id">
 												{{ nacionalidad.nombre }}
 											</mat-option>
 											}

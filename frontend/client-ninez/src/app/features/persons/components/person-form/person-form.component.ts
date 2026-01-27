@@ -19,6 +19,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PersonService } from '../../services/person.service';
 import { FamilyService } from '../../services/family.service';
 import { Persona } from '../../domain/persona.model';
+import { Genero } from '../../domain/genero.model';
+import { Nacionalidad } from '../../domain/nacionalidad.model';
 import { FamilyMember } from '../../domain/familia.model';
 import { FamilyTreeComponent } from '../family-tree/family-tree.component';
 import { AddFamilyDialogComponent } from '../add-family-dialog/add-family-dialog.component';
@@ -80,6 +82,7 @@ export class PersonFormComponent implements OnInit {
 	personForm!: FormGroup;
 	mode = signal<FormMode>('create');
 	loading = signal(false);
+	personData = signal<Persona | null>(null);
 	personDni = signal<string | null>(null);
 	familyMembers = signal<FamilyMember[]>([]);
 	loadingFamily = signal(false);
@@ -154,23 +157,26 @@ export class PersonFormComponent implements OnInit {
 		});
 	}
 
-	// Opciones para los selects (en producción vendrían del backend)
-	generos = [{ nombre: 'Masculino' }, { nombre: 'Femenino' }, { nombre: 'Otro' }];
-
-	nacionalidades = [
-		{ nombre: 'Argentina' },
-		{ nombre: 'Boliviana' },
-		{ nombre: 'Brasileña' },
-		{ nombre: 'Chilena' },
-		{ nombre: 'Paraguaya' },
-		{ nombre: 'Uruguaya' },
-		{ nombre: 'Venezolana' },
-		{ nombre: 'Otra' },
-	];
+	// Opciones para los selects
+	generos = signal<Genero[]>([]);
+	nacionalidades = signal<Nacionalidad[]>([]);
 
 	ngOnInit(): void {
+		this.loadOptions();
 		this.initForm();
 		this.loadRouteData();
+	}
+
+	private loadOptions(): void {
+		this.personService.getGeneros().subscribe({
+			next: (data) => this.generos.set(data),
+			error: (err) => console.error('Error cargando géneros', err)
+		});
+
+		this.personService.getNacionalidades().subscribe({
+			next: (data) => this.nacionalidades.set(data),
+			error: (err) => console.error('Error cargando nacionalidades', err)
+		});
 	}
 
 	get canViewServicioLocal(): boolean {
@@ -232,14 +238,28 @@ export class PersonFormComponent implements OnInit {
 		this.personService.getPersonByDNI(dni).subscribe({
 			next: (persona) => {
 				this.loading.set(false);
+				this.personData.set(persona);
 				this.loadContacts(Number(persona.dni));
+				// Patch form with IDs
+				const generoId = persona.genero?.id;
+				const nacionalidadId = persona.nacionalidad?.id;
+
+				// Fix Date timezone issue by interpreting as local time
+				let fechaNacimiento: any = persona.fecha_nacimiento;
+				if (fechaNacimiento && typeof fechaNacimiento === 'string') {
+					// Append T00:00:00 relative to local time if not present
+					if (!fechaNacimiento.includes('T')) {
+						fechaNacimiento = new Date(fechaNacimiento + 'T00:00:00');
+					}
+				}
+
 				this.personForm.patchValue({
 					dni: persona.dni,
 					nombre: persona.nombre,
 					apellido: persona.apellido,
-					fecha_nacimiento: persona.fecha_nacimiento,
-					genero: persona.genero?.nombre || '',
-					nacionalidad: persona.nacionalidad?.nombre || '',
+					fecha_nacimiento: fechaNacimiento,
+					genero: generoId,
+					nacionalidad: nacionalidadId,
 				});
 			},
 			error: (error) => {
@@ -264,118 +284,7 @@ export class PersonFormComponent implements OnInit {
 		});
 	}
 
-	onEditFamilyMember(member: FamilyMember): void {
-		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
-			width: '600px',
-			data: {
-				mode: 'edit',
-				currentPersonDni: Number(this.personDni()),
-				familyMember: {
-					dni_p1: Number(this.personDni()),
-					dni_p2: member.persona.dni,
-					id_parentezco1: member.parentezco.id,
-					id_parentezco2: member.parentezco.id,
-					observaciones: member.observaciones,
-				},
-			},
-		});
-
-		dialogRef.afterClosed().subscribe((result) => {
-			if (result) {
-				this.familyService.updateFamilyRelation(member.id, result).subscribe({
-					next: () => {
-						this.snackBar.open('Familiar actualizado exitosamente', 'Cerrar', {
-							duration: 3000,
-						});
-						this.loadFamilyData(this.personDni()!);
-					},
-					error: (error) => {
-						console.error('Error al actualizar familiar:', error);
-						this.snackBar.open('Error al actualizar familiar', 'Cerrar', {
-							duration: 3000,
-						});
-					},
-				});
-			}
-		});
-	}
-
-	onDeleteFamilyMember(member: FamilyMember): void {
-		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			width: '400px',
-			data: {
-				title: 'Eliminar Familiar',
-				message: '¿Está seguro de eliminar la relación familiar con ' + member.persona.nombre + ' ' + member.persona.apellido + '?',
-				confirmText: 'Eliminar',
-				cancelText: 'Cancelar'
-			}
-		});
-
-		dialogRef.afterClosed().subscribe(result => {
-			if (result) {
-				this.familyService.deleteFamilyRelation(member.id).subscribe({
-					next: () => {
-						this.snackBar.open('Familiar eliminado exitosamente', 'Cerrar', {
-							duration: 3000,
-						});
-						this.loadFamilyData(this.personDni()!);
-					},
-					error: (error) => {
-						console.error('Error al eliminar familiar:', error);
-						this.snackBar.open('Error al eliminar familiar', 'Cerrar', {
-							duration: 3000,
-						});
-					},
-				});
-			}
-		});
-	}
-
-
-	onViewFamilyMember(member: FamilyMember): void {
-		// Navegar al detalle de la persona familiar
-		this.router.navigate(['/person-form'], {
-			queryParams: { mode: 'view', dni: member.persona.dni },
-		});
-	}
-
-	onViewSuggestedPerson(person: Persona): void {
-		this.router.navigate(['/person-form'], {
-			queryParams: {
-				mode: 'view',
-				dni: person.dni,
-			},
-		});
-	}
-
-	onAddFamilyMember(): void {
-		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
-			width: '600px',
-			data: {
-				mode: 'create',
-				currentPersonDni: Number(this.personDni()),
-			},
-		});
-
-		dialogRef.afterClosed().subscribe((result) => {
-			if (result) {
-				this.familyService.createFamilyRelation(result).subscribe({
-					next: () => {
-						this.snackBar.open('Familiar agregado exitosamente', 'Cerrar', {
-							duration: 3000,
-						});
-						this.loadFamilyData(this.personDni()!);
-					},
-					error: (error) => {
-						console.error('Error al agregar familiar:', error);
-						this.snackBar.open('Error al agregar familiar', 'Cerrar', {
-							duration: 3000,
-						});
-					},
-				});
-			}
-		});
-	}
+	// ... existing methods ...
 
 	onSubmit(): void {
 		if (this.personForm.valid && this.mode() !== 'view') {
@@ -387,24 +296,60 @@ export class PersonFormComponent implements OnInit {
 				nombre: formValue.nombre,
 				apellido: formValue.apellido,
 				fecha_nacimiento: formValue.fecha_nacimiento,
-				genero: { nombre: formValue.genero },
-				nacionalidad: { nombre: formValue.nacionalidad },
+				id_genero: formValue.genero, // Send ID
+				id_nacionalidad: formValue.nacionalidad, // Send ID
 			};
 
 			console.log('Guardando persona:', persona);
 
-			// Aquí llamarías al servicio correspondiente
-			// if (this.mode() === 'create') {
-			//   this.personService.createPerson(persona).subscribe(...)
-			// } else {
-			//   this.personService.updatePerson(persona).subscribe(...)
-			// }
+			if (this.mode() === 'create') {
+				this.personService.createPerson(persona).subscribe({
+					next: (newPerson) => {
+						this.snackBar.open('Persona creada exitosamente', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loading.set(false);
+						this.router.navigate(['/person-form'], {
+							queryParams: { mode: 'view', id: newPerson.id },
+						});
+					},
+					error: (err) => {
+						console.error('Error al crear persona:', err);
+						this.snackBar.open('Error al crear persona', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loading.set(false);
+					}
+				});
+			} else {
+				const currentPerson = this.personData();
+				if (currentPerson && currentPerson.dni) {
+					// Create a copy without DNI for update payload as it's not allowed in schema
+					const { dni, ...personToUpdate } = persona;
 
-			// Simulación de guardado exitoso
-			setTimeout(() => {
-				this.loading.set(false);
-				this.goBack();
-			}, 1000);
+					this.personService.updatePerson(currentPerson.dni, personToUpdate).subscribe({
+						next: () => {
+							this.snackBar.open('Persona actualizada exitosamente', 'Cerrar', {
+								duration: 3000,
+							});
+							this.loading.set(false);
+							this.router.navigate(['/person-form'], {
+								queryParams: { mode: 'view', id: currentPerson.id },
+							});
+						},
+						error: (err) => {
+							console.error('Error al actualizar persona:', JSON.stringify(err));
+							this.snackBar.open('Error al actualizar persona: ' + (err.error?.message || err.message), 'Cerrar', {
+								duration: 5000,
+							});
+							this.loading.set(false);
+						}
+					});
+				} else {
+					console.error('No se puede actualizar: DNI de persona no encontrado');
+					this.loading.set(false);
+				}
+			}
 		}
 	}
 
@@ -444,6 +389,118 @@ export class PersonFormComponent implements OnInit {
 
 	get submitButtonText(): string {
 		return this.isCreateMode ? 'Crear Persona' : 'Guardar Cambios';
+	}
+
+	onEditFamilyMember(member: FamilyMember): void {
+		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
+			width: '600px',
+			data: {
+				mode: 'edit',
+				currentPersonDni: Number(this.personDni()),
+				familyMember: {
+					dni_p1: Number(this.personDni()),
+					dni_p2: member.persona.dni,
+					id_parentezco1: member.parentezco.id,
+					id_parentezco2: member.parentezco.id,
+					observaciones: member.observaciones,
+				},
+			},
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.familyService.updateFamilyRelation(member.id, result).subscribe({
+					next: () => {
+						this.snackBar.open('Familiar actualizado exitosamente', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loadFamilyData(this.personDni()!);
+					},
+					error: (error) => {
+						console.error('Error al actualizar familiar:', error);
+						this.snackBar.open('Error al actualizar familiar', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+				});
+			}
+		});
+	}
+
+	onAddFamilyMember(): void {
+		const dialogRef = this.dialog.open(AddFamilyDialogComponent, {
+			width: '600px',
+			data: {
+				mode: 'create',
+				currentPersonDni: Number(this.personDni()),
+			},
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.familyService.createFamilyRelation(result).subscribe({
+					next: () => {
+						this.snackBar.open('Familiar agregado exitosamente', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loadFamilyData(this.personDni()!);
+					},
+					error: (error) => {
+						console.error('Error al agregar familiar:', error);
+						this.snackBar.open('Error al agregar familiar', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+				});
+			}
+		});
+	}
+
+	onDeleteFamilyMember(member: FamilyMember): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Familiar',
+				message: '¿Está seguro de eliminar la relación familiar con ' + member.persona.nombre + ' ' + member.persona.apellido + '?',
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.familyService.deleteFamilyRelation(member.id).subscribe({
+					next: () => {
+						this.snackBar.open('Familiar eliminado exitosamente', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loadFamilyData(this.personDni()!);
+					},
+					error: (error) => {
+						console.error('Error al eliminar familiar:', error);
+						this.snackBar.open('Error al eliminar familiar', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+				});
+			}
+		});
+	}
+
+	onViewFamilyMember(member: FamilyMember): void {
+		// Navegar al detalle de la persona familiar
+		this.router.navigate(['/person-form'], {
+			queryParams: { mode: 'view', dni: member.persona.dni },
+		});
+	}
+
+	onViewSuggestedPerson(person: Persona): void {
+		this.router.navigate(['/person-form'], {
+			queryParams: {
+				mode: 'view',
+				dni: person.dni,
+			},
+		});
 	}
 
 	private loadSuggestedFamily(dni: string): void {

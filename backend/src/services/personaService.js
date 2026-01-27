@@ -9,8 +9,8 @@ const getPersonas = async () => {
       nombre,
       apellido,
       fecha_nacimiento,
-      genero(nombre),
-      nacionalidad(nombre)
+      genero(id, nombre),
+      nacionalidad(id, nombre)
     `);
 
   if (error) throw error;
@@ -129,8 +129,8 @@ const getPersonaByDNI = async (dni) => {
       nombre,
       apellido,
       fecha_nacimiento,
-      genero(nombre),
-      nacionalidad(nombre)
+      genero(id, nombre),
+      nacionalidad(id, nombre)
     `
     )
     .eq("dni", dni)
@@ -150,8 +150,8 @@ const searchPersonas = async (filtros) => {
     nombre,
     apellido,
     fecha_nacimiento,
-    genero(nombre),
-    nacionalidad(nombre)
+    genero(id, nombre),
+    nacionalidad(id, nombre)
   `);
 
   if (filtros?.dni) {

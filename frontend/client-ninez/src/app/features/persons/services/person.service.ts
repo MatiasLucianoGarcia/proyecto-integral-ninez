@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class PersonService {
 	private http: HttpClient = inject(HttpClient);
 
-	constructor() {}
+	constructor() { }
 
 	getPersons(): Observable<Persona[]> {
 		return this.http.get<Persona[]>('http://localhost:8080/api/personas');
@@ -24,5 +24,21 @@ export class PersonService {
 			...(dni ? { dni } : {}),
 			...(nombre ? { nombre } : {}),
 		});
+	}
+
+	createPerson(person: Partial<Persona>): Observable<Persona> {
+		return this.http.post<Persona>('http://localhost:8080/api/personas', person);
+	}
+
+	updatePerson(dni: number, person: Partial<Persona>): Observable<Persona> {
+		return this.http.put<Persona>(`http://localhost:8080/api/personas/${dni}`, person);
+	}
+
+	getGeneros(): Observable<any[]> {
+		return this.http.get<any[]>('http://localhost:8080/api/generos');
+	}
+
+	getNacionalidades(): Observable<any[]> {
+		return this.http.get<any[]>('http://localhost:8080/api/nacionalidades');
 	}
 }
