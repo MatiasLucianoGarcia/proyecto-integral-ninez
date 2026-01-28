@@ -1,0 +1,91 @@
+<div class="salud-general-container">
+    <div class="family-tab-header">
+        <div class="header-info">
+            <mat-icon class="header-icon">medical_services</mat-icon>
+            <div>
+                <h2 class="family-title">Salud General</h2>
+                <p class="family-subtitle">Información básica de salud y cobertura</p>
+            </div>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="toggleEdit()" *ngIf="!isViewMode && !isEditing()">
+            <mat-icon>edit</mat-icon>
+            Editar
+        </button>
+    </div>
+
+    <form [formGroup]="saludForm" *ngIf="isEditing(); else viewTemplate">
+        <div class="form-grid">
+            <!-- Obra Social -->
+            <mat-form-field appearance="outline">
+                <mat-label>Obra Social / Cobertura</mat-label>
+                <input matInput formControlName="nombre" placeholder="Ej: IOMA, PAMI">
+                <mat-icon matPrefix>assignment_ind</mat-icon>
+            </mat-form-field>
+
+            <!-- Enfermedad Crónica -->
+            <mat-form-field appearance="outline">
+                <mat-label>Enfermedad Crónica</mat-label>
+                <input matInput formControlName="enfermedad_cronica" placeholder="Ej: Diabetes, Asma">
+                <mat-icon matPrefix>healing</mat-icon>
+            </mat-form-field>
+
+            <!-- Tratamiento Prolongado -->
+            <mat-form-field appearance="outline">
+                <mat-label>Tratamiento Prolongado</mat-label>
+                <input matInput formControlName="tratamiento_prolongado" placeholder="Descripción del tratamiento">
+                <mat-icon matPrefix>medication</mat-icon>
+            </mat-form-field>
+
+            <!-- Discapacidad -->
+            <mat-form-field appearance="outline">
+                <mat-label>Discapacidad</mat-label>
+                <input matInput formControlName="discapacidad" placeholder="CUD / Descripción">
+                <mat-icon matPrefix>accessible</mat-icon>
+            </mat-form-field>
+
+            <!-- Adicciones -->
+            <mat-form-field appearance="outline">
+                <mat-label>Adicciones</mat-label>
+                <input matInput formControlName="adicciones" placeholder="Consumo problemático">
+                <mat-icon matPrefix>warning</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="actions" style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button mat-stroked-button type="button" (click)="onCancel()">
+                <mat-icon>close</mat-icon>
+                Cancelar
+            </button>
+            <button mat-raised-button color="primary" (click)="onSave()">
+                <mat-icon>save</mat-icon>
+                Guardar
+            </button>
+        </div>
+    </form>
+
+    <ng-template #viewTemplate>
+        <div class="view-grid">
+            <div class="view-item">
+                <span class="label">Obra Social / Cobertura</span>
+                <span class="value">{{ salud?.nombre || ' - ' }}</span>
+            </div>
+            <div class="view-item">
+                <span class="label">Enfermedad Crónica</span>
+                <span class="value">{{ salud?.enfermedad_cronica || ' - ' }}</span>
+            </div>
+            <div class="view-item">
+                <span class="label">Tratamiento Prolongado</span>
+                <span class="value">{{ salud?.tratamiento_prolongado || ' - ' }}</span>
+            </div>
+            <div class="view-item">
+                <span class="label">Discapacidad</span>
+                <span class="value">{{ salud?.discapacidad || ' - ' }}</span>
+            </div>
+            <div class="view-item">
+                <span class="label">Adicciones</span>
+                <span class="value">{{ salud?.adicciones || ' - ' }}</span>
+            </div>
+        </div>
+    </ng-template>
+</div>

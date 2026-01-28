@@ -38,6 +38,9 @@ import { EducationListComponent } from '../education-list/education-list.compone
 import { EscolaridadService } from '../../services/escolaridad.service';
 import { Escolaridad } from '../../domain/escolaridad.model';
 import { AddEducationDialogComponent } from '../add-education-dialog/add-education-dialog.component';
+import { SaludService } from '../../services/salud.service';
+import { Salud } from '../../domain/salud.model';
+import { SaludGeneralComponent } from '../salud-general/salud-general.component';
 import { UserDataService } from '../../../../features/login/data/user-data.service';
 import { RolEnum } from '../../../../features/login/domain/enums/role-enum';
 
@@ -68,7 +71,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		SuggestedPersonCardComponent,
 		AddressListComponent,
 		ContactListComponent,
-		EducationListComponent
+		EducationListComponent,
+		SaludGeneralComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -84,6 +88,7 @@ export class PersonFormComponent implements OnInit {
 	private domicilioService = inject(DomicilioService);
 	private contactService = inject(ContactService);
 	private escolaridadService = inject(EscolaridadService);
+	private saludService = inject(SaludService);
 	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
@@ -103,6 +108,9 @@ export class PersonFormComponent implements OnInit {
 
 	escolaridades = signal<Escolaridad[]>([]);
 	loadingEscolaridades = signal(false);
+
+	salud = signal<Salud | null>(null);
+	loadingSalud = signal(false);
 
 	personData = signal<Persona | null>(null);
 
@@ -145,8 +153,10 @@ export class PersonFormComponent implements OnInit {
 				this.loadDomicilios(dni);
 				this.loadSuggestedFamily(dni);
 				this.loadDomicilios(dni);
+				this.loadDomicilios(dni);
 				this.loadContacts(dni);
 				this.loadEscolaridades(dni);
+				this.loadSalud(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -620,6 +630,37 @@ export class PersonFormComponent implements OnInit {
 						this.snackBar.open('Error al eliminar escolaridad', 'Cerrar', { duration: 3000 });
 					}
 				});
+			}
+		});
+	}
+	private loadSalud(dni: string): void {
+		this.loadingSalud.set(true);
+		this.saludService.getSalud(Number(dni)).subscribe({
+			next: (data) => {
+				this.salud.set(data);
+				this.loadingSalud.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando salud', err);
+				this.loadingSalud.set(false);
+			}
+		});
+	}
+
+	onUpdateSalud(data: Partial<Salud>): void {
+		if (!this.personDni()) return;
+
+		this.loadingSalud.set(true);
+		this.saludService.updateSalud(Number(this.personDni()), data).subscribe({
+			next: (updated) => {
+				this.salud.set(updated);
+				this.snackBar.open('Información de salud actualizada', 'Cerrar', { duration: 3000 });
+				this.loadingSalud.set(false);
+			},
+			error: (err) => {
+				console.error('Error actualizando salud', err);
+				this.snackBar.open('Error al actualizar salud', 'Cerrar', { duration: 3000 });
+				this.loadingSalud.set(false);
 			}
 		});
 	}
