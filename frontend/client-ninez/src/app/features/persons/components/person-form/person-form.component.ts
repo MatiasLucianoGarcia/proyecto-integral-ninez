@@ -45,6 +45,10 @@ import { ControlMedicoService } from '../../services/control-medico.service';
 import { ControlMedico } from '../../domain/control-medico.model';
 import { AddControlMedicoDialogComponent } from '../add-control-medico-dialog/add-control-medico-dialog.component';
 import { ControlMedicoListComponent } from '../control-medico-list/control-medico-list.component';
+import { TrabajoService } from '../../services/trabajo.service';
+import { Trabajo } from '../../domain/trabajo.model';
+import { AddTrabajoDialogComponent } from '../add-trabajo-dialog/add-trabajo-dialog.component';
+import { TrabajoListComponent } from '../trabajo-list/trabajo-list.component';
 import { UserDataService } from '../../../../features/login/data/user-data.service';
 import { RolEnum } from '../../../../features/login/domain/enums/role-enum';
 
@@ -77,7 +81,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		ContactListComponent,
 		EducationListComponent,
 		SaludGeneralComponent,
-		ControlMedicoListComponent
+		ControlMedicoListComponent,
+		TrabajoListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -95,6 +100,7 @@ export class PersonFormComponent implements OnInit {
 	private escolaridadService = inject(EscolaridadService);
 	private saludService = inject(SaludService);
 	private controlMedicoService = inject(ControlMedicoService);
+	private trabajoService = inject(TrabajoService);
 	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
@@ -120,6 +126,9 @@ export class PersonFormComponent implements OnInit {
 
 	controlesMedicos = signal<ControlMedico[]>([]);
 	loadingControles = signal(false);
+
+	trabajos = signal<Trabajo[]>([]);
+	loadingTrabajos = signal(false);
 
 	personData = signal<Persona | null>(null);
 
@@ -167,6 +176,7 @@ export class PersonFormComponent implements OnInit {
 				this.loadEscolaridades(dni);
 				this.loadSalud(dni);
 				this.loadControles(dni);
+				this.loadTrabajos(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -735,6 +745,70 @@ export class PersonFormComponent implements OnInit {
 					error: (err) => {
 						console.error('Error eliminando control', err);
 						this.snackBar.open('Error al eliminar control', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	// === TRABAJO ACTIONS ===
+	private loadTrabajos(dni: string): void {
+		this.loadingTrabajos.set(true);
+		this.trabajoService.getTrabajos(Number(dni)).subscribe({
+			next: (data) => {
+				this.trabajos.set(data);
+				this.loadingTrabajos.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando trabajos', err);
+				this.loadingTrabajos.set(false);
+			}
+		});
+	}
+
+	onAddTrabajo(): void {
+		const dialogRef = this.dialog.open(AddTrabajoDialogComponent, {
+			width: '500px',
+			data: { dni: Number(this.personDni()) }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.trabajoService.createTrabajo(result).subscribe({
+					next: () => {
+						this.snackBar.open('Trabajo agregado', 'Cerrar', { duration: 3000 });
+						this.loadTrabajos(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error creando trabajo', err);
+						this.snackBar.open('Error al crear trabajo', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	onDeleteTrabajo(trabajo: Trabajo): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Trabajo',
+				message: `¿Está seguro de eliminar el trabajo en ${trabajo.descripcion}?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && trabajo.id) {
+				this.trabajoService.deleteTrabajo(trabajo.id).subscribe({
+					next: () => {
+						this.snackBar.open('Trabajo eliminado', 'Cerrar', { duration: 3000 });
+						this.loadTrabajos(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando trabajo', err);
+						this.snackBar.open('Error al eliminar trabajo', 'Cerrar', { duration: 3000 });
 					}
 				});
 			}

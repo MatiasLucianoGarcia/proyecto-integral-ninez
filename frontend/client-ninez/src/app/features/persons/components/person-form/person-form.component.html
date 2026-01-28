@@ -397,9 +397,65 @@
 
 			<!-- Tab 4: Datos Importantes -->
 			<mat-tab label="Datos Importantes">
-				<div class="empty-state-placeholder">
-					<mat-icon>priority_high</mat-icon>
-					<p>Sección en construcción</p>
+				<div class="tab-content">
+					<!-- Trabajo -->
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">work</mat-icon>
+							<div>
+								<h2 class="family-title">Trabajo</h2>
+								<p class="family-subtitle">Historial laboral y ocupaciones</p>
+							</div>
+						</div>
+
+						<button mat-raised-button color="primary" (click)="onAddTrabajo()" *ngIf="!isViewMode">
+							<mat-icon>add</mat-icon>
+							Agregar
+						</button>
+					</div>
+
+					@if(loadingTrabajos()) {
+					<div class="loading-container">
+						<mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+					</div>
+					} @else {
+					<app-trabajo-list [trabajos]="trabajos()" [isViewMode]="isViewMode"
+						(delete)="onDeleteTrabajo($event)">
+					</app-trabajo-list>
+					}
+
+					<mat-divider style="margin: 24px 0;"></mat-divider>
+
+					<!-- Actividades Extracurriculares Placeholder -->
+					<div class="section-placeholder">
+						<h2>Actividades Extracurriculares</h2>
+						<div class="empty-state-placeholder">
+							<mat-icon>sports_soccer</mat-icon>
+							<p>Sección en construcción</p>
+						</div>
+					</div>
+
+					<mat-divider style="margin: 24px 0;"></mat-divider>
+
+					<!-- Intereses Placeholder -->
+					<div class="section-placeholder">
+						<h2>Intereses</h2>
+						<div class="empty-state-placeholder">
+							<mat-icon>favorite</mat-icon>
+							<p>Sección en construcción</p>
+						</div>
+					</div>
+
+					<mat-divider style="margin: 24px 0;"></mat-divider>
+
+					<!-- Perdidas Placeholder -->
+					<div class="section-placeholder">
+						<h2>Pérdidas</h2>
+						<div class="empty-state-placeholder">
+							<mat-icon>heart_broken</mat-icon>
+							<p>Sección en construcción</p>
+						</div>
+					</div>
 				</div>
 			</mat-tab>
 
