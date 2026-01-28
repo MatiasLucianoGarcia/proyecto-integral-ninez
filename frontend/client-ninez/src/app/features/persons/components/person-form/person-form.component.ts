@@ -51,6 +51,14 @@ import { AddTrabajoDialogComponent } from '../add-trabajo-dialog/add-trabajo-dia
 import { TrabajoListComponent } from '../trabajo-list/trabajo-list.component';
 import { UserDataService } from '../../../../features/login/data/user-data.service';
 import { RolEnum } from '../../../../features/login/domain/enums/role-enum';
+import { ActividadService } from '../../services/actividad.service';
+import { Actividad } from '../../domain/actividad.model';
+import { AddActividadDialogComponent } from '../add-actividad-dialog/add-actividad-dialog.component';
+import { ActividadesExtraListComponent } from '../actividad-list/actividad-list.component';
+import { PerdidaService } from '../../services/perdida.service';
+import { Perdida } from '../../domain/perdida.model';
+import { AddPerdidaDialogComponent } from '../add-perdida-dialog/add-perdida-dialog.component';
+import { PerdidaListComponent } from '../perdida-list/perdida-list.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -82,7 +90,9 @@ type FormMode = 'create' | 'edit' | 'view';
 		EducationListComponent,
 		SaludGeneralComponent,
 		ControlMedicoListComponent,
-		TrabajoListComponent
+		TrabajoListComponent,
+		ActividadesExtraListComponent,
+		PerdidaListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -101,6 +111,8 @@ export class PersonFormComponent implements OnInit {
 	private saludService = inject(SaludService);
 	private controlMedicoService = inject(ControlMedicoService);
 	private trabajoService = inject(TrabajoService);
+	private actividadService = inject(ActividadService);
+	private perdidaService = inject(PerdidaService);
 	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
@@ -129,6 +141,12 @@ export class PersonFormComponent implements OnInit {
 
 	trabajos = signal<Trabajo[]>([]);
 	loadingTrabajos = signal(false);
+
+	actividades = signal<Actividad[]>([]);
+	loadingActividades = signal(false);
+
+	perdidas = signal<Perdida[]>([]);
+	loadingPerdidas = signal(false);
 
 	personData = signal<Persona | null>(null);
 
@@ -177,6 +195,8 @@ export class PersonFormComponent implements OnInit {
 				this.loadSalud(dni);
 				this.loadControles(dni);
 				this.loadTrabajos(dni);
+				this.loadActividades(dni);
+				this.loadPerdidas(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -809,6 +829,134 @@ export class PersonFormComponent implements OnInit {
 					error: (err) => {
 						console.error('Error eliminando trabajo', err);
 						this.snackBar.open('Error al eliminar trabajo', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	// === ACTIVIDAD ACTIONS ===
+	private loadActividades(dni: string): void {
+		this.loadingActividades.set(true);
+		this.actividadService.getActividades(Number(dni)).subscribe({
+			next: (data) => {
+				this.actividades.set(data);
+				this.loadingActividades.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando actividades', err);
+				this.loadingActividades.set(false);
+			}
+		});
+	}
+
+	onAddActividad(): void {
+		const dialogRef = this.dialog.open(AddActividadDialogComponent, {
+			width: '500px',
+			data: { dni: Number(this.personDni()) }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.actividadService.createActividad(result).subscribe({
+					next: () => {
+						this.snackBar.open('Actividad agregada', 'Cerrar', { duration: 3000 });
+						this.loadActividades(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error creando actividad', err);
+						this.snackBar.open('Error al crear actividad', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	onDeleteActividad(actividad: Actividad): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Actividad',
+				message: `¿Está seguro de eliminar la actividad ${actividad.actividad}?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && actividad.id) {
+				this.actividadService.deleteActividad(actividad.id).subscribe({
+					next: () => {
+						this.snackBar.open('Actividad eliminada', 'Cerrar', { duration: 3000 });
+						this.loadActividades(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando actividad', err);
+						this.snackBar.open('Error al eliminar actividad', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	// === PERDIDA ACTIONS ===
+	private loadPerdidas(dni: string): void {
+		this.loadingPerdidas.set(true);
+		this.perdidaService.getPerdidas(Number(dni)).subscribe({
+			next: (data) => {
+				this.perdidas.set(data);
+				this.loadingPerdidas.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando pérdidas', err);
+				this.loadingPerdidas.set(false);
+			}
+		});
+	}
+
+	onAddPerdida(): void {
+		const dialogRef = this.dialog.open(AddPerdidaDialogComponent, {
+			width: '500px',
+			data: { dni: Number(this.personDni()) }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.perdidaService.createPerdida(result).subscribe({
+					next: () => {
+						this.snackBar.open('Pérdida agregada', 'Cerrar', { duration: 3000 });
+						this.loadPerdidas(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error creando pérdida', err);
+						this.snackBar.open('Error al crear pérdida', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	onDeletePerdida(perdida: Perdida): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Pérdida',
+				message: `¿Está seguro de eliminar la pérdida?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && perdida.id) {
+				this.perdidaService.deletePerdida(perdida.id).subscribe({
+					next: () => {
+						this.snackBar.open('Pérdida eliminada', 'Cerrar', { duration: 3000 });
+						this.loadPerdidas(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando pérdida', err);
+						this.snackBar.open('Error al eliminar pérdida', 'Cerrar', { duration: 3000 });
 					}
 				});
 			}

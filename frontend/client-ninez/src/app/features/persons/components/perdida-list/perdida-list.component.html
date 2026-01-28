@@ -1,0 +1,24 @@
+<div class="perdida-grid">
+    @for(perdida of perdidas; track perdida.id) {
+    <mat-card class="perdida-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar class="perdida-icon">heart_broken</mat-icon>
+            <mat-card-title>Pérdida Significativa</mat-card-title>
+            <mat-card-subtitle>{{ perdida.fecha_carga | date:'dd/MM/yyyy' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p class="descripcion">{{ perdida.descripcion }}</p>
+        </mat-card-content>
+        <mat-card-actions align="end" *ngIf="!isViewMode">
+            <button mat-icon-button color="warn" (click)="onDelete(perdida)" matTooltip="Eliminar pérdida">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+    } @empty {
+    <div class="empty-state">
+        <mat-icon class="empty-icon">volunteer_activism</mat-icon>
+        <p>No hay pérdidas registradas</p>
+    </div>
+    }
+</div>

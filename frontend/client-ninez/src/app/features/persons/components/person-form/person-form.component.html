@@ -426,14 +426,31 @@
 
 					<mat-divider style="margin: 24px 0;"></mat-divider>
 
-					<!-- Actividades Extracurriculares Placeholder -->
-					<div class="section-placeholder">
-						<h2>Actividades Extracurriculares</h2>
-						<div class="empty-state-placeholder">
-							<mat-icon>sports_soccer</mat-icon>
-							<p>Sección en construcción</p>
+					<!-- Actividades Extracurriculares -->
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">sports_soccer</mat-icon>
+							<div>
+								<h2 class="family-title">Actividades Extracurriculares</h2>
+								<p class="family-subtitle">Deportes, arte y actividades recreativas</p>
+							</div>
 						</div>
+
+						<button mat-raised-button color="primary" (click)="onAddActividad()" *ngIf="!isViewMode">
+							<mat-icon>add</mat-icon>
+							Agregar
+						</button>
 					</div>
+
+					@if(loadingActividades()) {
+					<div class="loading-container">
+						<mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+					</div>
+					} @else {
+					<app-actividades-extra-list [actividades]="actividades()" [isViewMode]="isViewMode"
+						(delete)="onDeleteActividad($event)">
+					</app-actividades-extra-list>
+					}
 
 					<mat-divider style="margin: 24px 0;"></mat-divider>
 
@@ -448,14 +465,31 @@
 
 					<mat-divider style="margin: 24px 0;"></mat-divider>
 
-					<!-- Perdidas Placeholder -->
-					<div class="section-placeholder">
-						<h2>Pérdidas</h2>
-						<div class="empty-state-placeholder">
-							<mat-icon>heart_broken</mat-icon>
-							<p>Sección en construcción</p>
+					<!-- Pérdidas -->
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">heart_broken</mat-icon>
+							<div>
+								<h2 class="family-title">Pérdidas Significativas</h2>
+								<p class="family-subtitle">Registro de pérdidas importantes recientes</p>
+							</div>
 						</div>
+
+						<button mat-raised-button color="primary" (click)="onAddPerdida()" *ngIf="!isViewMode">
+							<mat-icon>add</mat-icon>
+							Agregar
+						</button>
 					</div>
+
+					@if(loadingPerdidas()) {
+					<div class="loading-container">
+						<mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+					</div>
+					} @else {
+					<app-perdida-list [perdidas]="perdidas()" [isViewMode]="isViewMode"
+						(delete)="onDeletePerdida($event)">
+					</app-perdida-list>
+					}
 				</div>
 			</mat-tab>
 
