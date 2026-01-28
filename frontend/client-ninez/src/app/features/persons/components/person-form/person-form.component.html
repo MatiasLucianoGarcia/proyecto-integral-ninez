@@ -361,13 +361,31 @@
 					<mat-divider style="margin: 30px 0;"></mat-divider>
 
 					<!-- Controles Médicos Placeholder -->
-					<div class="section-placeholder">
-						<h2>Controles Médicos</h2>
-						<div class="empty-state-placeholder">
-							<mat-icon>monitor_heart</mat-icon>
-							<p>Sección en construcción</p>
+					<!-- Controles Médicos -->
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">monitor_heart</mat-icon>
+							<div>
+								<h2 class="family-title">Controles Médicos</h2>
+								<p class="family-subtitle">Historial de visitas y controles de salud</p>
+							</div>
 						</div>
+
+						<button mat-raised-button color="primary" (click)="onAddControl()" *ngIf="!isViewMode">
+							<mat-icon>add</mat-icon>
+							Agregar
+						</button>
 					</div>
+
+					@if(loadingControles()) {
+					<div class="loading-container">
+						<mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+					</div>
+					} @else {
+					<app-control-medico-list [controles]="controlesMedicos()" [isViewMode]="isViewMode"
+						(delete)="onDeleteControl($event)">
+					</app-control-medico-list>
+					}
 					} @else {
 					<div class="empty-state-placeholder">
 						<mat-icon>info</mat-icon>

@@ -41,6 +41,10 @@ import { AddEducationDialogComponent } from '../add-education-dialog/add-educati
 import { SaludService } from '../../services/salud.service';
 import { Salud } from '../../domain/salud.model';
 import { SaludGeneralComponent } from '../salud-general/salud-general.component';
+import { ControlMedicoService } from '../../services/control-medico.service';
+import { ControlMedico } from '../../domain/control-medico.model';
+import { AddControlMedicoDialogComponent } from '../add-control-medico-dialog/add-control-medico-dialog.component';
+import { ControlMedicoListComponent } from '../control-medico-list/control-medico-list.component';
 import { UserDataService } from '../../../../features/login/data/user-data.service';
 import { RolEnum } from '../../../../features/login/domain/enums/role-enum';
 
@@ -72,7 +76,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		AddressListComponent,
 		ContactListComponent,
 		EducationListComponent,
-		SaludGeneralComponent
+		SaludGeneralComponent,
+		ControlMedicoListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -89,6 +94,7 @@ export class PersonFormComponent implements OnInit {
 	private contactService = inject(ContactService);
 	private escolaridadService = inject(EscolaridadService);
 	private saludService = inject(SaludService);
+	private controlMedicoService = inject(ControlMedicoService);
 	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
@@ -111,6 +117,9 @@ export class PersonFormComponent implements OnInit {
 
 	salud = signal<Salud | null>(null);
 	loadingSalud = signal(false);
+
+	controlesMedicos = signal<ControlMedico[]>([]);
+	loadingControles = signal(false);
 
 	personData = signal<Persona | null>(null);
 
@@ -157,6 +166,7 @@ export class PersonFormComponent implements OnInit {
 				this.loadContacts(dni);
 				this.loadEscolaridades(dni);
 				this.loadSalud(dni);
+				this.loadControles(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -661,6 +671,70 @@ export class PersonFormComponent implements OnInit {
 				console.error('Error actualizando salud', err);
 				this.snackBar.open('Error al actualizar salud', 'Cerrar', { duration: 3000 });
 				this.loadingSalud.set(false);
+			}
+		});
+	}
+
+	// === CONTROL MEDICO ACTIONS ===
+	private loadControles(dni: string): void {
+		this.loadingControles.set(true);
+		this.controlMedicoService.getControles(Number(dni)).subscribe({
+			next: (data) => {
+				this.controlesMedicos.set(data);
+				this.loadingControles.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando controles médicos', err);
+				this.loadingControles.set(false);
+			}
+		});
+	}
+
+	onAddControl(): void {
+		const dialogRef = this.dialog.open(AddControlMedicoDialogComponent, {
+			width: '500px',
+			data: { dni: Number(this.personDni()) }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.controlMedicoService.createControl(result).subscribe({
+					next: () => {
+						this.snackBar.open('Control médico agregado', 'Cerrar', { duration: 3000 });
+						this.loadControles(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error creando control médico', err);
+						this.snackBar.open('Error al crear control', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	onDeleteControl(control: ControlMedico): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Control Médico',
+				message: `¿Está seguro de eliminar el control en ${control.unidad_sanitaria}?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && control.id) {
+				this.controlMedicoService.deleteControl(control.id).subscribe({
+					next: () => {
+						this.snackBar.open('Control médico eliminado', 'Cerrar', { duration: 3000 });
+						this.loadControles(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando control', err);
+						this.snackBar.open('Error al eliminar control', 'Cerrar', { duration: 3000 });
+					}
+				});
 			}
 		});
 	}

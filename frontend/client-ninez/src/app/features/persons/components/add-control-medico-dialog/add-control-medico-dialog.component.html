@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Agregar Control Médico</h2>
+<mat-dialog-content>
+    <form [formGroup]="form" class="dialog-form">
+        <mat-form-field appearance="outline">
+            <mat-label>Unidad Sanitaria</mat-label>
+            <input matInput formControlName="unidad_sanitaria" placeholder="Ej: Hospital de Niños">
+            <mat-icon matPrefix>local_hospital</mat-icon>
+            <mat-error *ngIf="form.get('unidad_sanitaria')?.hasError('required')">
+                Este campo es requerido
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput formControlName="observaciones" placeholder="Detalles del control..."
+                rows="3"></textarea>
+            <mat-icon matPrefix>notes</mat-icon>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">Agregar</button>
+</mat-dialog-actions>

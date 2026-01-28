@@ -1,0 +1,109 @@
+.control-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    color: rgba(0, 0, 0, 0.54);
+    border: 1px dashed rgba(0, 0, 0, 0.12);
+
+    mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 8px;
+        opacity: 0.5;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.875rem;
+    }
+}
+
+.control-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.control-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Center items vertically */
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .control-icon {
+        color: var(--primary-color, #3f51b5);
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+
+        .unit-name {
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        .date-info {
+            font-size: 0.75rem;
+            color: rgba(0, 0, 0, 0.6);
+        }
+    }
+}
+
+.observaciones {
+    margin: 0;
+    padding-left: 36px;
+    /* Align with text, skipping icon */
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
+}
+
+.card-actions {
+    margin-left: 8px;
+
+    button {
+        opacity: 0.6;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 1;
+            background-color: rgba(244, 67, 54, 0.08);
+        }
+    }
+}

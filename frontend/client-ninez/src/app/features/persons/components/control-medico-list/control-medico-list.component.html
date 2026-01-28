@@ -1,0 +1,32 @@
+<div class="control-container">
+    @if (controles.length === 0) {
+    <div class="empty-state">
+        <mat-icon>monitor_heart</mat-icon>
+        <p>No hay controles médicos registrados</p>
+    </div>
+    } @else {
+    <div class="control-list">
+        @for (item of controles; track item.id) {
+        <div class="control-card">
+            <div class="card-content">
+                <div class="card-title">
+                    <mat-icon class="control-icon">local_hospital</mat-icon>
+                    <div class="info">
+                        <span class="unit-name">{{ item.unidad_sanitaria }}</span>
+                        <span class="date-info">{{ item.fecha_carga | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                </div>
+                @if (item.observaciones) {
+                <p class="observaciones">{{ item.observaciones }}</p>
+                }
+            </div>
+            <div class="card-actions" *ngIf="!isViewMode">
+                <button mat-icon-button color="warn" (click)="onDelete(item)" matTooltip="Eliminar">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>
