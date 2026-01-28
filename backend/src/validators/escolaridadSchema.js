@@ -36,7 +36,7 @@ const escolaridadSchema = Joi.object({
       'string.max': 'El nivel no debe superar los 50 caracteres',
     }),
 
-  año: Joi.string()
+  anio: Joi.string()
     .max(50)
     .required()
     .messages({

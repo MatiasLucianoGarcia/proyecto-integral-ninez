@@ -43,15 +43,15 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/auth', authRoutes);
-app.use('/api/roles',rolRoutes);
+app.use('/api/roles', rolRoutes);
 app.use('/api/entidades', entidadRoutes);
 app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/nacionalidades',nacionalidadRoutes);
-app.use('/api/generos',generoRoutes);
+app.use('/api/nacionalidades', nacionalidadRoutes);
+app.use('/api/generos', generoRoutes);
 app.use('/api/personas', personaRoutes);
 app.use('/api/domicilios', domicilioRoutes);
 app.use('/api/contactos', contactoRoutes);
-app.use('/api/escolaridad',escolaridadRoutes);
+app.use('/api/escolaridades', escolaridadRoutes);
 app.use('/api/perdida', perdidaRoutes);
 app.use('/api/trabajo', trabajoRoutes);
 app.use('/api/controlMedico', controlMedicoRoutes);

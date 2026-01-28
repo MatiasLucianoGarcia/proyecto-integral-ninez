@@ -1,0 +1,29 @@
+<div class="education-container">
+    @if (escolaridades.length === 0) {
+    <div class="empty-state">
+        <mat-icon>school</mat-icon>
+        <p>No hay registros de escolaridad</p>
+    </div>
+    } @else {
+    <div class="education-list">
+        @for (item of escolaridades; track item.id) {
+        <div class="education-card">
+            <div class="card-content">
+                <div class="card-title">
+                    <mat-icon class="edu-icon">school</mat-icon>
+                    <div class="info">
+                        <span class="school-name">{{ item.escuela }}</span>
+                        <span class="level-info">{{ item.nivel }} - {{ item.anio }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions" *ngIf="!isViewMode">
+                <button mat-icon-button color="warn" (click)="onDelete(item)" matTooltip="Eliminar">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

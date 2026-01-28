@@ -8,7 +8,7 @@ const crearEscolaridad = async (req, res) => {
       req.body.dni,
       req.body.escuela,
       req.body.nivel,
-      req.body.año
+      req.body.anio
     );
 
     const intervencion = `El usuario ${req.user.nombre} añadió nueva información de escolaridad para esta persona`;

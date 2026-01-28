@@ -23,7 +23,7 @@
 				</div>
 			</div>
 			@if(!isViewMode) {
-			<mat-chip class="mode-chip" *ngIf="!isViewMode" [highlighted]="true">
+			<mat-chip class="mode-chip" *ngIf="!isViewMode">
 				<mat-icon>{{ isCreateMode ? 'add_circle' : 'edit_note' }}</mat-icon>
 				{{ isCreateMode ? 'Modo Creación' : 'Modo Edición' }}
 			</mat-chip>
@@ -127,7 +127,7 @@
 										} @else {
 										<mat-select formControlName="genero" placeholder="Seleccione"
 											*ngIf="!isViewMode">
-											@for (genero of generos(); track genero.id) {
+											@for (genero of generos(); track $index) {
 											<mat-option [value]="genero.id">
 												{{ genero.nombre }}
 											</mat-option>
@@ -147,7 +147,7 @@
 										<input matInput formControlName="nacionalidad" readonly />
 										} @else {
 										<mat-select formControlName="nacionalidad" placeholder="Seleccione">
-											@for(nacionalidad of nacionalidades(); track nacionalidad.id) {
+											@for(nacionalidad of nacionalidades(); track $index) {
 											<mat-option [value]="nacionalidad.id">
 												{{ nacionalidad.nombre }}
 											</mat-option>
@@ -315,10 +315,64 @@
 			}
 
 			<!-- Tab 3: Salud y Educación -->
-			<mat-tab label="Salud y Educación">
-				<div class="empty-state-placeholder">
-					<mat-icon>local_hospital</mat-icon>
-					<p>Sección en construcción</p>
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<mat-icon class="tab-icon">local_hospital</mat-icon>
+					Salud y Educación
+				</ng-template>
+
+				<div class="tab-content">
+					@if(personDni()) {
+					<!-- Escolaridad -->
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">school</mat-icon>
+							<div>
+								<h2 class="family-title">Escolaridad</h2>
+							</div>
+						</div>
+						@if(!isViewMode) {
+						<button mat-raised-button color="primary" class="add-family-button"
+							(click)="onAddEscolaridad()">
+							<mat-icon>add</mat-icon>
+							Agregar Escolaridad
+						</button>
+						}
+					</div>
+
+					<app-education-list [escolaridades]="escolaridades()" [isViewMode]="isViewMode"
+						(delete)="onDeleteEscolaridad($event)">
+					</app-education-list>
+
+					<!-- Divider -->
+					<mat-divider style="margin: 30px 0;"></mat-divider>
+
+					<!-- Salud General Placeholder -->
+					<div class="section-placeholder">
+						<h2>Salud General</h2>
+						<div class="empty-state-placeholder">
+							<mat-icon>medical_services</mat-icon>
+							<p>Sección en construcción</p>
+						</div>
+					</div>
+
+					<!-- Divider -->
+					<mat-divider style="margin: 30px 0;"></mat-divider>
+
+					<!-- Controles Médicos Placeholder -->
+					<div class="section-placeholder">
+						<h2>Controles Médicos</h2>
+						<div class="empty-state-placeholder">
+							<mat-icon>monitor_heart</mat-icon>
+							<p>Sección en construcción</p>
+						</div>
+					</div>
+					} @else {
+					<div class="empty-state-placeholder">
+						<mat-icon>info</mat-icon>
+						<p>Guarde la persona primero para agregar información de salud y educación.</p>
+					</div>
+					}
 				</div>
 			</mat-tab>
 

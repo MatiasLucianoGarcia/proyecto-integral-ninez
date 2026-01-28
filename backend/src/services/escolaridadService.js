@@ -1,13 +1,13 @@
 const supabase = require('../config/db');
 const { validarPersonaExiste } = require('../helpers/personaHelper');
 
-const crearEscolaridad = async (dni, escuela, nivel, año) => {
+const crearEscolaridad = async (dni, escuela, nivel, anio) => {
   // Validar que la persona exista
   await validarPersonaExiste(dni);
 
   const { data, error } = await supabase
     .from('escolaridad')
-    .insert([{ dni, escuela, nivel, año }])
+    .insert([{ dni, escuela, nivel, anio }])
     .select();
 
   if (error) throw error;

@@ -1,0 +1,15 @@
+.education-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 10px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+mat-dialog-content {
+    min-width: 400px;
+    max-width: 600px;
+}

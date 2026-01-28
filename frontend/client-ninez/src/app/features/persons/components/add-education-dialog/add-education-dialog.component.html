@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Agregar Escolaridad</h2>
+<mat-dialog-content>
+    <form [formGroup]="educationForm" class="education-form">
+
+        <!-- Escuela -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Escuela</mat-label>
+            <input matInput formControlName="escuela" placeholder="Nombre de la escuela">
+            <mat-error *ngIf="educationForm.get('escuela')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Nivel -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nivel</mat-label>
+            <mat-select formControlName="nivel" placeholder="Seleccione Nivel">
+                <mat-option value="Jardín Maternal">Jardín Maternal</mat-option>
+                <mat-option value="Nivel Inicial">Nivel Inicial</mat-option>
+                <mat-option value="Primario">Primario</mat-option>
+                <mat-option value="Secundario">Secundario</mat-option>
+                <mat-option value="Terciario">Terciario</mat-option>
+                <mat-option value="Universitario">Universitario</mat-option>
+                <mat-option value="Otro">Otro</mat-option>
+            </mat-select>
+            <mat-error *ngIf="educationForm.get('nivel')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Año -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Año / Grado</mat-label>
+            <input matInput formControlName="anio" placeholder="Ej: 2° Grado, 1er Año">
+            <mat-error *ngIf="educationForm.get('anio')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" [disabled]="educationForm.invalid" (click)="onSave()">Guardar</button>
+</mat-dialog-actions>
