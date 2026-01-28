@@ -178,15 +178,17 @@ export class PersonFormComponent implements OnInit {
 
 	get canViewServicioLocal(): boolean {
 		const user = this.userDataService.getUser();
-		if (!user || !user.rol) return false;
+		if (!user || !user.rol) {
+			return false;
+		}
 
 		// Handle both string and object roles safely
 		let roleName = '';
 		if (typeof user.rol === 'string') {
 			roleName = user.rol;
-		} else if (typeof user.rol === 'object' && 'nombre' in user.rol) {
-			// @ts-ignore - We know it might be an object with nombre based on runtime data
-			roleName = user.rol.nombre;
+		} else if (typeof user.rol === 'object' && 'nombre_rol' in user.rol) {
+			// @ts-ignore - We know it might be an object with nombre_rol based on runtime data
+			roleName = user.rol.nombre_rol;
 		}
 
 		if (!roleName) return false;
@@ -218,8 +220,8 @@ export class PersonFormComponent implements OnInit {
 					nombre: persona.nombre,
 					apellido: persona.apellido,
 					fecha_nacimiento: persona.fecha_nacimiento,
-					genero: persona.genero?.nombre || '',
-					nacionalidad: persona.nacionalidad?.nombre || '',
+					genero: persona.genero?.id || '',
+					nacionalidad: persona.nacionalidad?.id || '',
 				});
 			},
 			error: (error) => {
