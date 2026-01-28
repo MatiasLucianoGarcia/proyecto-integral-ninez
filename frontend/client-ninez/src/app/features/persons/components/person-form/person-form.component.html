@@ -68,8 +68,12 @@
 									<!-- DNI -->
 									<mat-form-field appearance="outline" class="form-field">
 										<mat-label>DNI</mat-label>
+										@if(isViewMode) {
+										<input matInput [value]="personData()?.dni" readonly />
+										} @else {
 										<input matInput formControlName="dni" placeholder="12345678" type="text"
-											maxlength="8" [readonly]="isEditMode || isViewMode" />
+											maxlength="8" [readonly]="isEditMode" />
+										}
 										<mat-icon matPrefix class="field-icon">fingerprint</mat-icon>
 										@if(personForm.get('dni')?.hasError('required')) {
 										<mat-error>El DNI es requerido</mat-error>
@@ -81,8 +85,11 @@
 									<!-- Nombre -->
 									<mat-form-field appearance="outline" class="form-field">
 										<mat-label>Nombre</mat-label>
-										<input matInput formControlName="nombre" placeholder="Juan"
-											[readonly]="isViewMode" />
+										@if(isViewMode) {
+										<input matInput [value]="personData()?.nombre" readonly />
+										} @else {
+										<input matInput formControlName="nombre" placeholder="Juan" />
+										}
 										<mat-icon matPrefix class="field-icon">person</mat-icon>
 										@if(personForm.get('nombre')?.hasError('required')) {
 										<mat-error>El nombre es requerido</mat-error>
@@ -94,8 +101,11 @@
 									<!-- Apellido -->
 									<mat-form-field appearance="outline" class="form-field">
 										<mat-label>Apellido</mat-label>
-										<input matInput formControlName="apellido" placeholder="Pérez"
-											[readonly]="isViewMode" />
+										@if(isViewMode) {
+										<input matInput [value]="personData()?.apellido" readonly />
+										} @else {
+										<input matInput formControlName="apellido" placeholder="Pérez" />
+										}
 										<mat-icon matPrefix class="field-icon">person_outline</mat-icon>
 										@if(personForm.get('apellido')?.hasError('required')) {
 										<mat-error>El apellido es requerido</mat-error>
@@ -107,8 +117,13 @@
 									<!-- Fecha de Nacimiento -->
 									<mat-form-field appearance="outline" class="form-field">
 										<mat-label>Fecha de Nacimiento</mat-label>
+										@if(isViewMode) {
+										<input matInput [value]="personData()?.fecha_nacimiento | date:'dd/MM/yyyy'"
+											readonly />
+										} @else {
 										<input matInput [matDatepicker]="picker" formControlName="fecha_nacimiento"
-											placeholder="DD/MM/YYYY" [readonly]="isViewMode" (click)="picker.open()" />
+											placeholder="DD/MM/YYYY" (click)="picker.open()" />
+										}
 										<mat-icon matPrefix class="field-icon">cake</mat-icon>
 										@if(!isViewMode) {
 										<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -123,7 +138,7 @@
 									<mat-form-field appearance="outline" class="form-field">
 										<mat-label>Género</mat-label>
 										@if(isViewMode) {
-										<input matInput formControlName="genero" readonly />
+										<input matInput [value]="personData()?.genero?.nombre" readonly />
 										} @else {
 										<mat-select formControlName="genero" placeholder="Seleccione"
 											*ngIf="!isViewMode">
@@ -144,7 +159,7 @@
 									<mat-form-field appearance="outline" class="form-field">
 										<mat-label>Nacionalidad</mat-label>
 										@if(isViewMode) {
-										<input matInput formControlName="nacionalidad" readonly />
+										<input matInput [value]="personData()?.nacionalidad?.nombre" readonly />
 										} @else {
 										<mat-select formControlName="nacionalidad" placeholder="Seleccione">
 											@for(nacionalidad of nacionalidades(); track $index) {
@@ -452,18 +467,7 @@
 					</app-actividades-extra-list>
 					}
 
-					<mat-divider style="margin: 24px 0;"></mat-divider>
 
-					<!-- Intereses Placeholder -->
-					<div class="section-placeholder">
-						<h2>Intereses</h2>
-						<div class="empty-state-placeholder">
-							<mat-icon>favorite</mat-icon>
-							<p>Sección en construcción</p>
-						</div>
-					</div>
-
-					<mat-divider style="margin: 24px 0;"></mat-divider>
 
 					<!-- Pérdidas -->
 					<div class="family-tab-header">
@@ -489,6 +493,14 @@
 					<app-perdida-list [perdidas]="perdidas()" [isViewMode]="isViewMode"
 						(delete)="onDeletePerdida($event)">
 					</app-perdida-list>
+					}
+
+					<mat-divider style="margin: 24px 0;"></mat-divider>
+
+					<!-- Intereses -->
+					@if(personDni()) {
+					<app-intereses [dni]="personDni()!" [isViewMode]="isViewMode">
+					</app-intereses>
 					}
 				</div>
 			</mat-tab>

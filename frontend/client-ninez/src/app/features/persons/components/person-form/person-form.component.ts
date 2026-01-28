@@ -59,6 +59,7 @@ import { PerdidaService } from '../../services/perdida.service';
 import { Perdida } from '../../domain/perdida.model';
 import { AddPerdidaDialogComponent } from '../add-perdida-dialog/add-perdida-dialog.component';
 import { PerdidaListComponent } from '../perdida-list/perdida-list.component';
+import { InteresesComponent } from '../intereses/intereses.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -92,7 +93,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		ControlMedicoListComponent,
 		TrabajoListComponent,
 		ActividadesExtraListComponent,
-		PerdidaListComponent
+		PerdidaListComponent,
+		InteresesComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -244,6 +246,7 @@ export class PersonFormComponent implements OnInit {
 		this.loading.set(true);
 		this.personService.getPersonByDNI(dni).subscribe({
 			next: (persona) => {
+				this.personData.set(persona);
 				this.loading.set(false);
 				this.personForm.patchValue({
 					dni: persona.dni,

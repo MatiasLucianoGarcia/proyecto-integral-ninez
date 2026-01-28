@@ -1,0 +1,44 @@
+<div class="intereses-container">
+    <div class="header-section">
+        <mat-icon class="header-icon">interests</mat-icon>
+        <div>
+            <h2 class="title">Gustos e Intereses</h2>
+            <p class="subtitle">Información sobre gustos, vínculos y desarrollo</p>
+        </div>
+    </div>
+
+    @if(loading()) {
+    <div class="loading-container">
+        <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+    </div>
+    } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Gustos e Intereses</mat-label>
+                <textarea matInput formControlName="gustos" rows="4"
+                    placeholder="Describa los gustos e intereses del NNyA..."></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Vínculos Significativos</mat-label>
+                <textarea matInput formControlName="vinculos_significativos" rows="4"
+                    placeholder="Describa los vínculos significativos..."></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Datos de Desarrollo</mat-label>
+                <textarea matInput formControlName="datos_desarrollo" rows="4"
+                    placeholder="Información relevante sobre el desarrollo..."></textarea>
+            </mat-form-field>
+        </div>
+
+        <div class="actions" *ngIf="!isViewMode">
+            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading()">
+                <mat-icon>save</mat-icon>
+                Guardar Cambios
+            </button>
+        </div>
+    </form>
+    }
+</div>
