@@ -1,0 +1,35 @@
+<div class="condiciones-container" [class.view-mode]="isViewMode()">
+    @if (!loading()) {
+    <form [formGroup]="form" class="condiciones-form">
+        <div class="toggles-grid">
+            @for (item of conditions; track item.key) {
+            <div class="condition-chip" [class.active]="form.get(item.key)?.value" [class.readonly]="isViewMode()"
+                (click)="toggleCondition(item.key)">
+
+                <div class="icon-container">
+                    @if (form.get(item.key)?.value) {
+                    <mat-icon>check</mat-icon>
+                    } @else {
+                    <div class="empty-circle"></div>
+                    }
+                </div>
+                <span class="label">{{ item.label }}</span>
+            </div>
+            }
+        </div>
+
+        @if (!isViewMode()) {
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading()">
+                <mat-icon>save</mat-icon>
+                Guardar Cambios
+            </button>
+        </div>
+        }
+    </form>
+    } @else {
+    <div class="loading-state">
+        <p>Cargando datos...</p>
+    </div>
+    }
+</div>

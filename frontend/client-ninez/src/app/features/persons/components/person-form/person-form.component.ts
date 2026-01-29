@@ -72,6 +72,7 @@ import { ViviendaService } from '../../services/vivienda.service';
 import { Vivienda } from '../../domain/vivienda.model';
 import { ViviendaListComponent } from '../vivienda-list/vivienda-list.component';
 import { AddViviendaDialogComponent } from '../add-vivienda-dialog/add-vivienda-dialog.component';
+import { CondicionesVidaComponent } from '../condiciones-vida/condiciones-vida.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -109,7 +110,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		InteresesComponent,
 		IngresoListComponent,
 		ArticulacionListComponent,
-		ViviendaListComponent
+		ViviendaListComponent,
+		CondicionesVidaComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
