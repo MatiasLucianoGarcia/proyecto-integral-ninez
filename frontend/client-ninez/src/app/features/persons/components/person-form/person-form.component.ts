@@ -68,6 +68,10 @@ import { ArticulacionService } from '../../services/articulacion.service';
 import { Articulacion } from '../../domain/articulacion.model';
 import { AddArticulacionDialogComponent } from '../add-articulacion-dialog/add-articulacion-dialog.component';
 import { ArticulacionListComponent } from '../articulacion-list/articulacion-list.component';
+import { ViviendaService } from '../../services/vivienda.service';
+import { Vivienda } from '../../domain/vivienda.model';
+import { ViviendaListComponent } from '../vivienda-list/vivienda-list.component';
+import { AddViviendaDialogComponent } from '../add-vivienda-dialog/add-vivienda-dialog.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -104,7 +108,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		PerdidaListComponent,
 		InteresesComponent,
 		IngresoListComponent,
-		ArticulacionListComponent
+		ArticulacionListComponent,
+		ViviendaListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -127,6 +132,7 @@ export class PersonFormComponent implements OnInit {
 	private perdidaService = inject(PerdidaService);
 	private ingresoService = inject(IngresoService);
 	private articulacionService = inject(ArticulacionService);
+	private viviendaService = inject(ViviendaService);
 	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
@@ -167,6 +173,9 @@ export class PersonFormComponent implements OnInit {
 
 	articulaciones = signal<Articulacion[]>([]);
 	loadingArticulaciones = signal(false);
+
+	viviendas = signal<Vivienda[]>([]);
+	loadingViviendas = signal(false);
 
 	personData = signal<Persona | null>(null);
 
@@ -220,6 +229,7 @@ export class PersonFormComponent implements OnInit {
 				this.loadPerdidas(dni);
 				this.loadIngresos(dni);
 				this.loadArticulaciones(dni);
+				this.loadViviendas(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -1123,6 +1133,70 @@ export class PersonFormComponent implements OnInit {
 					error: (err) => {
 						console.error('Error eliminando articulación', err);
 						this.snackBar.open('Error al eliminar articulación', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	// === VIVIENDA ACTIONS ===
+	private loadViviendas(dni: string): void {
+		this.loadingViviendas.set(true);
+		this.viviendaService.getViviendasByDni(Number(dni)).subscribe({
+			next: (data) => {
+				this.viviendas.set(data);
+				this.loadingViviendas.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando viviendas', err);
+				this.loadingViviendas.set(false);
+			}
+		});
+	}
+
+	onAddVivienda(): void {
+		const dialogRef = this.dialog.open(AddViviendaDialogComponent, {
+			width: '500px',
+			data: { dni: Number(this.personDni()) }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.viviendaService.createVivienda(result).subscribe({
+					next: () => {
+						this.snackBar.open('Vivienda agregada', 'Cerrar', { duration: 3000 });
+						this.loadViviendas(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error creando vivienda', err);
+						this.snackBar.open('Error al crear vivienda', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	onDeleteVivienda(vivienda: Vivienda): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Vivienda',
+				message: '¿Está seguro de eliminar este registro de vivienda?',
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && vivienda.id) {
+				this.viviendaService.deleteVivienda(vivienda.id).subscribe({
+					next: () => {
+						this.snackBar.open('Vivienda eliminada', 'Cerrar', { duration: 3000 });
+						this.loadViviendas(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando vivienda', err);
+						this.snackBar.open('Error al eliminar vivienda', 'Cerrar', { duration: 3000 });
 					}
 				});
 			}

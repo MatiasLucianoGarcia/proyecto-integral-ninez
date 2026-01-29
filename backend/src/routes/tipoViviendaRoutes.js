@@ -7,7 +7,7 @@ const { createTipoViviendaSchema, updateTipoViviendaSchema } = require('../valid
 
 // ABM solo para admin
 router.post('/', authenticate, authorizeRoles('Administrador'), validar(createTipoViviendaSchema), tipoViviendaController.crearTipoVivienda);
-router.get('/', authenticate, authorizeRoles('Administrador'), tipoViviendaController.obtenerTiposVivienda);
+router.get('/', authenticate, tipoViviendaController.obtenerTiposVivienda);
 router.put('/:id', authenticate, authorizeRoles('Administrador'), validar(updateTipoViviendaSchema), tipoViviendaController.actualizarTipoVivienda);
 router.delete('/:id', authenticate, authorizeRoles('Administrador'), tipoViviendaController.eliminarTipoVivienda);
 

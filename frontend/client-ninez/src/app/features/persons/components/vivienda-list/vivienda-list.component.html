@@ -1,0 +1,37 @@
+<div class="vivienda-list">
+    @for (vivienda of viviendas(); track $index) {
+    <mat-card class="vivienda-card">
+        <div class="card-content">
+            <div class="vivienda-info">
+                <div class="info-header">
+                    <h3 class="tipo-vivienda">
+                        <mat-icon class="tipo-icon">house</mat-icon>
+                        {{ vivienda.tipo_vivienda.tipo }}
+                    </h3>
+                </div>
+
+                @if (vivienda.observaciones) {
+                <p class="observaciones">{{ vivienda.observaciones }}</p>
+                }
+
+                @if (vivienda.fecha_carga) {
+                <p class="fecha-carga">Registrado el: {{ vivienda.fecha_carga | date:'dd/MM/yyyy' }}</p>
+                }
+            </div>
+
+            @if (!isViewMode()) {
+            <div class="actions">
+                <button mat-icon-button color="warn" (click)="onDelete(vivienda)" matTooltip="Eliminar registro">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            }
+        </div>
+    </mat-card>
+    } @empty {
+    <div class="empty-state">
+        <mat-icon>home</mat-icon>
+        <p>No hay datos de vivienda registrados</p>
+    </div>
+    }
+</div>

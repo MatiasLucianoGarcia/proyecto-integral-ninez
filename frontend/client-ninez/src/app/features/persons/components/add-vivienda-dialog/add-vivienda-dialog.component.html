@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Agregar Vivienda</h2>
+<mat-dialog-content>
+    <form [formGroup]="viviendaForm" class="dialog-form">
+        <!-- Tipo Vivienda Selection -->
+        <mat-form-field appearance="outline">
+            <mat-label>Tipo de Vivienda</mat-label>
+            <mat-select formControlName="tipo_vivienda">
+                @for (tipo of tiposVivienda(); track tipo.id) {
+                <mat-option [value]="tipo.id">
+                    {{ tipo.tipo }}
+                </mat-option>
+                }
+            </mat-select>
+            <mat-error>Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Observaciones -->
+        <mat-form-field appearance="outline">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput formControlName="observaciones" placeholder="Detalles de la vivienda..."></textarea>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" [disabled]="viviendaForm.invalid" (click)="onSubmit()">
+        Guardar
+    </button>
+</mat-dialog-actions>

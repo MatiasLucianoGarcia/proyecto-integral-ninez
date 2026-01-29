@@ -582,9 +582,56 @@
 
 			<!-- Tab 6: Condiciones de Vida -->
 			<mat-tab label="Condiciones de Vida">
-				<div class="empty-state-placeholder">
-					<mat-icon>home_work</mat-icon>
-					<p>Sección en construcción</p>
+				<div class="tab-content">
+					<!-- Condiciones de Vida Section (Placeholder) -->
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">other_houses</mat-icon>
+							<div>
+								<h2 class="family-title">Condiciones de Vida</h2>
+								<p class="family-subtitle">Información habitacional y del entorno</p>
+							</div>
+						</div>
+					</div>
+					<div class="empty-state-placeholder"
+						style="margin: 1rem 0 2rem 0; padding: 2rem; background: #f5f5f5; border-radius: 8px;">
+						<mat-icon>construction</mat-icon>
+						<p>Sección Condiciones de Vida en desarrollo</p>
+					</div>
+
+					<mat-divider style="margin: 30px 0;"></mat-divider>
+
+					<!-- Vivienda Section -->
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">home</mat-icon>
+							<div>
+								<h2 class="family-title">Vivienda</h2>
+								<p class="family-subtitle">
+									{{ viviendas().length > 0 ? 'Viviendas registradas' : 'No hay viviendas registradas'
+									}}
+								</p>
+							</div>
+						</div>
+						@if(!isViewMode) {
+						<button mat-raised-button color="primary" class="add-family-button" (click)="onAddVivienda()">
+							<mat-icon>add_home</mat-icon>
+							Agregar Vivienda
+						</button>
+						}
+					</div>
+
+					@if(loadingViviendas()) {
+					<div class="loading-container">
+						<mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+						<p>Cargando viviendas...</p>
+					</div>
+					}
+
+					@if(!loadingViviendas()) {
+					<app-vivienda-list [viviendas]="viviendas()" [isViewMode]="isViewMode"
+						(deleteVivienda)="onDeleteVivienda($event)"></app-vivienda-list>
+					}
 				</div>
 			</mat-tab>
 

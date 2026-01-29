@@ -21,7 +21,7 @@ const obtenerViviendas = async (dni) => {
 
   const { data, error } = await supabase
     .from('vivienda')
-    .select(`tipo_vivienda(id,tipo), observaciones`)
+    .select(`id, fecha_carga, tipo_vivienda(id,tipo), observaciones`)
     .eq('dni', dni);
 
   if (error) throw error;
@@ -52,7 +52,7 @@ const obtenerUltimaViviendaPorDni = async (dni) => {
 
   const { data, error } = await supabase
     .from('vivienda')
-    .select(`tipo_vivienda(id,tipo), observaciones`)
+    .select(`id, fecha_carga, tipo_vivienda(id,tipo), observaciones`)
     .eq('dni', dni)
     .order('fecha_carga', { ascending: false })
     .limit(1);
