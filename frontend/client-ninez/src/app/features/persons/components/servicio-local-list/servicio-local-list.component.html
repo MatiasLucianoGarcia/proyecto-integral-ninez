@@ -1,0 +1,51 @@
+<div class="servicio-container">
+
+
+    @if (loading()) {
+    <div class="loading">
+        <p>Cargando datos...</p>
+    </div>
+    } @else {
+    <div class="items-list">
+        @for (item of items(); track item.id) {
+        <div class="item-card">
+            <div class="card-header">
+                <div class="header-left">
+                    <mat-icon class="item-icon">assignment</mat-icon>
+                    <span class="fecha">{{ item.fecha_ingreso | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <span class="equipo-chip">{{ item.equipo?.nombre || 'Equipo #' + item.id_equipo }}</span>
+            </div>
+
+            <div class="card-body">
+                <div class="detail-row">
+                    <span class="label">Efector:</span>
+                    <span class="value">{{ item.efector?.nombre || 'Efector #' + item.id_efector }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Derecho Vulnerado:</span>
+                    <span class="value">{{ item.derecho?.descripcion || 'Derecho #' + item.id_derecho }}</span>
+                </div>
+                <div class="detail-row full-width">
+                    <span class="label">Motivo:</span>
+                    <p class="motivo-text">{{ item.motivo_ingreso }}</p>
+                </div>
+            </div>
+
+            @if (!isViewMode()) {
+            <div class="card-actions">
+                <button mat-icon-button color="warn" (click)="deleteServicioLocal(item)" matTooltip="Eliminar">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            }
+        </div>
+        } @empty {
+        <div class="empty-state">
+            <mat-icon>security</mat-icon>
+            <p>No hay registros de servicios locales asociados.</p>
+        </div>
+        }
+    </div>
+    }
+</div>

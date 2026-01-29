@@ -69,7 +69,7 @@ const obtenerServiciosLocalesPorDni = async (dni) => {
 
   const { data, error } = await supabase
     .from('servicio_local')
-    .select('*')
+    .select('*, equipo:equipo_local(nombre), efector(nombre), derecho:derecho_vulnerado(descripcion)')
     .eq('dni', dni);
 
   if (error) throw error;

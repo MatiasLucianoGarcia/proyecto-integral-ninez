@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>Nuevo Servicio Local Asociado</h2>
+<mat-dialog-content>
+    <form [formGroup]="form" class="dialog-form">
+
+        <!-- Row 1: Equipo -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Equipo Local</mat-label>
+            <mat-select formControlName="id_equipo">
+                @for (equipo of equipos; track equipo.id) {
+                <mat-option [value]="equipo.id">{{ equipo.nombre }}</mat-option>
+                }
+            </mat-select>
+            <mat-error *ngIf="form.get('id_equipo')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Row 2: Fecha & Efector -->
+        <div class="form-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Fecha Ingreso</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="fecha_ingreso">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Efector</mat-label>
+                <mat-select formControlName="id_efector">
+                    @for (efector of efectores; track efector.id) {
+                    <mat-option [value]="efector.id">{{ efector.nombre }} ({{ efector.area }})</mat-option>
+                    }
+                </mat-select>
+                <mat-error *ngIf="form.get('id_efector')?.hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Row 3: Derecho Vulnerado -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Derecho Vulnerado</mat-label>
+            <mat-select formControlName="id_derecho">
+                @for (derecho of derechos; track derecho.id) {
+                <mat-option [value]="derecho.id">{{ derecho.descripcion }}</mat-option>
+                }
+            </mat-select>
+            <mat-error *ngIf="form.get('id_derecho')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Row 4: Motivo -->
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Motivo de Ingreso</mat-label>
+            <textarea matInput formControlName="motivo_ingreso" rows="3"></textarea>
+            <mat-error *ngIf="form.get('motivo_ingreso')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">Guardar</button>
+</mat-dialog-actions>

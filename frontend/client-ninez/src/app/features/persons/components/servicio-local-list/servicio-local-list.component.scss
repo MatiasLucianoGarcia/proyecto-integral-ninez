@@ -1,0 +1,145 @@
+.servicio-container {
+    padding: 1rem 0;
+}
+
+.items-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.item-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        border-color: #bbdefb; // Light Blue border on hover
+    }
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f5f5f5;
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .item-icon {
+            color: #1976d2; // Blue
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .fecha {
+            font-size: 0.95rem;
+            color: #424242;
+            font-weight: 500;
+        }
+    }
+
+    .equipo-chip {
+        background-color: #e3f2fd; // Light Blue Chip
+        color: #1565c0; // Dark Blue Text
+        padding: 4px 10px;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    &.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .label {
+        font-size: 0.75rem;
+        color: #9e9e9e;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+
+    .value {
+        font-size: 0.95rem;
+        color: #212121;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    .motivo-text {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #424242;
+        line-height: 1.5;
+        background: #fcfcfc;
+        padding: 0.75rem;
+        border-radius: 4px;
+        border: 1px solid #f0f0f0;
+        border-left: 3px solid #64b5f6; // Blue accent
+        white-space: pre-wrap;
+    }
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f5f5f5;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: #757575;
+}
+
+// Exact match for Articulaciones Empty State
+.empty-state {
+    grid-column: 1 / -1; // Span full width in grid
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    color: #888;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+
+    mat-icon {
+        font-size: 3rem;
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+        color: inherit;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}

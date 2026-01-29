@@ -642,9 +642,35 @@
 			<!-- Tab 7: Servicio Local (Restricted) -->
 			@if(canViewServicioLocal) {
 			<mat-tab label="Servicio Local">
-				<div class="empty-state-placeholder">
-					<mat-icon>security</mat-icon>
-					<p>Área restringida a Servicio Local y Protección</p>
+				<div class="tab-content">
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">security</mat-icon>
+							<div>
+								<h2 class="family-title">Servicios Locales Asociados</h2>
+								<p class="family-subtitle">
+									{{ servicioLocalList?.items()?.length || 0 > 0 ? 'Intervenciones registradas' : 'No
+									hay intervenciones registradas' }}
+								</p>
+							</div>
+						</div>
+						@if(!isViewMode) {
+						<button mat-raised-button color="primary" class="add-family-button"
+							(click)="onAddServicioLocal()">
+							<mat-icon>add_moderator</mat-icon>
+							Agregar Intervención
+						</button>
+						}
+					</div>
+
+					@if(personDni()) {
+					<app-servicio-local-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-servicio-local-list>
+					} @else {
+					<div class="empty-state-placeholder">
+						<mat-icon>info</mat-icon>
+						<p>Guarde la persona primero para acceder a las funciones de Servicio Local.</p>
+					</div>
+					}
 				</div>
 			</mat-tab>
 			}

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -73,6 +73,7 @@ import { Vivienda } from '../../domain/vivienda.model';
 import { ViviendaListComponent } from '../vivienda-list/vivienda-list.component';
 import { AddViviendaDialogComponent } from '../add-vivienda-dialog/add-vivienda-dialog.component';
 import { CondicionesVidaComponent } from '../condiciones-vida/condiciones-vida.component';
+import { ServicioLocalListComponent } from '../servicio-local-list/servicio-local-list.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -111,7 +112,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		IngresoListComponent,
 		ArticulacionListComponent,
 		ViviendaListComponent,
-		CondicionesVidaComponent
+		CondicionesVidaComponent,
+		ServicioLocalListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -136,6 +138,10 @@ export class PersonFormComponent implements OnInit {
 	private articulacionService = inject(ArticulacionService);
 	private viviendaService = inject(ViviendaService);
 	private userDataService = inject(UserDataService);
+
+	onAddServicioLocal(): void {
+		this.servicioLocalList.openAddDialog();
+	}
 
 	personForm!: FormGroup;
 	mode = signal<FormMode>('create');
@@ -178,6 +184,8 @@ export class PersonFormComponent implements OnInit {
 
 	viviendas = signal<Vivienda[]>([]);
 	loadingViviendas = signal(false);
+
+	@ViewChild(ServicioLocalListComponent) servicioLocalList!: ServicioLocalListComponent;
 
 	personData = signal<Persona | null>(null);
 
