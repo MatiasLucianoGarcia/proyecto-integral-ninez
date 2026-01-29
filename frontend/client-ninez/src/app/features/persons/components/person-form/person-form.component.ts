@@ -59,6 +59,10 @@ import { PerdidaService } from '../../services/perdida.service';
 import { Perdida } from '../../domain/perdida.model';
 import { AddPerdidaDialogComponent } from '../add-perdida-dialog/add-perdida-dialog.component';
 import { PerdidaListComponent } from '../perdida-list/perdida-list.component';
+import { IngresoService } from '../../services/ingreso.service';
+import { Ingreso } from '../../domain/ingreso.model';
+import { AddIngresoDialogComponent } from '../add-ingreso-dialog/add-ingreso-dialog.component';
+import { IngresoListComponent } from '../ingreso-list/ingreso-list.component';
 import { InteresesComponent } from '../intereses/intereses.component';
 
 
@@ -94,7 +98,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		TrabajoListComponent,
 		ActividadesExtraListComponent,
 		PerdidaListComponent,
-		InteresesComponent
+		InteresesComponent,
+		IngresoListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -115,6 +120,7 @@ export class PersonFormComponent implements OnInit {
 	private trabajoService = inject(TrabajoService);
 	private actividadService = inject(ActividadService);
 	private perdidaService = inject(PerdidaService);
+	private ingresoService = inject(IngresoService);
 	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
@@ -149,6 +155,9 @@ export class PersonFormComponent implements OnInit {
 
 	perdidas = signal<Perdida[]>([]);
 	loadingPerdidas = signal(false);
+
+	ingresos = signal<Ingreso[]>([]);
+	loadingIngresos = signal(false);
 
 	personData = signal<Persona | null>(null);
 
@@ -199,6 +208,7 @@ export class PersonFormComponent implements OnInit {
 				this.loadTrabajos(dni);
 				this.loadActividades(dni);
 				this.loadPerdidas(dni);
+				this.loadIngresos(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -811,6 +821,83 @@ export class PersonFormComponent implements OnInit {
 		});
 	}
 
+
+
+	// === INGRESO ACTIONS ===
+	private loadIngresos(dni: string): void {
+		this.loadingIngresos.set(true);
+		this.ingresoService.getIngresosByDni(Number(dni)).subscribe({
+			next: (data) => {
+				this.ingresos.set(data);
+				this.loadingIngresos.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando ingresos', err);
+				this.loadingIngresos.set(false);
+			}
+		});
+	}
+
+	onAddIngreso(): void {
+		if (!this.personDni()) return;
+		const dialogRef = this.dialog.open(AddIngresoDialogComponent, {
+			width: '500px',
+			data: { dni: Number(this.personDni()) }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.ingresoService.createIngreso(result).subscribe({
+					next: () => {
+						this.snackBar.open('Ingreso agregado', 'Cerrar', { duration: 3000 });
+						this.loadIngresos(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error creando ingreso', err);
+						let errorMessage = 'Error al crear ingreso';
+						if (err.status === 400 && err.error?.message === 'Este ingreso ya existe') {
+							errorMessage = 'El ingreso ya existe para este programa y persona';
+						} else if (err.status === 400) {
+							errorMessage = err.error?.message || 'Error en los datos del ingreso';
+						}
+						this.snackBar.open(errorMessage, 'Cerrar', {
+							duration: 3000
+						});
+						this.loadingIngresos.set(false);
+					}
+				});
+			}
+		});
+	}
+
+	onDeleteIngreso(ingreso: Ingreso): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Ingreso',
+				message: `¿Está seguro de eliminar este ingreso?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && ingreso.id) {
+				this.ingresoService.deleteIngreso(ingreso.id).subscribe({
+					next: () => {
+						this.snackBar.open('Ingreso eliminado', 'Cerrar', { duration: 3000 });
+						this.loadIngresos(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando ingreso', err);
+						this.snackBar.open('Error al eliminar ingreso', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+
 	onDeleteTrabajo(trabajo: Trabajo): void {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '400px',
@@ -854,6 +941,7 @@ export class PersonFormComponent implements OnInit {
 	}
 
 	onAddActividad(): void {
+		if (!this.personDni()) return;
 		const dialogRef = this.dialog.open(AddActividadDialogComponent, {
 			width: '500px',
 			data: { dni: Number(this.personDni()) }
@@ -918,6 +1006,7 @@ export class PersonFormComponent implements OnInit {
 	}
 
 	onAddPerdida(): void {
+		if (!this.personDni()) return;
 		const dialogRef = this.dialog.open(AddPerdidaDialogComponent, {
 			width: '500px',
 			data: { dni: Number(this.personDni()) }

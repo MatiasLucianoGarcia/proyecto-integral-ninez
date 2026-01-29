@@ -38,7 +38,7 @@ const crearIngreso = async ({ dni, id_programa, id_efector, dni_familiar, fecha_
 const obtenerTodosLosIngresos = async () => {
   const { data, error } = await supabase
     .from('ingreso_programa')
-    .select('*')
+    .select('*, programa(nombre), efector(nombre), familiar:persona!dni_familiar(dni, nombre, apellido)')
     .order('id', { ascending: true });
 
   if (error) throw error;
@@ -80,7 +80,7 @@ const obtenerIngresosPorDni = async (dni) => {
 
   const { data, error } = await supabase
     .from('ingreso_programa')
-    .select('*')
+    .select('*, programa(nombre), efector(nombre), familiar:persona!dni_familiar(dni, nombre, apellido)')
     .eq('dni', dni);
 
   if (error) throw error;

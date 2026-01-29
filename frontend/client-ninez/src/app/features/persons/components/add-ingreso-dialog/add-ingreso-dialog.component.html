@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>Agregar Ingreso</h2>
+<mat-dialog-content>
+    <form [formGroup]="ingresoForm" class="dialog-form">
+        <mat-form-field appearance="outline">
+            <mat-label>Programa</mat-label>
+            <mat-select formControlName="id_programa">
+                @for (programa of programas(); track programa.id) {
+                <mat-option [value]="programa.id">
+                    {{ programa.nombre }}
+                </mat-option>
+                }
+            </mat-select>
+            <mat-error>Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Familiar Asociado</mat-label>
+            <mat-select formControlName="dni_familiar">
+                <mat-option [value]="null">Ninguno</mat-option>
+                @for (member of familyMembers(); track member.id) {
+                <mat-option [value]="member.persona.dni">
+                    {{ member.persona.nombre }} {{ member.persona.apellido }} ({{ member.parentezco.descripcion }})
+                </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Efector</mat-label>
+            <mat-select formControlName="id_efector">
+                <mat-option [value]="null">Ninguno</mat-option>
+                @for (efector of efectores(); track efector.id) {
+                <mat-option [value]="efector.id">
+                    {{ efector.nombre }} ({{ efector.area }})
+                </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput formControlName="observaciones" placeholder="Detalles adicionales..."></textarea>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" [disabled]="ingresoForm.invalid" (click)="onSubmit()">
+        Guardar
+    </button>
+</mat-dialog-actions>

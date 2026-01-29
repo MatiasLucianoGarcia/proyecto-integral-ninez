@@ -194,6 +194,44 @@
 						</div>
 					</form>
 
+					<!-- Ingresos Section -->
+					@if(personDni()) {
+					<mat-divider class="section-divider"></mat-divider>
+					<div class="tab-content">
+						<div class="family-tab-header">
+							<div class="header-info">
+								<mat-icon class="header-icon">assignment_ind</mat-icon>
+								<div>
+									<h2 class="family-title">Ingresos</h2>
+									<p class="family-subtitle">
+										{{ ingresos().length > 0 ? 'Ingresos registrados' : 'No hay ingresos
+										registrados' }}
+									</p>
+								</div>
+							</div>
+							@if(!isViewMode) {
+							<button mat-raised-button color="primary" class="add-family-button"
+								(click)="onAddIngreso()">
+								<mat-icon>post_add</mat-icon>
+								Agregar Ingreso
+							</button>
+							}
+						</div>
+
+						@if(loadingIngresos()) {
+						<div class="loading-container">
+							<mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+							<p>Cargando ingresos...</p>
+						</div>
+						}
+
+						@if(!loadingIngresos()) {
+						<app-ingreso-list [ingresos]="ingresos()" [isViewMode]="isViewMode"
+							(deleteIngreso)="onDeleteIngreso($event)"></app-ingreso-list>
+						}
+					</div>
+					}
+
 					<!-- Domicilio Section (Moved here) -->
 					@if(personDni()) {
 					<mat-divider class="section-divider"></mat-divider>

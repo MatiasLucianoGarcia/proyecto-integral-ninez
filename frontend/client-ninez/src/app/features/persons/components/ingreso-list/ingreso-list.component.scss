@@ -1,0 +1,114 @@
+.ingresos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ingreso-card {
+    padding: 1rem;
+    border-left: 4px solid #3f51b5; // Blue (Primary) for Ingresos
+    background-color: #ffffff;
+
+    .card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+.ingreso-info {
+    flex: 1;
+
+    .info-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+
+        .program-name {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            min-width: 200px;
+        }
+
+        .chips-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+    }
+
+    .observaciones {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+}
+
+.efector-chip,
+.familiar-chip {
+    font-size: 0.8rem !important;
+    height: 32px !important; // Standardize height
+    display: flex !important;
+    align-items: center !important;
+
+    // Use MDC variables to control native styling
+    --mdc-chip-elevated-container-color: transparent;
+    --mdc-chip-label-text-color: #333;
+    --mdc-chip-outline-width: 1px;
+    --mdc-chip-container-shape: 16px;
+    --mdc-chip-elevated-container-elevation: 0;
+
+    // Ensure shadow is gone
+    box-shadow: none !important;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.familiar-chip {
+    --mdc-chip-label-text-color: #0d47a1;
+    --mdc-chip-outline-color: #90caf9;
+    --mdc-chip-with-icon-icon-color: #0d47a1; // Also color the icon
+}
+
+.efector-chip {
+    --mdc-chip-label-text-color: #212121;
+    --mdc-chip-outline-color: #bdbdbd;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    color: #888;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+
+    mat-icon {
+        font-size: 3rem;
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}

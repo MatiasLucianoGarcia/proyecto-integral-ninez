@@ -1,0 +1,45 @@
+<div class="ingresos-list">
+    @for (ingreso of ingresos(); track $index) {
+    <mat-card class="ingreso-card">
+        <div class="card-content">
+            <div class="ingreso-info">
+                <div class="info-header">
+                    <h3 class="program-name">{{ ingreso.programa?.nombre || 'Programa desconocido' }}</h3>
+                    <div class="chips-container">
+                        <mat-chip-set>
+                            @if (ingreso.efector) {
+                            <mat-chip class="efector-chip">
+                                {{ ingreso.efector.nombre }}
+                            </mat-chip>
+                            }
+                            @if (ingreso.familiar) {
+                            <mat-chip class="familiar-chip" color="accent" selected>
+                                <mat-icon matChipAvatar>family_restroom</mat-icon>
+                                {{ ingreso.familiar.nombre }} {{ ingreso.familiar.apellido }}
+                            </mat-chip>
+                            }
+                        </mat-chip-set>
+                    </div>
+                </div>
+
+                @if (ingreso.observaciones) {
+                <p class="observaciones">{{ ingreso.observaciones }}</p>
+                }
+            </div>
+
+            @if (!isViewMode()) {
+            <div class="actions">
+                <button mat-icon-button color="warn" (click)="onDelete(ingreso)" matTooltip="Eliminar ingreso">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            }
+        </div>
+    </mat-card>
+    } @empty {
+    <div class="empty-state">
+        <mat-icon>assignment_ind</mat-icon>
+        <p>No hay ingresos registrados</p>
+    </div>
+    }
+</div>
