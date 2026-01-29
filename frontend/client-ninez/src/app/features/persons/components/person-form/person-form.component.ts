@@ -64,6 +64,10 @@ import { Ingreso } from '../../domain/ingreso.model';
 import { AddIngresoDialogComponent } from '../add-ingreso-dialog/add-ingreso-dialog.component';
 import { IngresoListComponent } from '../ingreso-list/ingreso-list.component';
 import { InteresesComponent } from '../intereses/intereses.component';
+import { ArticulacionService } from '../../services/articulacion.service';
+import { Articulacion } from '../../domain/articulacion.model';
+import { AddArticulacionDialogComponent } from '../add-articulacion-dialog/add-articulacion-dialog.component';
+import { ArticulacionListComponent } from '../articulacion-list/articulacion-list.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -99,7 +103,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		ActividadesExtraListComponent,
 		PerdidaListComponent,
 		InteresesComponent,
-		IngresoListComponent
+		IngresoListComponent,
+		ArticulacionListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',
@@ -121,6 +126,7 @@ export class PersonFormComponent implements OnInit {
 	private actividadService = inject(ActividadService);
 	private perdidaService = inject(PerdidaService);
 	private ingresoService = inject(IngresoService);
+	private articulacionService = inject(ArticulacionService);
 	private userDataService = inject(UserDataService);
 
 	personForm!: FormGroup;
@@ -158,6 +164,9 @@ export class PersonFormComponent implements OnInit {
 
 	ingresos = signal<Ingreso[]>([]);
 	loadingIngresos = signal(false);
+
+	articulaciones = signal<Articulacion[]>([]);
+	loadingArticulaciones = signal(false);
 
 	personData = signal<Persona | null>(null);
 
@@ -208,7 +217,9 @@ export class PersonFormComponent implements OnInit {
 				this.loadTrabajos(dni);
 				this.loadActividades(dni);
 				this.loadPerdidas(dni);
+				this.loadPerdidas(dni);
 				this.loadIngresos(dni);
+				this.loadArticulaciones(dni);
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -1049,6 +1060,69 @@ export class PersonFormComponent implements OnInit {
 					error: (err) => {
 						console.error('Error eliminando pérdida', err);
 						this.snackBar.open('Error al eliminar pérdida', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+	// === ARTICULACION ACTIONS ===
+	private loadArticulaciones(dni: string): void {
+		this.loadingArticulaciones.set(true);
+		this.articulacionService.getArticulacionesByDni(Number(dni)).subscribe({
+			next: (data) => {
+				this.articulaciones.set(data);
+				this.loadingArticulaciones.set(false);
+			},
+			error: (err) => {
+				console.error('Error cargando articulaciones', err);
+				this.loadingArticulaciones.set(false);
+			}
+		});
+	}
+
+	onAddArticulacion(): void {
+		const dialogRef = this.dialog.open(AddArticulacionDialogComponent, {
+			width: '500px',
+			data: { ingresos: this.ingresos() } // Pass ingresos for selection
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.articulacionService.createArticulacion(result).subscribe({
+					next: () => {
+						this.snackBar.open('Articulación agregada', 'Cerrar', { duration: 3000 });
+						this.loadArticulaciones(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error creando articulación', err);
+						this.snackBar.open('Error al crear articulación', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
+		});
+	}
+
+	onDeleteArticulacion(articulacion: Articulacion): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Articulación',
+				message: '¿Está seguro de eliminar esta articulación?',
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && articulacion.id) {
+				this.articulacionService.deleteArticulacion(articulacion.id).subscribe({
+					next: () => {
+						this.snackBar.open('Articulación eliminada', 'Cerrar', { duration: 3000 });
+						this.loadArticulaciones(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando articulación', err);
+						this.snackBar.open('Error al eliminar articulación', 'Cerrar', { duration: 3000 });
 					}
 				});
 			}

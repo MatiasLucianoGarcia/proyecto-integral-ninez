@@ -23,7 +23,7 @@ const obtenerArticulacionesPorDni = async (dni) => {
 
   const { data, error } = await supabase
     .from('articulacion')
-    .select('*, ingreso_programa!inner(dni)')
+    .select('*, ingreso_programa!inner(dni, programa(nombre)), efector(nombre)')
     .eq('ingreso_programa.dni', dni);
 
   if (error) throw error;
@@ -37,7 +37,7 @@ const obtenerArticulacionesPorDniEIngreso = async (dni, id_ingreso) => {
 
   const { data, error } = await supabase
     .from('articulacion')
-    .select('*, ingreso_programa!inner(dni)')
+    .select('*, ingreso_programa!inner(dni, programa(nombre)), efector(nombre)')
     .eq('ingreso_programa.dni', dni)
     .eq('id_ingreso', id_ingreso);
 

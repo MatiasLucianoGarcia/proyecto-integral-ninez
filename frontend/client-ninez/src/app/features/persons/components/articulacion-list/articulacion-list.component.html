@@ -1,0 +1,46 @@
+<div class="articulaciones-list">
+    @for (articulacion of articulaciones(); track $index) {
+    <mat-card class="articulacion-card">
+        <div class="card-content">
+            <div class="articulacion-info">
+                <div class="info-header">
+                    <!-- Ingreso Program Name -->
+                    <span style="font-size: 0.9rem; color: #666; margin-right: 4px;">Ingreso:</span>
+                    <h3 class="ingreso-program-name">
+                        {{ articulacion.ingreso_programa?.programa?.nombre || 'Programa Desconocido' }}
+                    </h3>
+
+                    <div class="chips-container">
+                        <!-- Efector Chip -->
+                        @if (articulacion.efector) {
+                        <mat-chip class="efector-chip">
+                            {{ articulacion.efector.nombre }}
+                        </mat-chip>
+                        }
+                    </div>
+                </div>
+
+                @if (articulacion.observacion) {
+                <p class="observaciones">{{ articulacion.observacion }}</p>
+                }
+
+                <p class="fecha">Fecha: {{ articulacion.fecha_articulacion | date:'dd/MM/yyyy' }}</p>
+            </div>
+
+            @if (!isViewMode()) {
+            <div class="actions">
+                <button mat-icon-button color="warn" (click)="onDelete(articulacion)"
+                    matTooltip="Eliminar articulación">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            }
+        </div>
+    </mat-card>
+    } @empty {
+    <div class="empty-state">
+        <mat-icon>hub</mat-icon>
+        <p>No hay articulaciones registradas</p>
+    </div>
+    }
+</div>

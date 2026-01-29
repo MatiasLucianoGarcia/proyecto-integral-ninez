@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Agregar Articulación</h2>
+<mat-dialog-content>
+    <form [formGroup]="articulacionForm" class="dialog-form">
+        <div class="info-note">
+            <mat-icon>info</mat-icon>
+            <p>Seleccione el ingreso al que desea vincular esta articulación.</p>
+        </div>
+
+        <!-- Ingreso Selection -->
+        <mat-form-field appearance="outline">
+            <mat-label>Programa (Ingreso)</mat-label>
+            <mat-select formControlName="id_ingreso">
+                @for (ingreso of data.ingresos; track ingreso.id) {
+                <mat-option [value]="ingreso.id">
+                    {{ ingreso.programa?.nombre }} ({{ ingreso.fecha_ingreso | date:'dd/MM/yyyy' }})
+                </mat-option>
+                }
+            </mat-select>
+            <mat-error>Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Efector Selection -->
+        <mat-form-field appearance="outline">
+            <mat-label>Efector Vinculado</mat-label>
+            <mat-select formControlName="id_efector">
+                @for (efector of efectores(); track efector.id) {
+                <mat-option [value]="efector.id">
+                    {{ efector.nombre }} ({{ efector.area }})
+                </mat-option>
+                }
+            </mat-select>
+            <mat-error>Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Fecha -->
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha de Articulación</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha_articulacion">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error>Requerido</mat-error>
+        </mat-form-field>
+
+        <!-- Observaciones -->
+        <mat-form-field appearance="outline">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput formControlName="observacion" placeholder="Detalles de la articulación..."></textarea>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" [disabled]="articulacionForm.invalid" (click)="onSubmit()">
+        Guardar
+    </button>
+</mat-dialog-actions>

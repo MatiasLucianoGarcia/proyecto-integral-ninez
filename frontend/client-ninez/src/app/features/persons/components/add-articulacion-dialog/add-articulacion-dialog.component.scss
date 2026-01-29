@@ -1,0 +1,37 @@
+.dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 400px;
+    padding-top: 1rem;
+}
+
+.info-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #e3f2fd;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    color: #0d47a1;
+
+    mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+textarea {
+    min-height: 80px;
+}
