@@ -140,7 +140,7 @@ export class PersonFormComponent implements OnInit {
 	private userDataService = inject(UserDataService);
 
 	onAddServicioLocal(): void {
-		this.servicioLocalList.openAddDialog();
+		this.servicioLocalList?.openAddDialog();
 	}
 
 	personForm!: FormGroup;
@@ -185,7 +185,7 @@ export class PersonFormComponent implements OnInit {
 	viviendas = signal<Vivienda[]>([]);
 	loadingViviendas = signal(false);
 
-	@ViewChild(ServicioLocalListComponent) servicioLocalList!: ServicioLocalListComponent;
+	@ViewChild(ServicioLocalListComponent) servicioLocalList?: ServicioLocalListComponent;
 
 	personData = signal<Persona | null>(null);
 
