@@ -1,0 +1,84 @@
+<div class="hoja-ruta-container">
+    <div class="family-tab-header">
+        <div class="header-info">
+            <mat-icon class="header-icon">map</mat-icon>
+            <div>
+                <h2 class="family-title">Hoja de Ruta</h2>
+                <p class="family-subtitle">Registro de actividades y seguimiento</p>
+            </div>
+        </div>
+        @if (!isViewMode()) {
+        <button mat-raised-button color="primary" class="add-family-button" (click)="openAddDialog()">
+            <mat-icon>add_road</mat-icon>
+            Agregar Registro
+        </button>
+        }
+    </div>
+
+    <div class="table-container mat-elevation-z2">
+        @if (loading()) {
+        <div class="loading-overlay">
+            <p>Cargando datos...</p>
+        </div>
+        }
+
+        <table mat-table [dataSource]="dataSource">
+
+            <!-- Servicio Column -->
+            <ng-container matColumnDef="servicio">
+                <th mat-header-cell *matHeaderCellDef> Intervención </th>
+                <td mat-cell *matCellDef="let element">
+                    {{ element.servicio_local?.fecha_ingreso | date:'dd/MM/yyyy' }}
+                    <br>
+                    <small style="color: gray;">
+                        {{ element.servicio_local?.equipo?.nombre || getEquipoName(element.servicio_local?.id_equipo) }}
+                    </small>
+                </td>
+            </ng-container>
+
+            <!-- Fecha Column -->
+            <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                <td mat-cell *matCellDef="let element"> {{ element.fecha | date:'dd/MM/yyyy' }} </td>
+            </ng-container>
+
+            <!-- Actividad Column -->
+            <ng-container matColumnDef="actividad">
+                <th mat-header-cell *matHeaderCellDef> Actividad </th>
+                <td mat-cell *matCellDef="let element"> {{ element.actividad }} </td>
+            </ng-container>
+
+            <!-- Resultado Column -->
+            <ng-container matColumnDef="resultado">
+                <th mat-header-cell *matHeaderCellDef> Resultado </th>
+                <td mat-cell *matCellDef="let element"> {{ element.resultado }} </td>
+            </ng-container>
+
+            <!-- Acciones Column -->
+            <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                <td mat-cell *matCellDef="let element">
+                    @if (!isViewMode()) {
+                    <button mat-icon-button color="warn" (click)="deleteHojaRuta(element)" matTooltip="Eliminar">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    }
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <!-- Row shown when there is no matching data. -->
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="5" style="text-align: center; padding: 20px;">
+                    No hay registros de hoja de ruta
+                </td>
+            </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25]" [pageSize]="10" showFirstLastButtons
+            aria-label="Seleccionar página de hoja de ruta">
+        </mat-paginator>
+    </div>
+</div>

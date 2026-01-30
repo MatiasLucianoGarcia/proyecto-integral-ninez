@@ -74,6 +74,7 @@ import { ViviendaListComponent } from '../vivienda-list/vivienda-list.component'
 import { AddViviendaDialogComponent } from '../add-vivienda-dialog/add-vivienda-dialog.component';
 import { CondicionesVidaComponent } from '../condiciones-vida/condiciones-vida.component';
 import { ServicioLocalListComponent } from '../servicio-local-list/servicio-local-list.component';
+import { HojaRutaListComponent } from '../hoja-ruta-list/hoja-ruta-list.component';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -113,7 +114,8 @@ type FormMode = 'create' | 'edit' | 'view';
 		ArticulacionListComponent,
 		ViviendaListComponent,
 		CondicionesVidaComponent,
-		ServicioLocalListComponent
+		ServicioLocalListComponent,
+		HojaRutaListComponent
 	],
 	templateUrl: './person-form.component.html',
 	styleUrl: './person-form.component.scss',

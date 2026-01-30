@@ -1,0 +1,119 @@
+.hoja-ruta-container {
+    // Inherits global styles from parent for family-tab-header, etc. 
+    // Just ensure spacing is correct
+    padding: 0; // Padding handled by parent tab-content usually, but we are inside a div
+
+    // Re-declare header styles locally if they are not global (assuming they are in person-form.scss but we are in encapsulated component)
+    // To match exactly, we should copy the styles or prompt user to make them global.
+    // For now, I will paste the clean header styles here to ensure they work.
+
+    .family-tab-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding: 0 8px;
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            .header-icon {
+                font-size: 40px;
+                height: 40px;
+                width: 40px;
+                color: #1976d2; // Primary blue
+            }
+
+            .family-title {
+                margin: 0;
+                font-size: 1.25rem;
+                font-weight: 500;
+                color: #2c3e50;
+            }
+
+            .family-subtitle {
+                margin: 4px 0 0;
+                font-size: 0.875rem;
+                color: #7f8c8d;
+            }
+        }
+    }
+}
+
+.table-container {
+    position: relative;
+    overflow-x: auto;
+    border-radius: 4px;
+    background: white;
+
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.7);
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 500;
+    }
+
+    table {
+        width: 100%;
+        background-color: white; // Force white background
+
+        // Use ::ng-deep to override Material internal styles strongly
+        ::ng-deep th.mat-mdc-header-cell {
+            background-color: rgb(37, 99, 235) !important; // Specific RGB Blue
+            color: white !important; // White text
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        ::ng-deep td.mat-mdc-cell {
+            color: black !important; // "Negro negro"
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+        }
+
+        tr.mat-row:hover {
+            background-color: #f5f5f5; // Standard grey hover
+        }
+    }
+
+    mat-paginator {
+        background-color: rgb(37, 99, 235) !important; // Specific RGB Blue
+        color: white !important;
+
+        // Use ::ng-deep to target internal paginator elements since they are view encapsulated
+        ::ng-deep {
+            .mat-mdc-paginator-container {
+                color: white; // Ensure text is white
+            }
+
+            .mat-mdc-paginator-navigation-previous,
+            .mat-mdc-paginator-navigation-next,
+            .mat-mdc-paginator-page-size-select {
+                color: white; // Icons and select arrow
+
+                svg {
+                    fill: black !important;
+                }
+            }
+
+            .mat-mdc-select-value {
+                color: black !important;
+                font-weight: 500;
+            }
+
+            .mat-mdc-select-arrow {
+                color: white;
+            }
+        }
+    }
+}

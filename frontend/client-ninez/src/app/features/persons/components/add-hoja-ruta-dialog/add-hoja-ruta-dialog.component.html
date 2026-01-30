@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Agregar Hoja de Ruta</h2>
+<div mat-dialog-content>
+    <form [formGroup]="form" class="dialog-form">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Intervención Asociada</mat-label>
+            <mat-select formControlName="id_servicio_local">
+                @for (servicio of serviciosLocales; track servicio.id) {
+                <mat-option [value]="servicio.id">
+                    {{ servicio.fecha_ingreso | date:'dd/MM/yyyy' }} - {{ servicio.equipo?.nombre || 'Equipo #' +
+                    servicio.id_equipo }}
+                </mat-option>
+                }
+                @if (serviciosLocales.length === 0) {
+                <mat-option disabled>No hay intervenciones registradas</mat-option>
+                }
+            </mat-select>
+            <mat-error *ngIf="form.get('id_servicio_local')?.hasError('required')">Requerido</mat-error>
+            <mat-hint *ngIf="serviciosLocales.length === 0">Debe crear una intervención primero</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="form.get('fecha')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Actividad</mat-label>
+            <textarea matInput formControlName="actividad" rows="3"
+                placeholder="Descripción de la actividad realizada..."></textarea>
+            <mat-error *ngIf="form.get('actividad')?.hasError('required')">Requerido</mat-error>
+            <mat-error *ngIf="form.get('actividad')?.hasError('minlength')">Mínimo 5 caracteres</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Resultado</mat-label>
+            <textarea matInput formControlName="resultado" rows="3" placeholder="Resultados obtenidos..."></textarea>
+            <mat-error *ngIf="form.get('resultado')?.hasError('required')">Requerido</mat-error>
+            <mat-error *ngIf="form.get('resultado')?.hasError('minlength')">Mínimo 5 caracteres</mat-error>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" [disabled]="form.invalid || serviciosLocales.length === 0"
+        (click)="onSubmit()">Guardar</button>
+</div>

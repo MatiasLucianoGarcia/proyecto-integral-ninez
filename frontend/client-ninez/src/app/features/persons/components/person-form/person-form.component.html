@@ -671,6 +671,12 @@
 						<p>Guarde la persona primero para acceder a las funciones de Servicio Local.</p>
 					</div>
 					}
+
+					<mat-divider style="margin: 20px 0;"></mat-divider>
+
+					@if(personDni()) {
+					<app-hoja-ruta-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-hoja-ruta-list>
+					}
 				</div>
 			</mat-tab>
 			}
