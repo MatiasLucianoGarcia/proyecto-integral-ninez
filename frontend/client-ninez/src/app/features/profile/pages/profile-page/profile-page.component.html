@@ -1,0 +1,105 @@
+<app-nav-bar></app-nav-bar>
+
+
+
+<div class="profile-container">
+    <!-- Header Banner -->
+    <div class="profile-header-banner">
+        <button mat-icon-button (click)="goBack()" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+    </div>
+
+    <div class="profile-content-wrapper">
+        <!-- Profile Summary (Avatar & Name) -->
+        <div class="profile-summary">
+            <div class="avatar-container">
+                <mat-icon>person</mat-icon>
+            </div>
+            <h1 class="user-name">{{ user?.nombre || 'Usuario' }}</h1>
+            <span class="user-role-badge">{{ user?.rol?.nombre_rol || 'Rol Desconocido' }}</span>
+        </div>
+
+        <div class="content-grid">
+            <!-- Left Column: Personal Info -->
+            <div class="info-section">
+                <h2>Información Personal</h2>
+                <mat-card class="content-card">
+                    <mat-card-content>
+                        <div class="info-item">
+                            <div class="icon-box">
+                                <mat-icon>business</mat-icon>
+                            </div>
+                            <div class="info-text">
+                                <span class="label">Entidad</span>
+                                <span class="value">{{ user?.entidad?.nombre || 'No asignada' }}</span>
+                            </div>
+                        </div>
+
+                        <mat-divider></mat-divider>
+
+                        <div class="info-item" *ngIf="user?.entidad?.descripcion">
+                            <div class="icon-box">
+                                <mat-icon>info</mat-icon>
+                            </div>
+                            <div class="info-text">
+                                <span class="label">Descripción</span>
+                                <span class="value">{{ user?.entidad?.descripcion }}</span>
+                            </div>
+                        </div>
+
+                        <mat-divider></mat-divider>
+
+                        <div class="info-item">
+                            <div class="icon-box">
+                                <mat-icon>verified_user</mat-icon>
+                            </div>
+                            <div class="info-text">
+                                <span class="label">Estado de Cuenta</span>
+                                <span class="value status-active">Activa</span>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+
+            <!-- Right Column: Security -->
+            <div class="security-section">
+                <h2>Seguridad</h2>
+                <mat-card class="content-card">
+                    <mat-card-content>
+                        <p class="section-description">
+                            Actualice su contraseña periódicamente para mantener su cuenta segura.
+                        </p>
+
+                        <form [formGroup]="passForm" #formDirective="ngForm" (ngSubmit)="onSubmit(formDirective)"
+                            class="security-form">
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Nueva Contraseña</mat-label>
+                                <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+                                <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword"
+                                    [attr.aria-label]="'Ocultar contraseña'">
+                                    <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                </button>
+                                <mat-error *ngIf="passForm.get('password')?.hasError('required')">
+                                    La contraseña es requerida
+                                </mat-error>
+                                <mat-error *ngIf="passForm.get('password')?.hasError('minlength')">
+                                    Mínimo 6 caracteres
+                                </mat-error>
+                            </mat-form-field>
+
+                            <div class="form-actions">
+                                <button mat-raised-button color="primary" type="submit"
+                                    [disabled]="passForm.invalid || loading()">
+                                    <mat-icon>save</mat-icon>
+                                    {{ loading() ? 'Actualizando...' : 'Actualizar Contraseña' }}
+                                </button>
+                            </div>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>

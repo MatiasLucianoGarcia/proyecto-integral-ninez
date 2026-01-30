@@ -5,5 +5,7 @@ export interface User {
     id: number;
     entidad: Entity;
     nombre: string;
-    rol : RolEnum;
+    rol: {
+        nombre_rol: string;
+    };
 }

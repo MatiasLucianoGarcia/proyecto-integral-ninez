@@ -12,6 +12,11 @@ export const routes: Routes = [
 		loadChildren: () => import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
 	},
 	{
+		path: 'perfil',
+		canActivate: [SessionGuard],
+		loadComponent: () => import('./features/profile/pages/profile-page/profile-page.component').then((m) => m.ProfilePageComponent),
+	},
+	{
 		path: 'person-form',
 		canActivate: [SessionGuard],
 		loadComponent: () => import('./features/persons/components/person-form/person-form.component').then((m) => m.PersonFormComponent),

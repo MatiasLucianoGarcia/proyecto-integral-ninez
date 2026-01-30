@@ -52,9 +52,31 @@ const deleteUsuario = async (req, res) => {
   }
 };
 
+// Actualizar contraseña propia
+const updateMyPassword = async (req, res) => {
+  try {
+    // Seguridad: Usar el ID del token, no del body ni params
+    const idUsuario = req.user.id;
+    const { contraseña } = req.body;
+
+    if (!contraseña || contraseña.length < 6) {
+      return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+    }
+
+    await usuarioService.updatePassword(idUsuario, contraseña);
+    res.json({ message: 'Contraseña actualizada correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(error.status || 500).json({
+      message: error.message || "Error al actualizar contraseña",
+    });
+  }
+};
+
 module.exports = {
   createUsuario,
   getUsuarioById,
   updateUsuario,
+  updateMyPassword,
   deleteUsuario,
 };

@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DashboardSidebarService } from '../../services/dashboard-sidebar.service';
 import { Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UserDataService } from '../../../login/data/user-data.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -13,7 +13,7 @@ import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
 	selector: 'app-nav-bar',
-	imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatSidenavModule, MatMenuModule, MatBadgeModule, MatDividerModule],
+	imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatSidenavModule, MatMenuModule, MatBadgeModule, MatDividerModule, RouterModule],
 	templateUrl: './nav-bar.component.html',
 	styleUrl: './nav-bar.component.scss',
 	standalone: true,

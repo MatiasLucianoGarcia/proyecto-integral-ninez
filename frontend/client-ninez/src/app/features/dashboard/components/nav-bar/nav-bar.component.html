@@ -1,7 +1,8 @@
 <mat-toolbar class="navbar">
 	<div class="navbar-content">
 		<div class="navbar-left">
-			<button mat-icon-button class="menu-button" aria-label="Abrir menú de navegación" (click)="menuClick.emit()">
+			<button mat-icon-button class="menu-button" aria-label="Abrir menú de navegación"
+				(click)="menuClick.emit()">
 				<mat-icon>menu</mat-icon>
 			</button>
 			<div class="brand">
@@ -31,7 +32,7 @@
 			</div>
 		</div>
 		<mat-divider></mat-divider>
-		<button mat-menu-item>
+		<button mat-menu-item [routerLink]="['/perfil']">
 			<mat-icon>person</mat-icon>
 			<span>Mi Perfil</span>
 		</button>

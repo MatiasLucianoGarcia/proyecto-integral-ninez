@@ -38,9 +38,34 @@ const getUsuarioById = async (id) => {
   return data;
 };
 
+// Actualizar solo contraseña
+const updatePassword = async (id, nuevaContraseña) => {
+  const hashedPassword = await bcrypt.hash(nuevaContraseña, 10);
+
+  const { data, error } = await supabase
+    .from('usuario')
+    .update({ contraseña: hashedPassword })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error && error.code === 'PGRST116') {
+    const err = new Error(`El usuario con ID ${id} no existe`);
+    err.status = 404;
+    throw err;
+  }
+
+  if (error) throw error;
+  return data;
+};
+
 // Actualizar usuario
 const updateUsuario = async (id, { nombre, contraseña, id_entidad, id_rol }) => {
-  let updateFields = { nombre, id_entidad, id_rol };
+  // Construir objeto de actualización solo con campos definidos
+  let updateFields = {};
+  if (nombre !== undefined) updateFields.nombre = nombre;
+  if (id_entidad !== undefined) updateFields.id_entidad = id_entidad;
+  if (id_rol !== undefined) updateFields.id_rol = id_rol;
 
   if (contraseña) {
     updateFields.contraseña = await bcrypt.hash(contraseña, 10);
@@ -89,5 +114,6 @@ module.exports = {
   createUsuario,
   getUsuarioById,
   updateUsuario,
+  updatePassword,
   deleteUsuario,
 };

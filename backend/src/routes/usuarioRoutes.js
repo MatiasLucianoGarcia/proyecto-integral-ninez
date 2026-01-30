@@ -13,4 +13,8 @@ router.delete('/:id', authenticate, authorizeRoles('Administrador'), usuarioCont
 // Cualquier usuario autenticado puede consultar su propio perfil
 router.get('/:id', authenticate, usuarioController.getUsuarioById);
 
+// Cualquier usuario autenticado puede cambiar SU PROPIA contraseña
+// Usa el ID del token, no requiere ID en la URL para mayor seguridad
+router.put('/perfil/clave', authenticate, usuarioController.updateMyPassword);
+
 module.exports = router;

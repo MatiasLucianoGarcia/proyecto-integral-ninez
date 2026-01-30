@@ -257,14 +257,8 @@ export class PersonFormComponent implements OnInit {
 			return false;
 		}
 
-		// Handle both string and object roles safely
-		let roleName = '';
-		if (typeof user.rol === 'string') {
-			roleName = user.rol;
-		} else if (typeof user.rol === 'object' && 'nombre_rol' in user.rol) {
-			// @ts-ignore - We know it might be an object with nombre_rol based on runtime data
-			roleName = user.rol.nombre_rol;
-		}
+		// Rol is now typed as an object with nombre_rol
+		const roleName = user.rol.nombre_rol;
 
 		if (!roleName) return false;
 
