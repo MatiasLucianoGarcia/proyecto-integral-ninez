@@ -353,24 +353,34 @@ export class PersonFormComponent implements OnInit {
 	}
 
 	onDeleteFamilyMember(member: FamilyMember): void {
-		const confirmed = confirm(`¿Está seguro de eliminar la relación familiar con ${member.persona.nombre} ${member.persona.apellido}?`);
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Familiar',
+				message: `¿Está seguro de eliminar la relación familiar con ${member.persona.nombre} ${member.persona.apellido}?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
 
-		if (confirmed) {
-			this.familyService.deleteFamilyRelation(member.id).subscribe({
-				next: () => {
-					this.snackBar.open('Familiar eliminado exitosamente', 'Cerrar', {
-						duration: 3000,
-					});
-					this.loadFamilyData(this.personDni()!);
-				},
-				error: (error) => {
-					console.error('Error al eliminar familiar:', error);
-					this.snackBar.open('Error al eliminar familiar', 'Cerrar', {
-						duration: 3000,
-					});
-				},
-			});
-		}
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.familyService.deleteFamilyRelation(member.id).subscribe({
+					next: () => {
+						this.snackBar.open('Familiar eliminado exitosamente', 'Cerrar', {
+							duration: 3000,
+						});
+						this.loadFamilyData(this.personDni()!);
+					},
+					error: (error) => {
+						console.error('Error al eliminar familiar:', error);
+						this.snackBar.open('Error al eliminar familiar', 'Cerrar', {
+							duration: 3000,
+						});
+					},
+				});
+			}
+		});
 	}
 
 	onViewFamilyMember(member: FamilyMember): void {
@@ -429,9 +439,9 @@ export class PersonFormComponent implements OnInit {
 				nombre: formValue.nombre,
 				apellido: formValue.apellido,
 				fecha_nacimiento: formValue.fecha_nacimiento,
-				// For selects, we send the ID as object {id: ...} to match backend expectation or just update specific fields
-				genero: { id: formValue.genero },
-				nacionalidad: { id: formValue.nacionalidad }
+				// Send foreign keys as flat IDs as required by backend Joi schema
+				id_genero: formValue.genero,
+				id_nacionalidad: formValue.nacionalidad
 			};
 
 			console.log('Guardando persona:', persona);
@@ -597,12 +607,29 @@ export class PersonFormComponent implements OnInit {
 	}
 
 	onDeleteDomicilio(domicilio: Domicilio): void {
-		this.domicilioService.eliminarDomicilio(domicilio.id!).subscribe({
-			next: () => {
-				this.snackBar.open('Domicilio eliminado', 'Cerrar', { duration: 3000 });
-				this.loadDomicilios(this.personDni()!);
-			},
-			error: (err) => console.error('Error eliminando domicilio', err)
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Domicilio',
+				message: `¿Está seguro de eliminar el domicilio en ${domicilio.nombre} ${domicilio.numero}?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result && domicilio.id) {
+				this.domicilioService.eliminarDomicilio(domicilio.id).subscribe({
+					next: () => {
+						this.snackBar.open('Domicilio eliminado', 'Cerrar', { duration: 3000 });
+						this.loadDomicilios(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando domicilio', err);
+						this.snackBar.open('Error al eliminar domicilio', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
 		});
 	}
 
@@ -628,28 +655,41 @@ export class PersonFormComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe(result => {
 			if (result) {
-				// Result is fully formed contact object ready for service
-				this.contactService.addContact(result).subscribe({
-					next: () => {
-						this.snackBar.open('Contacto agregado', 'Cerrar', { duration: 3000 });
-						this.loadContacts(this.personDni()!);
-					},
-					error: (err) => {
-						console.error('Error creando contacto', err);
-						this.snackBar.open('Error al crear contacto', 'Cerrar', { duration: 3000 });
-					}
-				});
+				// Result is the created contact from the dialog
+				this.snackBar.open('Contacto agregado', 'Cerrar', { duration: 3000 });
+				// Reload the list to ensure we have the fresh data including ID
+				this.loadContacts(this.personDni()!);
 			}
 		});
 	}
 
-	onDeleteContact(contact: Contact): void {
-		this.contactService.deleteContact(contact.id!).subscribe({
-			next: () => {
-				this.snackBar.open('Contacto eliminado', 'Cerrar', { duration: 3000 });
-				this.loadContacts(this.personDni()!);
-			},
-			error: (err) => console.error('Error eliminando contacto', err)
+	onDeleteContact(id: number): void {
+		const contact = this.contacts().find(c => c.id === id);
+		if (!contact) return;
+
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Eliminar Contacto',
+				message: `¿Está seguro de eliminar el contacto ${contact.telefono}?`,
+				confirmText: 'Eliminar',
+				cancelText: 'Cancelar'
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this.contactService.deleteContact(id).subscribe({
+					next: () => {
+						this.snackBar.open('Contacto eliminado', 'Cerrar', { duration: 3000 });
+						this.loadContacts(this.personDni()!);
+					},
+					error: (err) => {
+						console.error('Error eliminando contacto', err);
+						this.snackBar.open('Error al eliminar contacto', 'Cerrar', { duration: 3000 });
+					}
+				});
+			}
 		});
 	}
 

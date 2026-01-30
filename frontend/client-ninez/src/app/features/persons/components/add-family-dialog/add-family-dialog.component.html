@@ -1,20 +1,12 @@
-<div class="dialog-header">
-	<div class="header-content">
-		<mat-icon class="header-icon">{{ isEditMode ? 'edit' : 'person_add' }}</mat-icon>
-		<h2 class="dialog-title">{{ dialogTitle }}</h2>
-	</div>
-	<button mat-icon-button (click)="onCancel()" class="close-button">
-		<mat-icon>close</mat-icon>
-	</button>
-</div>
-
+<h2 mat-dialog-title>{{ dialogTitle }}</h2>
 <mat-dialog-content class="dialog-content">
 	<form [formGroup]="familyForm" class="family-form">
 		<!-- Búsqueda de Persona por DNI -->
 		<div class="search-section">
 			<mat-form-field appearance="outline" class="full-width">
 				<mat-label>DNI del Familiar</mat-label>
-				<input matInput formControlName="dni" placeholder="Ingrese DNI (7-8 dígitos)" type="text" maxlength="8" [readonly]="isEditMode" />
+				<input matInput formControlName="dni" placeholder="Ingrese DNI (7-8 dígitos)" type="text" maxlength="8"
+					[readonly]="isEditMode" />
 				<mat-icon matPrefix>fingerprint</mat-icon>
 				@if(searchingPerson()) {
 				<mat-spinner matSuffix diameter="20"></mat-spinner>
@@ -33,7 +25,8 @@
 				</div>
 				<div class="found-info">
 					<p class="found-name">{{ selectedPerson()?.nombre }} {{ selectedPerson()?.apellido }}</p>
-					<p class="found-details">DNI: {{ selectedPerson()?.dni }} | Género: {{ selectedPerson()?.genero?.nombre }}</p>
+					<p class="found-details">DNI: {{ selectedPerson()?.dni }} | Género: {{
+						selectedPerson()?.genero?.nombre }}</p>
 				</div>
 			</div>
 			} @else if(!searchingPerson() && familyForm.get('dni')?.value?.length >= 7) {
@@ -63,26 +56,18 @@
 		<!-- Observaciones -->
 		<mat-form-field appearance="outline" class="full-width">
 			<mat-label>Observaciones (Opcional)</mat-label>
-			<textarea matInput formControlName="observaciones" placeholder="Información adicional sobre la relación" rows="3"></textarea>
+			<textarea matInput formControlName="observaciones" placeholder="Información adicional sobre la relación"
+				rows="3"></textarea>
 			<mat-icon matPrefix>note</mat-icon>
 		</mat-form-field>
 	</form>
 </mat-dialog-content>
 
-<mat-dialog-actions class="dialog-actions">
-	<button mat-stroked-button type="button" (click)="onCancel()" class="cancel-button">
-		<mat-icon>close</mat-icon>
+<mat-dialog-actions align="end">
+	<button mat-button (click)="onCancel()">
 		Cancelar
 	</button>
-	<button
-		mat-raised-button
-		color="primary"
-		type="submit"
-		(click)="onSubmit()"
-		class="submit-button"
-		[disabled]="familyForm.invalid || !selectedPerson()"
-	>
-		<mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+	<button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="familyForm.invalid || !selectedPerson()">
 		{{ isEditMode ? 'Guardar Cambios' : 'Agregar Familiar' }}
 	</button>
 </mat-dialog-actions>
