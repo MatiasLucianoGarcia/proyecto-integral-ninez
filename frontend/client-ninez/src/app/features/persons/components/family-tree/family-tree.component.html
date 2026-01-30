@@ -1,12 +1,8 @@
 <div class="family-tree-wrapper">
 	@if(familyMembers().length === 0) {
 	<div class="empty-state">
-		<mat-icon class="empty-icon">family_restroom</mat-icon>
-		<h3>No hay familiares registrados</h3>
-		<p>
-			{{ isViewMode() ? 'Esta persona no tiene familiares cargados en el sistema' : 'Agregue familiares usando el
-			botón "Agregar Familiar"' }}
-		</p>
+		<mat-icon>group_off</mat-icon>
+		<p>No hay familiares registrados</p>
 	</div>
 	} @else {
 	<div class="family-grid">
