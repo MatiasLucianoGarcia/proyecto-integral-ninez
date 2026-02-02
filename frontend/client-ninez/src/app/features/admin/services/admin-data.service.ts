@@ -162,4 +162,21 @@ export class AdminDataService {
     deletePrograma(id: string | number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/programas/${id}`);
     }
+
+    // Equipo Local
+    getEquiposLocales(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/equipoLocal`);
+    }
+
+    createEquipoLocal(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/equipoLocal`, data);
+    }
+
+    updateEquipoLocal(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/equipoLocal/${id}`, data);
+    }
+
+    deleteEquipoLocal(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/equipoLocal/${id}`);
+    }
 }

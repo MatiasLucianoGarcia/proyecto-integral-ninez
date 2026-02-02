@@ -19,6 +19,10 @@ export const ADMIN_ROUTES: Routes = [
                 loadComponent: () => import('./pages/protection-data-page/protection-data-page.component').then(m => m.ProtectionDataPageComponent)
             },
             {
+                path: 'equipo-local',
+                loadComponent: () => import('./pages/local-team-page/local-team-page.component').then(m => m.LocalTeamPageComponent)
+            },
+            {
                 path: '',
                 redirectTo: 'usuarios',
                 pathMatch: 'full'
