@@ -12,6 +12,11 @@ export const routes: Routes = [
 		loadChildren: () => import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
 	},
 	{
+		path: 'admin',
+		canActivate: [SessionGuard],
+		loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+	},
+	{
 		path: 'perfil',
 		canActivate: [SessionGuard],
 		loadComponent: () => import('./features/profile/pages/profile-page/profile-page.component').then((m) => m.ProfilePageComponent),

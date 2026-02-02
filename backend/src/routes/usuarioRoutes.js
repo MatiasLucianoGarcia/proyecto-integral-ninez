@@ -6,6 +6,7 @@ const validar = require('../middlewares/validatorMiddleware');
 const { createUsuarioSchema, updateUsuarioSchema } = require('../validators/usuarioSchema');
 
 // Solo admin puede crear, editar o borrar usuarios
+router.get('/', authenticate, authorizeRoles('Administrador'), usuarioController.getAllUsuarios);
 router.post('/', authenticate, authorizeRoles('Administrador'), validar(createUsuarioSchema), usuarioController.createUsuario);
 router.put('/:id', authenticate, authorizeRoles('Administrador'), validar(updateUsuarioSchema), usuarioController.updateUsuario);
 router.delete('/:id', authenticate, authorizeRoles('Administrador'), usuarioController.deleteUsuario);

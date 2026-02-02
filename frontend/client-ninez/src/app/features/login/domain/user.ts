@@ -6,6 +6,7 @@ export interface User {
     entidad: Entity;
     nombre: string;
     rol: {
+        id?: number;
         nombre_rol: string;
     };
 }

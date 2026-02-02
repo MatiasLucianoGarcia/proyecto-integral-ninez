@@ -13,6 +13,19 @@ const createUsuario = async (req, res) => {
   }
 };
 
+// Obtener todos los usuarios
+const getAllUsuarios = async (req, res) => {
+  try {
+    const usuarios = await usuarioService.getAllUsuarios();
+    res.json(usuarios);
+  } catch (error) {
+    console.error(error);
+    res.status(error.status || 500).json({
+      message: error.message || "Error al obtener usuarios",
+    });
+  }
+};
+
 // Obtener usuario por ID
 const getUsuarioById = async (req, res) => {
   try {
@@ -75,6 +88,7 @@ const updateMyPassword = async (req, res) => {
 
 module.exports = {
   createUsuario,
+  getAllUsuarios,
   getUsuarioById,
   updateUsuario,
   updateMyPassword,

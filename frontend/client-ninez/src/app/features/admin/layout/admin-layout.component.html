@@ -1,0 +1,11 @@
+<app-nav-bar (menuClick)="drawer.toggle()" />
+<mat-drawer-container class="admin-container" autosize>
+    <mat-drawer #drawer class="admin-sidenav" mode="side" [opened]="false">
+        <app-sidebar />
+    </mat-drawer>
+    <main class="admin-content">
+        <div class="content-wrapper">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</mat-drawer-container>

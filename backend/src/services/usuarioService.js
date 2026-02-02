@@ -19,6 +19,17 @@ const createUsuario = async ({ nombre, contraseña, id_entidad, id_rol }) => {
   return data[0];
 };
 
+// Obtener todos los usuarios (para admin)
+const getAllUsuarios = async () => {
+  const { data, error } = await supabase
+    .from('usuario')
+    .select('id, nombre, entidad(id, nombre), rol(id, nombre_rol)')
+    .order('nombre', { ascending: true });
+
+  if (error) throw error;
+  return data;
+};
+
 // Obtener usuario por ID
 const getUsuarioById = async (id) => {
   const { data, error } = await supabase
@@ -112,6 +123,7 @@ const deleteUsuario = async (id) => {
 
 module.exports = {
   createUsuario,
+  getAllUsuarios,
   getUsuarioById,
   updateUsuario,
   updatePassword,

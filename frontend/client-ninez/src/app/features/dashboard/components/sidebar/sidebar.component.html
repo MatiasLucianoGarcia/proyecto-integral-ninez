@@ -44,15 +44,11 @@
 			</a>
 		</div>
 
-		<div class="nav-section">
-			<h3 class="section-title">Sistema</h3>
-			<a class="nav-item" routerLink="/usuarios">
+		<div class="nav-section" *ngIf="isAdmin()">
+			<h3 class="section-title">Administración</h3>
+			<a class="nav-item" routerLink="/admin/usuarios">
 				<mat-icon class="nav-icon">manage_accounts</mat-icon>
 				<span class="nav-label">Usuarios</span>
-			</a>
-			<a class="nav-item" routerLink="/configuracion">
-				<mat-icon class="nav-icon">settings</mat-icon>
-				<span class="nav-label">Configuración</span>
 			</a>
 		</div>
 	</nav>
