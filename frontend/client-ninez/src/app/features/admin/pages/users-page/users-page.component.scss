@@ -159,6 +159,35 @@
     padding: var(--spacing-lg);
 }
 
+.entities-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+
+    .user-card {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        padding: var(--spacing-lg);
+
+        .user-info {
+            flex: 1;
+            align-items: flex-start;
+        }
+
+        .user-details {
+            width: 100%;
+        }
+
+        .card-actions {
+            position: static;
+            /* Always visible and positioned naturally */
+            opacity: 1;
+        }
+    }
+}
+
 .user-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);

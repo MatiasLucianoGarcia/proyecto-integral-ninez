@@ -199,3 +199,14 @@ button[disabled],
 		font-size: 0.875rem;
 	}
 }
+
+/* Custom Dialog Container overrides */
+.custom-dialog-container .mat-mdc-dialog-container {
+	padding: 0 !important;
+	overflow: visible !important;
+}
+
+.custom-dialog-container .mat-mdc-dialog-content {
+	max-height: none !important;
+	overflow: visible !important;
+}

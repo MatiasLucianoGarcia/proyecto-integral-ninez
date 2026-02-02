@@ -25,64 +25,50 @@ import { AdminDataService } from '../../services/admin-data.service';
         MatSelectModule
     ],
     template: `
-        <div class="dialog-container">
-            <div class="dialog-header flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
-                <h2 class="text-xl font-bold text-gray-800 m-0 tracking-tight">{{ isEdit ? 'Editar' : 'Nuevo' }} Usuario</h2>
-                <button mat-icon-button mat-dialog-close class="text-gray-400 hover:text-gray-600">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </div>
+        <div class="custom-dialog-container">
+            <h2 mat-dialog-title>{{ isEdit ? 'Editar' : 'Nuevo' }} Usuario</h2>
+            <mat-dialog-content>
+                <form [formGroup]="userForm" class="dialog-form flex flex-col gap-4 pt-2">
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Nombre de Usuario</mat-label>
+                        <input matInput formControlName="nombre" placeholder="Ej. juan.perez">
+                        <mat-error *ngIf="userForm.get('nombre')?.hasError('required')">El nombre es requerido</mat-error>
+                    </mat-form-field>
 
-            <mat-dialog-content class="!p-6">
-                <form [formGroup]="userForm" class="flex flex-col gap-5">
-                    <div class="form-section">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de Usuario</label>
-                        <mat-form-field appearance="outline" class="w-full">
-                            <input matInput formControlName="nombre" placeholder="Ej. juan.perez">
-                            <mat-error *ngIf="userForm.get('nombre')?.hasError('required')">El nombre es requerido</mat-error>
-                        </mat-form-field>
-                    </div>
-
-                    <div class="form-section">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                        <mat-form-field appearance="outline" class="w-full">
-                            <input matInput formControlName="contraseña" type="password" [placeholder]="isEdit ? 'Dejar en blanco para mantener actual' : 'Ingrese contraseña'">
-                            <mat-hint *ngIf="isEdit" class="text-xs text-gray-400">Solo completar si desea cambiarla</mat-hint>
-                            <mat-error *ngIf="userForm.get('contraseña')?.hasError('required')">La contraseña es requerida</mat-error>
-                            <mat-error *ngIf="userForm.get('contraseña')?.hasError('minlength')">Mínimo 6 caracteres</mat-error>
-                        </mat-form-field>
-                    </div>
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Contraseña</mat-label>
+                        <input matInput formControlName="contraseña" type="password" [placeholder]="isEdit ? 'Dejar en blanco para mantener actual' : 'Ingrese contraseña'">
+                        <mat-hint *ngIf="isEdit">Solo completar si desea cambiarla</mat-hint>
+                        <mat-error *ngIf="userForm.get('contraseña')?.hasError('required')">La contraseña es requerida</mat-error>
+                        <mat-error *ngIf="userForm.get('contraseña')?.hasError('minlength')">Mínimo 6 caracteres</mat-error>
+                    </mat-form-field>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-section">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Entidad</label>
-                            <mat-form-field appearance="outline" class="w-full">
-                                <mat-select formControlName="id_entidad" placeholder="Seleccionar entidad">
-                                    <mat-option *ngFor="let ent of entities" [value]="ent.id">
-                                        {{ ent.nombre }}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="userForm.get('id_entidad')?.hasError('required')">Campo requerido</mat-error>
-                            </mat-form-field>
-                        </div>
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Entidad</mat-label>
+                            <mat-select formControlName="id_entidad" placeholder="Seleccionar entidad">
+                                <mat-option *ngFor="let ent of entities" [value]="ent.id">
+                                    {{ ent.nombre }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="userForm.get('id_entidad')?.hasError('required')">Campo requerido</mat-error>
+                        </mat-form-field>
 
-                        <div class="form-section">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
-                            <mat-form-field appearance="outline" class="w-full">
-                                <mat-select formControlName="id_rol" placeholder="Seleccionar rol">
-                                    <mat-option *ngFor="let rol of roles" [value]="rol.id">
-                                        {{ rol.nombre_rol }}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="userForm.get('id_rol')?.hasError('required')">Campo requerido</mat-error>
-                            </mat-form-field>
-                        </div>
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Rol</mat-label>
+                            <mat-select formControlName="id_rol" placeholder="Seleccionar rol">
+                                <mat-option *ngFor="let rol of roles" [value]="rol.id">
+                                    {{ rol.nombre_rol }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="userForm.get('id_rol')?.hasError('required')">Campo requerido</mat-error>
+                        </mat-form-field>
                     </div>
                 </form>
             </mat-dialog-content>
 
-            <div mat-dialog-actions align="end" class="!p-6 !border-t !border-gray-100 !bg-gray-50/50">
-                <button mat-stroked-button mat-dialog-close class="!rounded-full !px-6 border-gray-300 text-gray-600">Cancelar</button>
+            <div mat-dialog-actions align="end">
+                <button mat-button mat-dialog-close>Cancelar</button>
                 <button mat-raised-button color="primary" [disabled]="userForm.invalid" (click)="save()">
                     {{ isEdit ? 'Guardar Cambios' : 'Crear Usuario' }}
                 </button>
