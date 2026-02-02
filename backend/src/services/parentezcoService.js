@@ -1,9 +1,14 @@
 const supabase = require('../config/db');
 
-const crearParentezco = async (descripcion) => {
+const crearParentezco = async (descripcion, id_inverso) => {
+  const payload = { descripcion };
+  if (id_inverso) {
+    payload.id_inverso = id_inverso;
+  }
+
   const { data, error } = await supabase
     .from('parentezco')
-    .insert([{ descripcion }])
+    .insert([payload])
     .select();
 
   if (error) throw error;
@@ -11,15 +16,22 @@ const crearParentezco = async (descripcion) => {
 };
 
 const obtenerParentezcos = async () => {
+  // Now we might want to also get the inverse details, but standard select * works for now
   const { data, error } = await supabase.from('parentezco').select('*').order('id', { ascending: true });
   if (error) throw error;
   return data;
 };
 
-const actualizarParentezco = async (id, descripcion) => {
+const actualizarParentezco = async (id, descripcion, id_inverso) => {
+  const payload = { descripcion };
+  if (id_inverso !== undefined) {
+    // Allow passing null to clear the relationship
+    payload.id_inverso = id_inverso;
+  }
+
   const { data, error } = await supabase
     .from('parentezco')
-    .update({ descripcion })
+    .update(payload)
     .eq('id', id)
     .select();
 

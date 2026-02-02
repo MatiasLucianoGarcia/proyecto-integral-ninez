@@ -12,6 +12,7 @@ const createParentezcoSchema = Joi.object({
       'string.max': 'La descripción no debe superar los 50 caracteres',
       'any.required': 'La descripción es obligatoria',
     }),
+  id_inverso: Joi.number().integer().allow(null).optional(),
 });
 
 const updateParentezcoSchema = Joi.object({
@@ -23,6 +24,7 @@ const updateParentezcoSchema = Joi.object({
       'string.min': 'La descripción debe tener al menos 3 caracteres',
       'string.max': 'La descripción no debe superar los 50 caracteres',
     }),
+  id_inverso: Joi.number().integer().allow(null).optional(),
 });
 
 module.exports = {

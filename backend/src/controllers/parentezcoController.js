@@ -2,7 +2,8 @@ const parentezcoService = require('../services/parentezcoService');
 
 const crearParentezco = async (req, res) => {
   try {
-    const nuevoParentezco = await parentezcoService.crearParentezco(req.body.descripcion);
+    const { descripcion, id_inverso } = req.body;
+    const nuevoParentezco = await parentezcoService.crearParentezco(descripcion, id_inverso);
     res.status(201).json(nuevoParentezco);
   } catch (error) {
     res.status(error.status || 500).json({ message: error.message || 'Error al crear parentezco' });
@@ -20,9 +21,11 @@ const obtenerParentezcos = async (req, res) => {
 
 const actualizarParentezco = async (req, res) => {
   try {
+    const { descripcion, id_inverso } = req.body;
     const parentezcoActualizado = await parentezcoService.actualizarParentezco(
       req.params.id,
-      req.body.descripcion
+      descripcion,
+      id_inverso
     );
     res.json(parentezcoActualizado);
   } catch (error) {

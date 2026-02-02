@@ -42,4 +42,73 @@ export class AdminDataService {
     deleteRole(id: number | string): Observable<any> {
         return this.http.delete(`${this.apiUrl}/roles/${id}`);
     }
+
+    // Géneros
+    getGeneros(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/generos`);
+    }
+
+    createGenero(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/generos`, data);
+    }
+
+    updateGenero(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/generos/${id}`, data);
+    }
+
+    deleteGenero(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/generos/${id}`);
+    }
+
+    // Nacionalidades
+    getNacionalidades(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/nacionalidades`);
+    }
+
+    createNacionalidad(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/nacionalidades`, data);
+    }
+
+    updateNacionalidad(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/nacionalidades/${id}`, data);
+    }
+
+    deleteNacionalidad(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/nacionalidades/${id}`);
+    }
+
+    // Parentezcos
+    getParentezcos(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/parentezcos`);
+    }
+
+    createParentezco(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/parentezcos`, data);
+    }
+
+    updateParentezco(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/parentezcos/${id}`, data);
+    }
+
+    deleteParentezco(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/parentezcos/${id}`);
+    }
+
+    // Tipos Vivienda
+    getTiposVivienda(): Observable<any[]> {
+        // Note: Route is singular in index.js: /api/tipoVivienda
+        return this.http.get<any[]>(`${this.apiUrl}/tipoVivienda`);
+    }
+
+    createTipoVivienda(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/tipoVivienda`, data);
+    }
+
+    updateTipoVivienda(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/tipoVivienda/${id}`, data);
+    }
+
+    deleteTipoVivienda(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/tipoVivienda/${id}`);
+    }
 }
