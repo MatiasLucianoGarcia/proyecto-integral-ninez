@@ -29,6 +29,11 @@ import { MatInputModule } from '@angular/material/input';
                         <input matInput formControlName="nombre" [placeholder]="'Nombre del ' + data.title">
                         <mat-error *ngIf="form.get('nombre')?.hasError('required')">Este campo es requerido</mat-error>
                     </mat-form-field>
+
+                    <mat-form-field *ngIf="data.secondaryField" appearance="outline" class="w-full">
+                        <mat-label>{{ data.secondaryField.label }}</mat-label>
+                        <input matInput [formControlName]="data.secondaryField.name" [placeholder]="data.secondaryField.label">
+                    </mat-form-field>
                 </form>
             </mat-dialog-content>
 
@@ -49,12 +54,23 @@ export class SimpleItemDialogComponent {
 
     constructor(
         public dialogRef: MatDialogRef<SimpleItemDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { title: string, label: string, item?: any }
+        @Inject(MAT_DIALOG_DATA) public data: {
+            title: string,
+            label: string,
+            item?: any,
+            secondaryField?: { name: string, label: string }
+        }
     ) {
         this.isEdit = !!data.item;
-        this.form = this.fb.group({
+        const group: any = {
             nombre: [data.item?.nombre || '', Validators.required]
-        });
+        };
+
+        if (data.secondaryField) {
+            group[data.secondaryField.name] = [data.item?.[data.secondaryField.name] || ''];
+        }
+
+        this.form = this.fb.group(group);
     }
 
     save() {

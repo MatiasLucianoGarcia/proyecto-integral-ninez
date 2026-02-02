@@ -111,4 +111,55 @@ export class AdminDataService {
     deleteTipoVivienda(id: string | number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/tipoVivienda/${id}`);
     }
+
+    // Efectores
+    getEfectores(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/efectores`);
+    }
+
+    createEfector(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/efectores`, data);
+    }
+
+    updateEfector(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/efectores/${id}`, data);
+    }
+
+    deleteEfector(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/efectores/${id}`);
+    }
+
+    // Derechos Vulnerados
+    getDerechosVulnerados(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/derechoVulnerado`);
+    }
+
+    createDerechoVulnerado(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/derechoVulnerado`, data);
+    }
+
+    updateDerechoVulnerado(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/derechoVulnerado/${id}`, data);
+    }
+
+    deleteDerechoVulnerado(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/derechoVulnerado/${id}`);
+    }
+
+    // Programas
+    getProgramas(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/programas`);
+    }
+
+    createPrograma(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/programas`, data);
+    }
+
+    updatePrograma(id: string | number, data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/programas/${id}`, data);
+    }
+
+    deletePrograma(id: string | number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/programas/${id}`);
+    }
 }

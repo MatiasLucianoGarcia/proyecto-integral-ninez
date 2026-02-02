@@ -15,6 +15,10 @@ export const ADMIN_ROUTES: Routes = [
                 loadComponent: () => import('./pages/person-data-page/person-data-page.component').then(m => m.PersonDataPageComponent)
             },
             {
+                path: 'proteccion-promocion',
+                loadComponent: () => import('./pages/protection-data-page/protection-data-page.component').then(m => m.ProtectionDataPageComponent)
+            },
+            {
                 path: '',
                 redirectTo: 'usuarios',
                 pathMatch: 'full'
