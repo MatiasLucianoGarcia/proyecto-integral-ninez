@@ -4,4 +4,5 @@ export interface Trabajo {
     descripcion: string;
     horario: string;
     fecha_carga?: Date;
+    fecha_real?: Date | string;
 }

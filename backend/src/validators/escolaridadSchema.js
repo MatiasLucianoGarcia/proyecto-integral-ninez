@@ -44,6 +44,12 @@ const escolaridadSchema = Joi.object({
       'string.empty': 'El año es obligatorio',
       'string.max': 'El año no debe superar los 50 caracteres',
     }),
+
+  fecha_real: Joi.date()
+    .optional()
+    .messages({
+      'date.base': 'La fecha real debe ser una fecha válida',
+    }),
 });
 
 module.exports = escolaridadSchema;

@@ -63,7 +63,8 @@ CREATE TABLE IF NOT EXISTS Vivienda (
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   tipo_vivienda INTEGER REFERENCES Tipo_vivienda(id) ON DELETE CASCADE,
   observaciones TEXT,
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
 
 -- Hay un solo registro de condiciones de vida por persona
@@ -99,42 +100,46 @@ CREATE TABLE Familia (
 
 -- Varios registros de contacto por persona
 -- Hay un endpoint que muestra el ultimo cargado
-CREATE TABLE IF NOT EXISTS Contacto(
+CREATE TABLE IF NOT EXISTS Contacto (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   telefono VARCHAR(50),
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
 
 -- Varios registros de domicilio por persona
 -- Hay un endpoint que muestra el ultimo cargado
-CREATE TABLE IF NOT EXISTS Domicilio(
+CREATE TABLE IF NOT EXISTS Domicilio (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   nombre VARCHAR(100),
   numero INTEGER,
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
 
 -- Varios registros de trabajo por persona
 -- Hay un endpoint que muestra el ultimo cargado
-CREATE TABLE IF NOT EXISTS Trabajo(
+CREATE TABLE IF NOT EXISTS Trabajo (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   descripcion TEXT,
   horario TEXT,
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
 
 -- Varios registros de Escolaridad por persona
 -- Hay un endpoint que muestra el ultimo cargado
-CREATE TABLE IF NOT EXISTS Escolaridad(
+CREATE TABLE IF NOT EXISTS Escolaridad (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   escuela VARCHAR(100),
   nivel VARCHAR(50),
   año VARCHAR(50),
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
 
 -- Hay un solo registro de Salud por persona
@@ -151,24 +156,27 @@ CREATE TABLE IF NOT EXISTS Salud(
 
 -- Varios registros de Control medico por persona
 -- Hay un endpoint que muestra el ultimo cargado
-CREATE TABLE IF NOT EXISTS Control_medico(
+CREATE TABLE IF NOT EXISTS Control_medico (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   unidad_sanitaria VARCHAR(100),
   observaciones TEXT,
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
 
 -- Varios registros de Control medico por persona
 -- Hay un endpoint que muestra el ultimo cargado
-CREATE TABLE IF NOT EXISTS Actividades(
+CREATE TABLE IF NOT EXISTS Actividades (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   actividad VARCHAR(100),
   horario VARCHAR(255),
   observaciones TEXT,
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
+
 
 -- Hay un solo registro de Salud por persona
 CREATE TABLE IF NOT EXISTS Intereses(
@@ -182,11 +190,12 @@ CREATE TABLE IF NOT EXISTS Intereses(
 
 -- Varios registros de Perdidas por persona
 -- Hay un endpoint que muestra el ultimo cargado
-CREATE TABLE IF NOT EXISTS Perdidas(
+CREATE TABLE IF NOT EXISTS Perdidas (
   id SERIAL PRIMARY KEY,
   dni INTEGER REFERENCES Persona(dni) ON DELETE CASCADE,
   descripcion TEXT,
-  fecha_carga TIMESTAMP DEFAULT NOW()
+  fecha_carga TIMESTAMP DEFAULT NOW(),
+  fecha_real TIMESTAMP DEFAULT NOW()
 );
 
 -------------------------------------------------

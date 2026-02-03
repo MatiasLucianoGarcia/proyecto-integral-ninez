@@ -11,6 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { ViviendaService } from '../../services/vivienda.service';
 import { CreateVivienda, TipoVivienda } from '../../domain/vivienda.model';
 
@@ -29,7 +31,9 @@ export interface ViviendaDialogData {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatIconModule
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   templateUrl: './add-vivienda-dialog.component.html',
   styleUrl: './add-vivienda-dialog.component.scss',
@@ -47,7 +51,8 @@ export class AddViviendaDialogComponent implements OnInit {
   ) {
     this.viviendaForm = this.fb.group({
       tipo_vivienda: ['', Validators.required],
-      observaciones: ['']
+      observaciones: [''],
+      fecha_real: [new Date()]
     });
   }
 
@@ -68,7 +73,8 @@ export class AddViviendaDialogComponent implements OnInit {
       const newVivienda: CreateVivienda = {
         dni: this.data.dni,
         tipo_vivienda: formValue.tipo_vivienda,
-        observaciones: formValue.observaciones
+        observaciones: formValue.observaciones,
+        fecha_real: formValue.fecha_real
       };
       this.dialogRef.close(newVivienda);
     }

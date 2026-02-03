@@ -4,4 +4,5 @@ export interface ControlMedico {
     unidad_sanitaria: string;
     observaciones?: string;
     fecha_carga?: Date;
+    fecha_real?: Date | string;
 }

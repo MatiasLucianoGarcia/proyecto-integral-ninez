@@ -8,7 +8,8 @@ const crearActividad = async (req, res) => {
       req.body.dni,
       req.body.actividad,
       req.body.horario,
-      req.body.observaciones
+      req.body.observaciones,
+      req.body.fecha_real
     );
 
     const intervencion = `El usuario ${req.user.nombre} añadió una actividad para esta persona`;

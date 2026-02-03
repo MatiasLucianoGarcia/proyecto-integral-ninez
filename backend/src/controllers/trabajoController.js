@@ -7,7 +7,8 @@ const crearTrabajo = async (req, res) => {
     const nuevoTrabajo = await trabajoService.crearTrabajo(
       req.body.dni,
       req.body.descripcion,
-      req.body.horario
+      req.body.horario,
+      req.body.fecha_real
     );
 
     const intervencion = `El usuario ${req.user.nombre} añadió nueva información laboral para esta persona`;

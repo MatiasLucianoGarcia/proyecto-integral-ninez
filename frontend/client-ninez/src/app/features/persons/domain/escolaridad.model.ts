@@ -5,4 +5,5 @@ export interface Escolaridad {
     nivel: string;
     anio: string;
     fecha_carga?: string;
+    fecha_real?: Date | string;
 }

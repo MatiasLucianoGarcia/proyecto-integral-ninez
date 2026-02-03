@@ -1,29 +1,27 @@
-<div class="contact-list-wrapper">
-
-
-    <div class="list-container" *ngIf="contacts.length > 0; else emptyState">
-        <mat-card *ngFor="let contact of contacts" class="contact-card">
-            <div class="contact-content">
-                <div class="icon-container">
-                    <mat-icon>phone</mat-icon>
-                </div>
-                <div class="info">
-                    <span class="label">Teléfono</span>
-                    <span class="value">{{ contact.telefono }}</span>
-                </div>
-            </div>
-            <div class="actions" *ngIf="!isViewMode">
-                <button mat-icon-button color="warn" (click)="onDelete(contact.id)" matTooltip="Eliminar contacto">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </div>
-        </mat-card>
-    </div>
-
-    <ng-template #emptyState>
-        <div class="empty-state">
-            <mat-icon>contact_phone</mat-icon>
-            <p>No hay contactos registrados</p>
+<div class="person-card-grid" *ngIf="contacts.length > 0; else emptyState">
+    <mat-card *ngFor="let contact of contacts" class="person-card">
+        <div class="card-icon-container">
+            <mat-icon>phone</mat-icon>
         </div>
-    </ng-template>
+        <div class="card-content-wrapper">
+            <div class="card-header-info">
+                <h3>Numero: {{ contact.telefono }}</h3>
+            </div>
+            <div class="card-footer-info" *ngIf="contact.fecha_real">
+                <p class="date-info">{{ contact.fecha_real | date:'dd/MM/yyyy' }}</p>
+            </div>
+        </div>
+        <div class="card-actions" *ngIf="!isViewMode">
+            <button mat-icon-button color="warn" (click)="onDelete(contact.id)" matTooltip="Eliminar contacto">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </mat-card>
 </div>
+
+<ng-template #emptyState>
+    <div class="empty-state">
+        <mat-icon>contact_phone</mat-icon>
+        <p>No hay contactos registrados</p>
+    </div>
+</ng-template>

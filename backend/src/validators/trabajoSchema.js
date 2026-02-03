@@ -35,6 +35,12 @@ const trabajoSchema = Joi.object({
       'string.min': 'El horario debe tener al menos 2 caracteres',
       'string.max': 'El horario no debe superar los 100 caracteres',
     }),
+
+  fecha_real: Joi.date()
+    .optional()
+    .messages({
+      'date.base': 'La fecha real debe ser una fecha válida',
+    }),
 });
 
 module.exports = trabajoSchema;

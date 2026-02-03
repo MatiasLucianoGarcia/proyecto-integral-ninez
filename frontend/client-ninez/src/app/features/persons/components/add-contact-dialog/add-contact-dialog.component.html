@@ -12,6 +12,13 @@
                 Debe tener entre 11 y 15 dígitos numéricos
             </mat-error>
         </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Fecha Real (Opcional)</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha_real">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">

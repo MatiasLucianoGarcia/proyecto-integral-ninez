@@ -7,7 +7,8 @@ const crearControlMedico = async (req, res) => {
     const nuevoControl = await controlMedicoService.crearControlMedico(
       req.body.dni,
       req.body.unidad_sanitaria,
-      req.body.observaciones
+      req.body.observaciones,
+      req.body.fecha_real
     );
 
     // Registrar en historial

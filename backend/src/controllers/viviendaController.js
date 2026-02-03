@@ -7,7 +7,8 @@ const crearVivienda = async (req, res) => {
     const nuevaVivienda = await viviendaService.crearVivienda(
       req.body.dni,
       req.body.tipo_vivienda,
-      req.body.observaciones
+      req.body.observaciones,
+      req.body.fecha_real
     );
 
     const intervencion = `El usuario ${req.user.nombre} añadió una nueva vivienda para esta persona`;

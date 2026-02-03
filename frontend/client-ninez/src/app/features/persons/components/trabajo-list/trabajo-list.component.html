@@ -1,29 +1,34 @@
-<div class="trabajo-container">
+<div class="person-card-grid">
     @if (trabajos.length === 0) {
     <div class="empty-state">
         <mat-icon>work_off</mat-icon>
         <p>No hay registros de trabajo</p>
     </div>
     } @else {
-    <div class="trabajo-list">
-        @for (item of trabajos; track item.id) {
-        <div class="trabajo-card">
-            <div class="card-content">
-                <div class="card-title">
-                    <mat-icon class="work-icon">work</mat-icon>
-                    <div class="info">
-                        <span class="descripcion">{{ item.descripcion }}</span>
-                        <span class="horario">{{ item.horario }}</span>
-                    </div>
-                </div>
+    @for (item of trabajos; track item.id) {
+    <mat-card class="person-card">
+        <div class="card-icon-container">
+            <mat-icon>work</mat-icon>
+        </div>
+        <div class="card-content-wrapper">
+            <div class="card-header-info">
+                <h3>{{ item.descripcion }}</h3>
+                <p class="secondary-text">{{ item.horario }}</p>
             </div>
-            <div class="card-actions" *ngIf="!isViewMode">
-                <button mat-icon-button color="warn" (click)="onDelete(item)" matTooltip="Eliminar">
-                    <mat-icon>delete</mat-icon>
-                </button>
+            <div class="card-footer-info">
+                @if (item.fecha_real) {
+                <p class="date-info">{{ item.fecha_real | date:'dd/MM/yyyy' }}</p>
+                } @else {
+                <p class="date-info">Sin fecha registrada</p>
+                }
             </div>
         </div>
-        }
-    </div>
+        <div class="card-actions" *ngIf="!isViewMode">
+            <button mat-icon-button color="warn" (click)="onDelete(item)" matTooltip="Eliminar">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </mat-card>
+    }
     }
 </div>

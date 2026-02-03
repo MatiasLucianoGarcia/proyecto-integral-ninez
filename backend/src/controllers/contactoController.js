@@ -6,7 +6,8 @@ const crearContacto = async (req, res) => {
   try {
     const nuevoContacto = await contactoService.crearContacto(
       req.body.dni,
-      req.body.telefono
+      req.body.telefono,
+      req.body.fecha_real
     );
 
     // Intervención para historial

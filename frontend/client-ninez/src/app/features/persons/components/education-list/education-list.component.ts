@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
 import { Escolaridad } from '../../domain/escolaridad.model';
 
 @Component({
@@ -14,7 +15,8 @@ import { Escolaridad } from '../../domain/escolaridad.model';
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCardModule
   ],
   templateUrl: './education-list.component.html',
   styleUrl: './education-list.component.scss'

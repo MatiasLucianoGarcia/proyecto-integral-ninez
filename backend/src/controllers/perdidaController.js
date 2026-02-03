@@ -4,8 +4,8 @@ const historialService = require('../services/historialService');
 // Crear pérdida
 const crearPerdida = async (req, res) => {
   try {
-    const { dni, descripcion } = req.body;
-    const nuevaPerdida = await perdidaService.crearPerdida(dni, descripcion);
+    const { dni, descripcion, fecha_real } = req.body;
+    const nuevaPerdida = await perdidaService.crearPerdida(dni, descripcion, fecha_real);
 
     const intervencion = `El usuario ${req.user.nombre} añadió una nueva pérdida para esta persona`;
 

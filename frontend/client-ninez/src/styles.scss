@@ -206,6 +206,86 @@ button[disabled],
 	overflow: visible !important;
 }
 
+/* Person Card Standard Style */
+.person-card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 16px;
+	padding: 16px 0;
+}
+
+.person-card {
+	display: flex !important;
+	flex-direction: row !important;
+	align-items: stretch;
+	padding: 0 !important;
+	overflow: hidden;
+
+	// Left side icon container
+	.card-icon-container {
+		width: 60px;
+		background-color: var(--bg-tertiary); // Or a light primary color
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-right: 1px solid var(--border-color);
+
+		mat-icon {
+			font-size: 32px;
+			width: 32px;
+			height: 32px;
+			color: var(--primary-color);
+		}
+	}
+
+	// Right side content
+	.card-content-wrapper {
+		flex: 1;
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+
+		.card-header-info {
+			h3 {
+				margin: 0;
+				font-size: 1rem;
+				font-weight: 600;
+				color: var(--text-primary); // Black
+			}
+
+			p {
+				margin: 4px 0 0;
+				font-size: 0.9rem;
+				color: var(--text-primary); // Black
+			}
+
+			.secondary-text {
+				color: var(--text-secondary);
+			}
+		}
+
+		.card-footer-info {
+			margin-top: 12px;
+			border-top: 1px solid var(--border-light);
+			padding-top: 8px;
+
+			p.date-info {
+				margin: 0;
+				font-size: 0.8rem;
+				color: var(--text-tertiary); // Grey
+			}
+		}
+	}
+
+	// Actions absolute or flex
+	.card-actions {
+		position: absolute;
+		top: 4px;
+		right: 4px;
+	}
+}
+
 .custom-dialog-container .mat-mdc-dialog-content {
 	max-height: none !important;
 	overflow: visible !important;

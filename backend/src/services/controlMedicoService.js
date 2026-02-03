@@ -2,13 +2,13 @@ const supabase = require('../config/db');
 const { validarPersonaExiste } = require('../helpers/personaHelper');
 
 // Crear control médico
-const crearControlMedico = async (dni, unidad_sanitaria, observaciones) => {
+const crearControlMedico = async (dni, unidad_sanitaria, observaciones, fecha_real) => {
   // 🔎 Verificar que la persona exista (lanza error si no)
   await validarPersonaExiste(dni);
 
   const { data, error } = await supabase
     .from('control_medico')
-    .insert([{ dni, unidad_sanitaria, observaciones }])
+    .insert([{ dni, unidad_sanitaria, observaciones, fecha_real }])
     .select();
 
   if (error) throw error;

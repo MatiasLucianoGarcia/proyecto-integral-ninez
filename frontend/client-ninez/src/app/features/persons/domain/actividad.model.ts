@@ -5,4 +5,5 @@ export interface Actividad {
     horario: string;
     observaciones?: string;
     fecha_carga?: Date;
+    fecha_real?: Date | string;
 }

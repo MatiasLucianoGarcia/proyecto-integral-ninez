@@ -22,6 +22,12 @@ const perdidaSchema = Joi.object({
       'string.empty': 'La descripción es obligatoria',
       'string.min': 'La descripción debe tener al menos 5 caracteres',
     }),
+
+  fecha_real: Joi.date()
+    .optional()
+    .messages({
+      'date.base': 'La fecha real debe ser una fecha válida',
+    }),
 });
 
 module.exports = perdidaSchema;

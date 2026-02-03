@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
     selector: 'app-add-contact-dialog',
@@ -16,7 +18,9 @@ import { CommonModule } from '@angular/common';
         MatDialogModule,
         MatFormFieldModule,
         MatInputModule,
-        MatButtonModule
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     templateUrl: './add-contact-dialog.component.html',
     styleUrls: ['./add-contact-dialog.component.scss']
@@ -32,7 +36,8 @@ export class AddContactDialogComponent {
         @Inject(MAT_DIALOG_DATA) public data: { dni: number }
     ) {
         this.contactForm = this.fb.group({
-            telefono: ['', [Validators.required, Validators.pattern(/^\d{11,15}$/)]]
+            telefono: ['', [Validators.required, Validators.pattern(/^\d{11,15}$/)]],
+            fecha_real: [new Date()]
         });
     }
 

@@ -1,19 +1,24 @@
-<div class="actividad-grid">
+<div class="person-card-grid">
     @for(actividad of actividades; track actividad.id) {
-    <mat-card class="actividad-card">
-        <mat-card-header>
-            <mat-icon mat-card-avatar class="actividad-icon">sports_soccer</mat-icon>
-            <mat-card-title>{{ actividad.actividad }}</mat-card-title>
-            <mat-card-subtitle>{{ actividad.horario }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-            <p *ngIf="actividad.observaciones" class="observaciones">{{ actividad.observaciones }}</p>
-        </mat-card-content>
-        <mat-card-actions align="end" *ngIf="!isViewMode">
+    <mat-card class="person-card">
+        <div class="card-icon-container">
+            <mat-icon>sports_soccer</mat-icon>
+        </div>
+        <div class="card-content-wrapper">
+            <div class="card-header-info">
+                <h3>{{ actividad.actividad }}</h3>
+                <p class="secondary-text">{{ actividad.horario }}</p>
+                <p class="secondary-text" *ngIf="actividad.observaciones">{{ actividad.observaciones }}</p>
+            </div>
+            <div class="card-footer-info" *ngIf="actividad.fecha_real">
+                <p class="date-info">{{ actividad.fecha_real | date:'dd/MM/yyyy' }}</p>
+            </div>
+        </div>
+        <div class="card-actions" *ngIf="!isViewMode">
             <button mat-icon-button color="warn" (click)="onDelete(actividad)" matTooltip="Eliminar actividad">
                 <mat-icon>delete</mat-icon>
             </button>
-        </mat-card-actions>
+        </div>
     </mat-card>
     } @empty {
     <div class="empty-state">

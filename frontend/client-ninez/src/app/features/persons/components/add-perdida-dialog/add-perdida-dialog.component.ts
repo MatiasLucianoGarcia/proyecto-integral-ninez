@@ -6,20 +6,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
-    selector: 'app-add-perdida-dialog',
-    standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule
-    ],
-    template: `
+  selector: 'app-add-perdida-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
+  template: `
     <h2 mat-dialog-title>
       <mat-icon class="title-icon">heart_broken</mat-icon>
       Agregar Pérdida
@@ -32,7 +36,17 @@ import { MatIconModule } from '@angular/material/icon';
             <textarea matInput formControlName="descripcion" rows="4" placeholder="Describa la pérdida significativa..."></textarea>
             <mat-error *ngIf="form.get('descripcion')?.hasError('required')">Requerido</mat-error>
             <mat-error *ngIf="form.get('descripcion')?.hasError('minlength')">Mínimo 5 caracteres</mat-error>
+            <mat-error *ngIf="form.get('descripcion')?.hasError('minlength')">Mínimo 5 caracteres</mat-error>
           </mat-form-field>
+        </div>
+
+        <div class="form-field">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Fecha Real (Opcional)</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="fecha_real">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
@@ -41,7 +55,7 @@ import { MatIconModule } from '@angular/material/icon';
       </mat-dialog-actions>
     </form>
   `,
-    styles: [`
+  styles: [`
     .title-icon { margin-right: 8px; vertical-align: middle; color: var(--primary-color); }
     .full-width { width: 100%; }
     .form-field { margin-bottom: 16px; }
@@ -49,26 +63,27 @@ import { MatIconModule } from '@angular/material/icon';
   `]
 })
 export class AddPerdidaDialogComponent {
-    form: FormGroup;
+  form: FormGroup;
 
-    constructor(
-        private fb: FormBuilder,
-        private dialogRef: MatDialogRef<AddPerdidaDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { dni: number }
-    ) {
-        this.form = this.fb.group({
-            dni: [data.dni, Validators.required],
-            descripcion: ['', [Validators.required, Validators.minLength(5)]]
-        });
-    }
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<AddPerdidaDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { dni: number }
+  ) {
+    this.form = this.fb.group({
+      dni: [data.dni, Validators.required],
+      descripcion: ['', [Validators.required, Validators.minLength(5)]],
+      fecha_real: [new Date()]
+    });
+  }
 
-    onSubmit(): void {
-        if (this.form.valid) {
-            this.dialogRef.close(this.form.value);
-        }
+  onSubmit(): void {
+    if (this.form.valid) {
+      this.dialogRef.close(this.form.value);
     }
+  }
 
-    onCancel(): void {
-        this.dialogRef.close();
-    }
+  onCancel(): void {
+    this.dialogRef.close();
+  }
 }

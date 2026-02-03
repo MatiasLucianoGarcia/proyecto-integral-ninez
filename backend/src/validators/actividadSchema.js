@@ -39,6 +39,12 @@ const actividadSchema = Joi.object({
     .messages({
       'string.base': 'Las observaciones deben ser texto',
     }),
+
+  fecha_real: Joi.date()
+    .optional()
+    .messages({
+      'date.base': 'La fecha real debe ser una fecha válida',
+    }),
 });
 
 module.exports = actividadSchema;

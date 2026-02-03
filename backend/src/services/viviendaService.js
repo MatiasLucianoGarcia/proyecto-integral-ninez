@@ -2,13 +2,13 @@ const supabase = require('../config/db');
 const { validarPersonaExiste } = require('../helpers/personaHelper');
 const { validarTipoViviendaExiste } = require("../helpers/tipoViviendaHelper");
 
-const crearVivienda = async (dni, tipo_vivienda, observaciones) => {
+const crearVivienda = async (dni, tipo_vivienda, observaciones, fecha_real) => {
   await validarPersonaExiste(dni);
   await validarTipoViviendaExiste(tipo_vivienda);
 
   const { data, error } = await supabase
     .from("vivienda")
-    .insert([{ dni, tipo_vivienda, observaciones }])
+    .insert([{ dni, tipo_vivienda, observaciones, fecha_real }])
     .select();
 
   if (error) throw error;

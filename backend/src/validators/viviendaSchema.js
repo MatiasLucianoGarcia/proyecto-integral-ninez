@@ -29,6 +29,12 @@ const viviendaSchema = Joi.object({
       'string.base': 'Las observaciones deben ser texto',
       'string.max': 'Las observaciones no deben superar los 500 caracteres',
     }),
+
+  fecha_real: Joi.date()
+    .optional()
+    .messages({
+      'date.base': 'La fecha real debe ser una fecha válida',
+    }),
 });
 
 module.exports = viviendaSchema;

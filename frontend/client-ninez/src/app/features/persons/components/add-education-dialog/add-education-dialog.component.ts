@@ -6,6 +6,8 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { Escolaridad } from '../../domain/escolaridad.model';
 
 @Component({
@@ -18,7 +20,9 @@ import { Escolaridad } from '../../domain/escolaridad.model';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   templateUrl: './add-education-dialog.component.html',
   styleUrl: './add-education-dialog.component.scss'
@@ -35,7 +39,8 @@ export class AddEducationDialogComponent {
       dni: [data.dni, Validators.required],
       escuela: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       nivel: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      anio: ['', [Validators.required, Validators.maxLength(50)]]
+      anio: ['', [Validators.required, Validators.maxLength(50)]],
+      fecha_real: [new Date()]
     });
   }
 
@@ -50,7 +55,8 @@ export class AddEducationDialogComponent {
         dni: formValue.dni,
         escuela: formValue.escuela,
         nivel: formValue.nivel,
-        anio: formValue.anio
+        anio: formValue.anio,
+        fecha_real: formValue.fecha_real
       };
       this.dialogRef.close(escolaridad);
     }

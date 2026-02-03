@@ -1,40 +1,29 @@
-<div class="articulaciones-list">
+<div class="person-card-grid">
     @for (articulacion of articulaciones(); track $index) {
-    <mat-card class="articulacion-card">
-        <div class="card-content">
-            <div class="articulacion-info">
-                <div class="info-header">
-                    <!-- Ingreso Program Name -->
-                    <span style="font-size: 0.9rem; color: #666; margin-right: 4px;">Ingreso:</span>
-                    <h3 class="ingreso-program-name">
-                        {{ articulacion.ingreso_programa?.programa?.nombre || 'Programa Desconocido' }}
-                    </h3>
+    <mat-card class="person-card">
+        <div class="card-icon-container">
+            <mat-icon>hub</mat-icon>
+        </div>
+        <div class="card-content-wrapper">
+            <div class="card-header-info">
+                <h3>{{ articulacion.ingreso_programa?.programa?.nombre || 'Programa Desconocido' }}</h3>
 
-                    <div class="chips-container">
-                        <!-- Efector Chip -->
-                        @if (articulacion.efector) {
-                        <mat-chip class="efector-chip">
-                            {{ articulacion.efector.nombre }}
-                        </mat-chip>
-                        }
-                    </div>
-                </div>
-
-                @if (articulacion.observacion) {
-                <p class="observaciones">{{ articulacion.observacion }}</p>
+                @if (articulacion.efector) {
+                <p class="secondary-text">Efector: {{ articulacion.efector.nombre }}</p>
                 }
 
-                <p class="fecha">Fecha: {{ articulacion.fecha_articulacion | date:'dd/MM/yyyy' }}</p>
+                @if (articulacion.observacion) {
+                <p class="secondary-text">{{ articulacion.observacion }}</p>
+                }
             </div>
-
-            @if (!isViewMode()) {
-            <div class="actions">
-                <button mat-icon-button color="warn" (click)="onDelete(articulacion)"
-                    matTooltip="Eliminar articulación">
-                    <mat-icon>delete</mat-icon>
-                </button>
+            <div class="card-footer-info">
+                <p class="date-info">Fecha: {{ articulacion.fecha_articulacion | date:'dd/MM/yyyy' }}</p>
             </div>
-            }
+        </div>
+        <div class="card-actions" *ngIf="!isViewMode()">
+            <button mat-icon-button color="warn" (click)="onDelete(articulacion)" matTooltip="Eliminar articulación">
+                <mat-icon>delete</mat-icon>
+            </button>
         </div>
     </mat-card>
     } @empty {

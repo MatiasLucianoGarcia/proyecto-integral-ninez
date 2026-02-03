@@ -2,12 +2,12 @@ const supabase = require('../config/db');
 const { validarPersonaExiste } = require('../helpers/personaHelper');
 
 // Crear pérdida
-const crearPerdida = async (dni, descripcion) => {
+const crearPerdida = async (dni, descripcion, fecha_real) => {
   await validarPersonaExiste(dni); // usamos el helper tal cual está
 
   const { data, error } = await supabase
     .from('perdidas')
-    .insert([{ dni, descripcion }])
+    .insert([{ dni, descripcion, fecha_real }])
     .select();
 
   if (error) throw error;

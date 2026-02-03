@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
     selector: 'app-add-control-medico-dialog',
@@ -17,7 +19,9 @@ import { MatIconModule } from '@angular/material/icon';
         MatButtonModule,
         MatFormFieldModule,
         MatInputModule,
-        MatIconModule
+        MatIconModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     templateUrl: './add-control-medico-dialog.component.html',
     styleUrl: './add-control-medico-dialog.component.scss'
@@ -33,7 +37,8 @@ export class AddControlMedicoDialogComponent {
         this.form = this.fb.group({
             dni: [data.dni, Validators.required],
             unidad_sanitaria: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-            observaciones: ['', [Validators.maxLength(255)]]
+            observaciones: ['', [Validators.maxLength(255)]],
+            fecha_real: [new Date()]
         });
     }
 

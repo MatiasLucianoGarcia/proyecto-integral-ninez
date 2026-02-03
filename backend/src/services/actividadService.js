@@ -1,13 +1,13 @@
 const supabase = require('../config/db');
 const { validarPersonaExiste } = require('../helpers/personaHelper');
 
-const crearActividad = async (dni, actividad, horario, observaciones) => {
+const crearActividad = async (dni, actividad, horario, observaciones, fecha_real) => {
   // 🔎 Verificar que la persona exista antes de insertar
   await validarPersonaExiste(dni);
 
   const { data, error } = await supabase
     .from('actividades')
-    .insert([{ dni, actividad, horario, observaciones }])
+    .insert([{ dni, actividad, horario, observaciones, fecha_real }])
     .select();
 
   if (error) throw error;

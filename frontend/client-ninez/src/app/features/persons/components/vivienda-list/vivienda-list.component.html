@@ -1,31 +1,30 @@
-<div class="vivienda-list">
+<div class="person-card-grid">
     @for (vivienda of viviendas(); track $index) {
-    <mat-card class="vivienda-card">
-        <div class="card-content">
-            <div class="vivienda-info">
-                <div class="info-header">
-                    <h3 class="tipo-vivienda">
-                        <mat-icon class="tipo-icon">house</mat-icon>
-                        {{ vivienda.tipo_vivienda.tipo }}
-                    </h3>
-                </div>
-
+    <mat-card class="person-card">
+        <div class="card-icon-container">
+            <mat-icon>house</mat-icon>
+        </div>
+        <div class="card-content-wrapper">
+            <div class="card-header-info">
+                <h3>{{ vivienda.tipo_vivienda.tipo }}</h3>
                 @if (vivienda.observaciones) {
-                <p class="observaciones">{{ vivienda.observaciones }}</p>
+                <p class="secondary-text">{{ vivienda.observaciones }}</p>
                 }
-
+            </div>
+            <div class="card-footer-info">
+                @if (vivienda.fecha_real) {
+                <p class="date-info">Fecha: {{ vivienda.fecha_real | date:'dd/MM/yyyy' }}</p>
+                } @else {
                 @if (vivienda.fecha_carga) {
-                <p class="fecha-carga">Registrado el: {{ vivienda.fecha_carga | date:'dd/MM/yyyy' }}</p>
+                <p class="date-info">Registrado el: {{ vivienda.fecha_carga | date:'dd/MM/yyyy' }}</p>
+                }
                 }
             </div>
-
-            @if (!isViewMode()) {
-            <div class="actions">
-                <button mat-icon-button color="warn" (click)="onDelete(vivienda)" matTooltip="Eliminar registro">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </div>
-            }
+        </div>
+        <div class="card-actions" *ngIf="!isViewMode()">
+            <button mat-icon-button color="warn" (click)="onDelete(vivienda)" matTooltip="Eliminar registro">
+                <mat-icon>delete</mat-icon>
+            </button>
         </div>
     </mat-card>
     } @empty {

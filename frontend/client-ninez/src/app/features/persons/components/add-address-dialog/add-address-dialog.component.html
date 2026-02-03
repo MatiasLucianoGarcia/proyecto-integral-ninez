@@ -13,6 +13,13 @@
       <input matInput formControlName="numero" placeholder="Ej: 1234">
       <mat-error *ngIf="addressForm.get('numero')?.hasError('required')">Requerido</mat-error>
     </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha Real (Opcional)</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="fecha_real">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 

@@ -16,6 +16,13 @@
                 rows="3"></textarea>
             <mat-icon matPrefix>notes</mat-icon>
         </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha Real (Opcional)</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha_real">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

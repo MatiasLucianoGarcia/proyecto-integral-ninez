@@ -8,6 +8,7 @@ const crearDomicilio = async (req, res) => {
       req.body.dni,
       req.body.nombre,
       req.body.numero,
+      req.body.fecha_real
     );
 
     const intervencion = `El usuario ${req.user.nombre} añadió un nuevo domicilio para esta persona`;

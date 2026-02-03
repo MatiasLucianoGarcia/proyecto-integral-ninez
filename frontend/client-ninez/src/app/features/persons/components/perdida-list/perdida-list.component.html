@@ -1,19 +1,27 @@
-<div class="perdida-grid">
+<div class="person-card-grid">
     @for(perdida of perdidas; track perdida.id) {
-    <mat-card class="perdida-card">
-        <mat-card-header>
-            <mat-icon mat-card-avatar class="perdida-icon">heart_broken</mat-icon>
-            <mat-card-title>Pérdida Significativa</mat-card-title>
-            <mat-card-subtitle>{{ perdida.fecha_carga | date:'dd/MM/yyyy' }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-            <p class="descripcion">{{ perdida.descripcion }}</p>
-        </mat-card-content>
-        <mat-card-actions align="end" *ngIf="!isViewMode">
+    <mat-card class="person-card">
+        <div class="card-icon-container">
+            <mat-icon>heart_broken</mat-icon>
+        </div>
+        <div class="card-content-wrapper">
+            <div class="card-header-info">
+                <h3>Pérdida Significativa</h3>
+                <p>{{ perdida.descripcion }}</p>
+            </div>
+            <div class="card-footer-info">
+                @if (perdida.fecha_real) {
+                <p class="date-info">Fecha: {{ perdida.fecha_real | date:'dd/MM/yyyy' }}</p>
+                } @else {
+                <p class="date-info">Registrado: {{ perdida.fecha_carga | date:'dd/MM/yyyy' }}</p>
+                }
+            </div>
+        </div>
+        <div class="card-actions" *ngIf="!isViewMode">
             <button mat-icon-button color="warn" (click)="onDelete(perdida)" matTooltip="Eliminar pérdida">
                 <mat-icon>delete</mat-icon>
             </button>
-        </mat-card-actions>
+        </div>
     </mat-card>
     } @empty {
     <div class="empty-state">

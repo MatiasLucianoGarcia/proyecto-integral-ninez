@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { CreateDomicilio } from '../../domain/domicilio.model';
 
 export interface AddressDialogData {
@@ -23,6 +25,8 @@ export interface AddressDialogData {
         MatInputModule,
         MatButtonModule,
         MatIconModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     templateUrl: './add-address-dialog.component.html',
     styleUrl: './add-address-dialog.component.scss',
@@ -39,6 +43,7 @@ export class AddAddressDialogComponent {
         this.addressForm = this.fb.group({
             nombre: ['', [Validators.required, Validators.minLength(2)]],
             numero: ['', [Validators.required]],
+            fecha_real: [new Date()],
         });
     }
 
@@ -49,6 +54,7 @@ export class AddAddressDialogComponent {
                 dni: this.data.dni,
                 nombre: formValue.nombre,
                 numero: formValue.numero,
+                fecha_real: formValue.fecha_real,
             };
             this.dialogRef.close(newAddress);
         }

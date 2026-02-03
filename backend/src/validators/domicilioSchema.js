@@ -31,11 +31,14 @@ const domicilioSchema = Joi.object({
     .max(20)
     .required()
     .messages({
-      'string.base': 'El número debe ser una cadena de texto',
-      'string.empty': 'El número es obligatorio',
-      'string.min': 'El número debe tener al menos 1 carácter',
       'string.max': 'El número no debe superar los 20 caracteres',
       'any.required': 'El número es obligatorio',
+    }),
+
+  fecha_real: Joi.date()
+    .optional()
+    .messages({
+      'date.base': 'La fecha real debe ser una fecha válida',
     }),
 });
 

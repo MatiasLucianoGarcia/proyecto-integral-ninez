@@ -18,9 +18,14 @@ const contactoSchema = Joi.object({
     .pattern(/^\d{11,15}$/)
     .required()
     .messages({
-      'string.base': 'El teléfono debe ser una cadena de texto',
-      'string.pattern.base': 'El teléfono debe ser numérico y tener entre 11 y 15 dígitos',
-      'string.empty': 'El teléfono es obligatorio',
+      'string.max': 'El teléfono no debe superar los 50 caracteres',
+      'any.required': 'El teléfono es obligatorio',
+    }),
+
+  fecha_real: Joi.date()
+    .optional()
+    .messages({
+      'date.base': 'La fecha real debe ser una fecha válida',
     }),
 });
 
