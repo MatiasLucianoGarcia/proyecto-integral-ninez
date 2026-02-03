@@ -10,22 +10,26 @@ const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21) => {
         throw new Error('El año debe ser un número válido');
     }
 
-    // 1. Obtener escolaridad para el año como antes
-    const { data: datosEscolaridad, error: errorEsc } = await supabase
+    // 1. Obtener escolaridad para el año
+    // Prioridad: fecha_real, si no fecha_carga
+    // Buscamos registros donde fecha_real o fecha_carga caigan en el año seleccionado
+
+    const start = `${anioNum}-01-01T00:00:00`;
+    const end = `${anioNum + 1}-01-01T00:00:00`;
+
+    const { data: rawData, error: errorEsc } = await supabase
         .from('escolaridad')
         .select(`
             dni,
             nivel,
-            fecha_carga
+            fecha_carga,
+            fecha_real
         `)
-        .gte('fecha_carga', `${anioNum}-01-01T00:00:00`)
-        .lt('fecha_carga', `${anioNum + 1}-01-01T00:00:00`);
+        .or(`and(fecha_real.gte.${start},fecha_real.lt.${end}),and(fecha_carga.gte.${start},fecha_carga.lt.${end})`);
 
     if (errorEsc) throw errorEsc;
 
     // 2. Obtener TODAS las personas para base poblacional
-    //    (Podríamos filtrar por rango de edad aquí para optimizar, 
-    //     pero calculamos edad en JS por precisión)
     const { data: personas, error: errorPer } = await supabase
         .from('persona')
         .select('dni, fecha_nacimiento');
@@ -33,10 +37,16 @@ const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21) => {
     if (errorPer) throw errorPer;
 
     // 3. Procesar: Crear mapa de escolaridad por DNI para acceso rápido
+    // Filtramos en memoria para asegurar que la "fecha efectiva" corresponda al año
     const escolaridadMap = new Map();
-    datosEscolaridad.forEach(reg => {
-        // Guardamos todo el registro
-        escolaridadMap.set(reg.dni, reg);
+    rawData.forEach(reg => {
+        // Determinar fecha efectiva
+        const fechaEfectiva = reg.fecha_real ? new Date(reg.fecha_real) : new Date(reg.fecha_carga);
+
+        // Si la fecha efectiva cae en el año solicitado, lo usamos
+        if (fechaEfectiva.getFullYear() === anioNum) {
+            escolaridadMap.set(reg.dni, reg);
+        }
     });
 
     // Cálculo de la fecha de referencia para la edad
@@ -106,14 +116,16 @@ const obtenerAniosDisponibles = async () => {
     // pero para un MVP está bien procesar en memoria o usar una view.
     const { data, error } = await supabase
         .from('escolaridad')
-        .select('fecha_carga');
+        .select('fecha_carga, fecha_real');
 
     if (error) throw error;
 
     const aniosSet = new Set();
     data.forEach(registro => {
-        if (registro.fecha_carga) {
-            const anio = new Date(registro.fecha_carga).getFullYear();
+        // Prioridad fecha_real
+        const fechaStr = registro.fecha_real || registro.fecha_carga;
+        if (fechaStr) {
+            const anio = new Date(fechaStr).getFullYear();
             aniosSet.add(anio);
         }
     });
