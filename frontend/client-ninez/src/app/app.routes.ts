@@ -35,6 +35,10 @@ export const routes: Routes = [
 				path: 'escolaridad',
 				loadComponent: () => import('./features/dashboard/pages/reporte-escolaridad/reporte-escolaridad.component').then(m => m.ReporteEscolaridadComponent)
 			},
+			{
+				path: 'condiciones-vida',
+				loadComponent: () => import('./features/dashboard/pages/reporte-condiciones-vida/reporte-condiciones-vida.component').then(m => m.ReporteCondicionesVidaComponent)
+			},
 			{ path: '', redirectTo: 'escolaridad', pathMatch: 'full' }
 		]
 	},

@@ -3,7 +3,9 @@ const router = express.Router();
 const reportesController = require('../controllers/reportesController');
 
 // GET /api/reportes/escolaridad?anio=2024
-router.get('/escolaridad', reportesController.obtenerReporteEscolaridad);
-router.get('/escolaridad/anios', reportesController.obtenerAniosDisponibles);
+// GET /api/reportes/escolaridad?anio=2024
+router.get('/escolaridad', reportesController.getReporteEscolaridad); // Updated to match controller rename if happened, or check alias
+router.get('/escolaridad/anios', reportesController.getAniosDisponibles);
+router.get('/condiciones-vida', reportesController.getReporteCondicionesVida);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const reportesService = require('../services/reportesService');
 
-const obtenerReporteEscolaridad = async (req, res) => {
+const getReporteEscolaridad = async (req, res) => {
     try {
         // Si no viene año, usamos el actual
         const anio = req.query.anio || new Date().getFullYear();
@@ -24,7 +24,7 @@ const obtenerReporteEscolaridad = async (req, res) => {
     }
 };
 
-const obtenerAniosDisponibles = async (req, res) => {
+const getAniosDisponibles = async (req, res) => {
     try {
         const anios = await reportesService.obtenerAniosDisponibles();
         res.json(anios);
@@ -36,7 +36,22 @@ const obtenerAniosDisponibles = async (req, res) => {
     }
 };
 
+const getReporteCondicionesVida = async (req, res) => {
+    try {
+        const { minEdad, maxEdad } = req.query;
+        const reporte = await reportesService.obtenerReporteCondicionesVida({
+            minEdad: minEdad ? parseInt(minEdad) : undefined,
+            maxEdad: maxEdad ? parseInt(maxEdad) : undefined
+        });
+        res.json({ data: reporte });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
-    obtenerReporteEscolaridad,
-    obtenerAniosDisponibles
+    getReporteEscolaridad,
+    getAniosDisponibles,
+    getReporteCondicionesVida
 };

@@ -1,0 +1,173 @@
+<div class="report-container fade-in">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="title-group">
+            <h1>Condiciones de Vida</h1>
+            <p class="subtitle">Análisis de acceso a servicios y vivienda por edad</p>
+        </div>
+
+        <div class="controls-wrapper">
+            <div class="filter-group">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Edad Mínima</mat-label>
+                    <input matInput type="number" [(ngModel)]="minEdad" (change)="onFilterChange()" min="0">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Edad Máxima</mat-label>
+                    <input matInput type="number" [(ngModel)]="maxEdad" (change)="onFilterChange()" min="0">
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" *ngIf="loading()">
+        <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading() && globalStats()" class="content-grid">
+
+        <!-- Global Stats Section -->
+        <div class="section-title white-text">
+            <h2>Panorama General</h2>
+            <span class="badge">{{ globalStats()?.total_personas }} personas analizadas</span>
+        </div>
+
+        <div class="stats-row">
+            <!-- Services Card -->
+            <mat-card class="kpi-card wide" appearance="outlined">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar>water_drop</mat-icon>
+                    <mat-card-title>Falta de Servicios Básicos</mat-card-title>
+                    <mat-card-subtitle>% de población SIN acceso</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="horizontal-bars">
+                        <!-- Agua -->
+                        <div class="bar-row">
+                            <div class="bar-label">
+                                <mat-icon class="icon-sm">water_drop</mat-icon> <span>Agua</span>
+                            </div>
+                            <div class="bar-track"
+                                [matTooltip]="((globalStats()?.porcentaje_sin_agua ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin agua'">
+                                <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_agua"
+                                    [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_agua)">
+                                    <span class="bar-value">{{ globalStats()?.porcentaje_sin_agua }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Luz -->
+                        <div class="bar-row">
+                            <div class="bar-label">
+                                <mat-icon class="icon-sm">lightbulb</mat-icon> <span>Luz</span>
+                            </div>
+                            <div class="bar-track"
+                                [matTooltip]="((globalStats()?.porcentaje_sin_luz ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin luz'">
+                                <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_luz"
+                                    [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_luz)">
+                                    <span class="bar-value">{{ globalStats()?.porcentaje_sin_luz }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Gas -->
+                        <div class="bar-row">
+                            <div class="bar-label">
+                                <mat-icon class="icon-sm">local_fire_department</mat-icon> <span>Gas</span>
+                            </div>
+                            <div class="bar-track"
+                                [matTooltip]="((globalStats()?.porcentaje_sin_gas ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin gas'">
+                                <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_gas"
+                                    [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_gas)">
+                                    <span class="bar-value">{{ globalStats()?.porcentaje_sin_gas }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Internet -->
+                        <div class="bar-row">
+                            <div class="bar-label">
+                                <mat-icon class="icon-sm">wifi_off</mat-icon> <span>Internet</span>
+                            </div>
+                            <div class="bar-track"
+                                [matTooltip]="((globalStats()?.porcentaje_sin_internet ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin internet'">
+                                <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_internet"
+                                    [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_internet)">
+                                    <span class="bar-value">{{ globalStats()?.porcentaje_sin_internet }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <!-- Housing Type Card -->
+            <mat-card class="kpi-card" appearance="outlined">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar>home</mat-icon>
+                    <mat-card-title>Tipos de Vivienda</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="housing-list">
+                        <div class="housing-item" *ngFor="let item of globalStats()?.tipos_vivienda | keyvalue">
+                            <span class="housing-name">{{ item.key }}</span>
+                            <span class="housing-count">{{ item.value }}</span>
+                        </div>
+                        <div *ngIf="(globalStats()?.tipos_vivienda | keyvalue)?.length === 0" class="empty-msg">
+                            Sin datos de vivienda
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <!-- Age Analysis Section -->
+        <div class="section-title mt-4">
+            <h2>Análisis por Edad</h2>
+            <span class="badge-outline">Comparativa de carencias</span>
+        </div>
+
+        <div class="age-charts-container">
+            <div class="age-group-card" *ngFor="let group of ageStats()">
+                <div class="group-header">
+                    <h3>{{ group.rango }}</h3>
+                    <span class="group-total">{{ group.total_personas }} personas</span>
+                </div>
+
+                <div class="mini-bars">
+                    <!-- Mini Bar Agua -->
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_agua * group.total_personas / 100 | number:'1.0-0') + ' personas sin agua (' + group.porcentaje_sin_agua + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_agua"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_agua)"></div>
+                        <mat-icon class="tiny-icon">water_drop</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_agua }}%</span>
+                    </div>
+                    <!-- Mini Bar Luz -->
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_luz * group.total_personas / 100 | number:'1.0-0') + ' personas sin luz (' + group.porcentaje_sin_luz + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_luz"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_luz)"></div>
+                        <mat-icon class="tiny-icon">lightbulb</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_luz }}%</span>
+                    </div>
+                    <!-- Mini Bar Gas -->
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_gas * group.total_personas / 100 | number:'1.0-0') + ' personas sin gas (' + group.porcentaje_sin_gas + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_gas"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_gas)"></div>
+                        <mat-icon class="tiny-icon">local_fire_department</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_gas }}%</span>
+                    </div>
+                </div>
+
+                <div class="housing-dominance">
+                    <small>Vivienda Predominante</small>
+                    <div class="dom-val">
+                        <strong>{{ group.vivienda_predominante }}</strong>
+                        <span>({{ group.vivienda_predominante_porcentaje }}%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
