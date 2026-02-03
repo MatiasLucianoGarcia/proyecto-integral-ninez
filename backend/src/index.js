@@ -32,6 +32,7 @@ const hojaRutaRoutes = require('./routes/hojaRutaRoutes')
 const ingresoRoutes = require('./routes/ingresoRoutes')
 const articulacionRoutes = require('./routes/articulacionRoutes')
 const historialRoutes = require('./routes/historialRoutes')
+const reportesRoutes = require('./routes/reportesRoutes')
 
 //const supabase = require('./config/db'); // Importar el cliente de Supabase
 
@@ -72,6 +73,7 @@ app.use('/api/hojaRuta', hojaRutaRoutes);
 app.use('/api/ingreso', ingresoRoutes);
 app.use('/api/articulacion', articulacionRoutes);
 app.use('/api/historial', historialRoutes);
+app.use('/api/reportes', reportesRoutes);
 
 
 // Bienvenida

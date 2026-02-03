@@ -1,0 +1,218 @@
+.report-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a237e; /* Azul principal */
+    margin: 0;
+  }
+
+  .subtitle {
+    color: #666;
+    margin-top: 0.5rem;
+  }
+}
+
+.year-selector {
+  min-width: 150px;
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  border-left: 4px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: default;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  &.blue { border-left-color: #3f51b5; .stat-icon { color: #3f51b5; background: #e8eaf6; } }
+  &.red { border-left-color: #f44336; .stat-icon { color: #f44336; background: #ffebee; } }
+  &.grey { border-left-color: #757575; .stat-icon { color: #757575; background: #f5f5f5; } }
+
+  mat-card-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem !important;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mat-icon { font-size: 24px; width: 24px; height: 24px; }
+  }
+
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+    
+    .stat-label { font-size: 0.875rem; color: #666; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #333; }
+  }
+}
+
+/* Chart */
+.chart-card {
+  min-height: 400px;
+}
+
+.chart-content {
+  padding: 2rem;
+  height: 350px;
+  position: relative;
+}
+
+.empty-state, .loading-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  
+  mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5; }
+}
+
+.chart-container {
+  display: flex;
+  height: 250px;
+  margin-top: 1rem;
+  padding-left: 40px; /* space for y-axis */
+  position: relative;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.y-axis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  width: 30px;
+  font-size: 0.75rem;
+  color: #888;
+  padding-right: 5px;
+  
+  span { transform: translateY(-50%); }
+  span:last-child { transform: translateY(0); } /* 0 align to bottom */
+  span:first-child { transform: translateY(0); } /* max align to top */
+}
+
+.bars-area {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  gap: 10px;
+  padding-bottom: 0;
+  padding-top: 10px;
+}
+
+.age-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+
+  .x-label {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #666;
+    white-space: nowrap;
+  }
+}
+
+.bars-wrapper {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  width: 100%;
+}
+
+.bar {
+  width: 15px; /* ancho fijo o relativo */
+  max-width: 30px;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease-out;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.bar-esc {
+  background: #3f51b5; /* Azul */
+}
+
+.bar-no-esc {
+  background: #f44336; /* Rojo */
+}
+
+/* Legend */
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #555;
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot.blue { background: #3f51b5; }
+    .dot.red { background: #f44336; }
+  }
+}

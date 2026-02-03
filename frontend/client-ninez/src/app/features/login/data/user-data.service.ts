@@ -9,21 +9,21 @@ export class UserDataService {
 	private userData = signal<User | null>(null);
 	private tokenData = signal<string | null>(null);
 
-	constructor() {}
-
-	// Obtiene el usuario desde memoria o localStorage
-	getUser(): User | null {
-		if (!this.userData()) {
-			const userStr = localStorage.getItem('user');
-			const tokenStr = localStorage.getItem('token');
-			if (userStr) {
-				const user: User = JSON.parse(userStr);
-				this.userData.set(user);
-			}
-			if (tokenStr) {
-				this.tokenData.set(tokenStr);
-			}
+	constructor() {
+		// Inicializar estado desde localStorage al crear el servicio
+		const userStr = localStorage.getItem('user');
+		const tokenStr = localStorage.getItem('token');
+		if (userStr) {
+			const user: User = JSON.parse(userStr);
+			this.userData.set(user);
 		}
+		if (tokenStr) {
+			this.tokenData.set(tokenStr);
+		}
+	}
+
+	// Obtiene el usuario desde memoria
+	getUser(): User | null {
 		return this.userData();
 	}
 

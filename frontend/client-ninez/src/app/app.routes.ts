@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { SessionGuard } from './core/guards/session.guard';
+import { AdminLayoutComponent } from './features/admin/layout/admin-layout.component';
 
 export const routes: Routes = [
 	{
@@ -25,6 +26,17 @@ export const routes: Routes = [
 		path: 'person-form',
 		canActivate: [SessionGuard],
 		loadComponent: () => import('./features/persons/components/person-form/person-form.component').then((m) => m.PersonFormComponent),
+	},
+	{
+		path: 'reportes',
+		component: AdminLayoutComponent, // Reusing AdminLayout for sidebar consistency
+		children: [
+			{
+				path: 'escolaridad',
+				loadComponent: () => import('./features/dashboard/pages/reporte-escolaridad/reporte-escolaridad.component').then(m => m.ReporteEscolaridadComponent)
+			},
+			{ path: '', redirectTo: 'escolaridad', pathMatch: 'full' }
+		]
 	},
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
 	{ path: '**', redirectTo: 'login' },

@@ -34,9 +34,14 @@
 
 		<div class="nav-section">
 			<h3 class="section-title">Reportes</h3>
-			<a class="nav-item" routerLink="/reportes">
+			<a class="nav-item" routerLink="/reportes" style="display: none;">
+				<!-- Oculto temporalmente o reemplazado -->
 				<mat-icon class="nav-icon">assessment</mat-icon>
-				<span class="nav-label">Reportes</span>
+				<span class="nav-label">Reportes General</span>
+			</a>
+			<a class="nav-item" routerLink="/reportes/escolaridad">
+				<mat-icon class="nav-icon">school</mat-icon>
+				<span class="nav-label">Escolaridad</span>
 			</a>
 			<a class="nav-item" routerLink="/estadisticas">
 				<mat-icon class="nav-icon">bar_chart</mat-icon>
