@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Domicilio } from '../../domain/domicilio.model';
+import { sortByDateDesc } from '../../../../shared/utils/date-sorter';
 
 @Component({
     selector: 'app-address-list',
@@ -17,6 +18,8 @@ import { Domicilio } from '../../domain/domicilio.model';
 export class AddressListComponent {
     domicilios = input.required<Domicilio[]>();
     isViewMode = input<boolean>(false);
+
+    sortedDomicilios = computed(() => sortByDateDesc(this.domicilios()));
 
     deleteAddress = output<Domicilio>();
 

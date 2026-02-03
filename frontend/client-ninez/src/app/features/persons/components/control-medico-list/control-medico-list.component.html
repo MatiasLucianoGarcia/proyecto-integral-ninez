@@ -1,11 +1,11 @@
 <div class="person-card-grid">
-    @if (controles.length === 0) {
+    @if (sortedControles.length === 0) {
     <div class="empty-state">
         <mat-icon>monitor_heart</mat-icon>
         <p>No hay controles médicos registrados</p>
     </div>
     } @else {
-    @for (item of controles; track item.id) {
+    @for (item of sortedControles; track item.id) {
     <mat-card class="person-card">
         <div class="card-icon-container">
             <mat-icon>local_hospital</mat-icon>

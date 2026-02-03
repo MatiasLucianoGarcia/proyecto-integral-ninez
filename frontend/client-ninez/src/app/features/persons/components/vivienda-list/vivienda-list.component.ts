@@ -1,10 +1,11 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Vivienda } from '../../domain/vivienda.model';
+import { sortByDateDesc } from '../../../../shared/utils/date-sorter';
 
 @Component({
   selector: 'app-vivienda-list',
@@ -16,6 +17,8 @@ import { Vivienda } from '../../domain/vivienda.model';
 export class ViviendaListComponent {
   viviendas = input.required<Vivienda[]>();
   isViewMode = input<boolean>(false);
+
+  sortedViviendas = computed(() => sortByDateDesc(this.viviendas()));
 
   deleteVivienda = output<Vivienda>();
 

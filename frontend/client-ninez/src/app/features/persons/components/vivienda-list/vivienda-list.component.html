@@ -1,5 +1,5 @@
 <div class="person-card-grid">
-    @for (vivienda of viviendas(); track $index) {
+    @for (vivienda of sortedViviendas(); track $index) {
     <mat-card class="person-card">
         <div class="card-icon-container">
             <mat-icon>house</mat-icon>

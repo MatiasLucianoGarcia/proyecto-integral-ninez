@@ -1,11 +1,11 @@
 <div class="person-card-grid">
-    @if (escolaridades.length === 0) {
+    @if (sortedEscolaridades.length === 0) {
     <div class="empty-state">
         <mat-icon>school</mat-icon>
         <p>No hay registros de escolaridad</p>
     </div>
     } @else {
-    @for (item of escolaridades; track item.id) {
+    @for (item of sortedEscolaridades; track item.id) {
     <mat-card class="person-card">
         <div class="card-icon-container">
             <mat-icon>school</mat-icon>
