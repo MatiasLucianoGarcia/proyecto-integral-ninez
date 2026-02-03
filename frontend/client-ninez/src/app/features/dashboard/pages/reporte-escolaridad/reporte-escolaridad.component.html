@@ -1,124 +1,128 @@
 <div class="report-container fade-in">
-    <!-- Header -->
+    <!-- Header Section -->
     <div class="header-section">
         <div class="title-group">
             <h1>Reporte de Escolaridad</h1>
-            <p class="subtitle">Análisis de personas escolarizadas vs. no escolarizadas por edad</p>
+            <p class="subtitle">Análisis demográfico de acceso a la educación</p>
         </div>
 
-        <div class="filter-group">
-            <mat-form-field appearance="outline" class="age-selector">
-                <mat-label>Edad Mínima</mat-label>
-                <input matInput type="number" [(ngModel)]="minEdad" (change)="onFilterChange()">
-            </mat-form-field>
+        <div class="controls-wrapper">
+            <div class="filter-group">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Edad Mínima</mat-label>
+                    <input matInput type="number" [(ngModel)]="minEdad" (change)="onFilterChange()" min="0">
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" class="age-selector">
-                <mat-label>Edad Máxima</mat-label>
-                <input matInput type="number" [(ngModel)]="maxEdad" (change)="onFilterChange()">
-            </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Edad Máxima</mat-label>
+                    <input matInput type="number" [(ngModel)]="maxEdad" (change)="onFilterChange()" min="0">
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" class="year-selector">
-                <mat-label>Año</mat-label>
-                <mat-select [(ngModel)]="anioSeleccionado" (selectionChange)="onFilterChange()">
-                    <mat-option *ngFor="let anio of aniosDisponibles()" [value]="anio">
-                        {{anio}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Año</mat-label>
+                    <mat-select [(ngModel)]="anioSeleccionado" (selectionChange)="onFilterChange()">
+                        <mat-option *ngFor="let anio of aniosDisponibles()" [value]="anio">
+                            {{anio}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
     </div>
 
-    <!-- Summary Cards -->
+    <!-- KPI Stats Cards -->
     <div class="stats-grid">
-        <mat-card class="stat-card blue">
+        <mat-card class="kpi-card" appearance="outlined">
             <mat-card-content>
-                <div class="stat-icon">
+                <div class="icon-container primary-bg">
                     <mat-icon>school</mat-icon>
                 </div>
-                <div class="stat-info">
-                    <span class="stat-label">Escolarizados</span>
-                    <span class="stat-value">{{ totalEscolarizados() }}</span>
+                <div class="kpi-info">
+                    <span class="label">Escolarizados</span>
+                    <span class="value">{{ totalEscolarizados() }}</span>
                 </div>
             </mat-card-content>
         </mat-card>
 
-        <mat-card class="stat-card red">
+        <mat-card class="kpi-card" appearance="outlined">
             <mat-card-content>
-                <div class="stat-icon">
-                    <mat-icon>warning</mat-icon>
+                <div class="icon-container warn-bg">
+                    <mat-icon>school_off</mat-icon> <!-- Changed icon for better semantics -->
                 </div>
-                <div class="stat-info">
-                    <span class="stat-label">No Escolarizados</span>
-                    <span class="stat-value">{{ totalNoEscolarizados() }}</span>
+                <div class="kpi-info">
+                    <span class="label">No Escolarizados</span>
+                    <span class="value">{{ totalNoEscolarizados() }}</span>
                 </div>
             </mat-card-content>
         </mat-card>
 
-        <mat-card class="stat-card grey">
+        <mat-card class="kpi-card" appearance="outlined">
             <mat-card-content>
-                <div class="stat-icon">
+                <div class="icon-container neutral-bg">
                     <mat-icon>groups</mat-icon>
                 </div>
-                <div class="stat-info">
-                    <span class="stat-label">Total Relevado</span>
-                    <span class="stat-value">{{ totalEscolarizados() + totalNoEscolarizados() }}</span>
+                <div class="kpi-info">
+                    <span class="label">Población Total</span>
+                    <span class="value">{{ totalEscolarizados() + totalNoEscolarizados() }}</span>
                 </div>
             </mat-card-content>
         </mat-card>
     </div>
 
-    <!-- Chart Section -->
-    <mat-card class="chart-card">
+    <!-- Main Chart Section -->
+    <mat-card class="chart-card" appearance="outlined">
         <mat-card-header>
+            <mat-icon mat-card-avatar>bar_chart</mat-icon>
             <mat-card-title>Distribución por Edad</mat-card-title>
         </mat-card-header>
-        <mat-card-content class="chart-content">
-
-            <div class="empty-state" *ngIf="!loading() && datosReporte().length === 0">
-                <mat-icon>dataset</mat-icon>
-                <p>No hay datos disponibles para el año {{ anioSeleccionado() }}</p>
-            </div>
-
-            <div class="chart-container" *ngIf="!loading() && datosReporte().length > 0">
-                <div class="y-axis">
-                    <span>{{ maxCantidad() }}</span>
-                    <span>{{ maxCantidad() / 2 | number:'1.0-0' }}</span>
-                    <span>0</span>
+        <mat-card-content>
+            <div class="chart-wrapper">
+                <div class="empty-state" *ngIf="!loading() && datosReporte().length === 0">
+                    <mat-icon>dataset</mat-icon>
+                    <p>No hay datos disponibles para el año {{ anioSeleccionado() }}</p>
                 </div>
 
-                <div class="bars-area">
-                    <div class="age-group" *ngFor="let item of datosReporte()">
-                        <div class="bars-wrapper">
-                            <!-- Escolarizado -->
-                            <div class="bar bar-esc" [style.height]="getBarHeight(item.escolarizados)"
-                                [matTooltip]="'Escolarizados: ' + item.escolarizados">
-                            </div>
-                            <!-- No Escolarizado -->
-                            <div class="bar bar-no-esc" [style.height]="getBarHeight(item.no_escolarizados)"
-                                [matTooltip]="'No Escolarizados: ' + item.no_escolarizados">
+                <div class="chart-visualization" *ngIf="!loading() && datosReporte().length > 0">
+                    <!-- Custom Bar Chart Implementation -->
+                    <div class="chart-body">
+                        <div class="y-axis">
+                            <span>{{ maxCantidad() }}</span>
+                            <span>{{ maxCantidad() / 2 | number:'1.0-0' }}</span>
+                            <span>0</span>
+                        </div>
+
+                        <div class="bars-container">
+                            <div class="age-column" *ngFor="let item of datosReporte()">
+                                <div class="bars-stack">
+                                    <!-- Escolarizados Bar -->
+                                    <div class="bar primary" [style.height]="getBarHeight(item.escolarizados)"
+                                        [matTooltip]="'Escolarizados: ' + item.escolarizados + ' (' + item.edad + ' años)'">
+                                    </div>
+                                    <!-- No Escolarizados Bar -->
+                                    <div class="bar warn" [style.height]="getBarHeight(item.no_escolarizados)"
+                                        [matTooltip]="'No Escolarizados: ' + item.no_escolarizados + ' (' + item.edad + ' años)'">
+                                    </div>
+                                </div>
+                                <span class="x-label">{{ item.edad }}</span>
                             </div>
                         </div>
-                        <span class="x-label">{{ item.edad }} años</span>
+                    </div>
+
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="dot primary"></span> Escolarizados
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot warn"></span> No Escolarizados
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="loading-state" *ngIf="loading()">
-                <p>Cargando datos...</p>
-            </div>
-
-            <!-- Legend -->
-            <div class="chart-legend" *ngIf="datosReporte().length > 0">
-                <div class="legend-item">
-                    <div class="dot blue"></div>
-                    <span>Escolarizados</span>
-                </div>
-                <div class="legend-item">
-                    <div class="dot red"></div>
-                    <span>No Escolarizados</span>
+                <div class="loading-overlay" *ngIf="loading()">
+                    <mat-spinner diameter="40"></mat-spinner>
+                    <p>Cargando datos...</p>
                 </div>
             </div>
-
         </mat-card-content>
     </mat-card>
 </div>

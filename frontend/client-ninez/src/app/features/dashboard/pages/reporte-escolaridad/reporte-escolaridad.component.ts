@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReportesService, ReporteEscolaridadItem } from '../../../../services/reportes.service';
 
 @Component({
@@ -22,7 +23,8 @@ import { ReportesService, ReporteEscolaridadItem } from '../../../../services/re
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './reporte-escolaridad.component.html',
   styleUrls: ['./reporte-escolaridad.component.scss']
