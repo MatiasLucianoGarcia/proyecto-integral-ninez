@@ -26,6 +26,20 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width: 200px;">
+                    <mat-label>Género</mat-label>
+                    <mat-select [(ngModel)]="generosSeleccionados" (selectionChange)="onFilterChange()" multiple>
+                        <mat-option *ngFor="let g of listaGeneros()" [value]="g">{{g}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width: 200px;">
+                    <mat-label>Nacionalidad</mat-label>
+                    <mat-select [(ngModel)]="nacionalidadesSeleccionadas" (selectionChange)="onFilterChange()" multiple>
+                        <mat-option *ngFor="let n of listaNacionalidades()" [value]="n">{{n}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
     </div>
@@ -73,7 +87,7 @@
     <mat-card class="chart-card" appearance="outlined">
         <mat-card-header>
             <mat-icon mat-card-avatar>bar_chart</mat-icon>
-            <mat-card-title>Distribución por Edad</mat-card-title>
+            <mat-card-title>Distribución de Escolaridad por Edad</mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <div class="chart-wrapper">
@@ -121,6 +135,104 @@
                 <div class="loading-overlay" *ngIf="loading()">
                     <mat-spinner diameter="40"></mat-spinner>
                     <p>Cargando datos...</p>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Gender Analysis Section -->
+    <mat-card class="chart-card" appearance="outlined" *ngIf="generoStats().length > 0" style="margin-top: 2rem;">
+        <mat-card-header>
+            <mat-icon mat-card-avatar>wc</mat-icon>
+            <mat-card-title>Distribución de Escolaridad por Género</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="chart-wrapper">
+                <div class="chart-visualization">
+                    <div class="chart-body">
+                        <!-- Y-Axis -->
+                        <div class="y-axis">
+                            <span>{{ getMaxFromStats(generoStats()) }}</span>
+                            <span>{{ getMaxFromStats(generoStats()) / 2 | number:'1.0-0' }}</span>
+                            <span>0</span>
+                        </div>
+
+                        <!-- Bars -->
+                        <div class="bars-container">
+                            <div class="age-column" *ngFor="let item of generoStats()">
+                                <div class="bars-stack">
+                                    <div class="bar primary"
+                                        [style.height]="getBarHeightFor(item.escolarizados, generoStats())"
+                                        [matTooltip]="'Escolarizados: ' + item.escolarizados">
+                                    </div>
+                                    <div class="bar warn"
+                                        [style.height]="getBarHeightFor(item.no_escolarizados, generoStats())"
+                                        [matTooltip]="'No Escolarizados: ' + item.no_escolarizados">
+                                    </div>
+                                </div>
+                                <span class="x-label">{{ item.label }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="dot primary"></span> Escolarizados
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot warn"></span> No Escolarizados
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Nationality Analysis Section -->
+    <mat-card class="chart-card" appearance="outlined" *ngIf="nationalityStats().length > 0" style="margin-top: 2rem;">
+        <mat-card-header>
+            <mat-icon mat-card-avatar>public</mat-icon>
+            <mat-card-title>Distribución de Escolaridad por Nacionalidad</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="chart-wrapper">
+                <div class="chart-visualization">
+                    <div class="chart-body">
+                        <!-- Y-Axis -->
+                        <div class="y-axis">
+                            <span>{{ getMaxFromStats(nationalityStats()) }}</span>
+                            <span>{{ getMaxFromStats(nationalityStats()) / 2 | number:'1.0-0' }}</span>
+                            <span>0</span>
+                        </div>
+
+                        <!-- Bars -->
+                        <div class="bars-container">
+                            <div class="age-column" *ngFor="let item of nationalityStats()">
+                                <div class="bars-stack">
+                                    <div class="bar primary"
+                                        [style.height]="getBarHeightFor(item.escolarizados, nationalityStats())"
+                                        [matTooltip]="'Escolarizados: ' + item.escolarizados">
+                                    </div>
+                                    <div class="bar warn"
+                                        [style.height]="getBarHeightFor(item.no_escolarizados, nationalityStats())"
+                                        [matTooltip]="'No Escolarizados: ' + item.no_escolarizados">
+                                    </div>
+                                </div>
+                                <span class="x-label">{{ item.label }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="dot primary"></span> Escolarizados
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot warn"></span> No Escolarizados
+                        </div>
+                    </div>
                 </div>
             </div>
         </mat-card-content>

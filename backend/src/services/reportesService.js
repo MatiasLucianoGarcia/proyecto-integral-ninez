@@ -1,6 +1,6 @@
 const supabase = require('../config/db');
 
-const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21) => {
+const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21, generos = [], nacionalidades = []) => {
     // Convertir anio a entero por seguridad
     const anioNum = parseInt(anio, 10);
     const minEdadNum = parseInt(minEdad, 10);
@@ -32,7 +32,12 @@ const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21) => {
     // 2. Obtener TODAS las personas para base poblacional
     const { data: personas, error: errorPer } = await supabase
         .from('persona')
-        .select('dni, fecha_nacimiento');
+        .select(`
+            dni, 
+            fecha_nacimiento, 
+            generoObj:genero(nombre), 
+            nacionalidadObj:nacionalidad(nombre)
+        `);
 
     if (errorPer) throw errorPer;
 
@@ -61,9 +66,24 @@ const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21) => {
 
     // 4. Calcular edades y status para cada persona
     const reporte = {};
+    const reporteGenero = {};
+    const reporteNacionalidad = {};
 
     personas.forEach((persona) => {
         if (!persona.fecha_nacimiento) return;
+
+        // FILTROS ---
+        const generoNombre = persona.generoObj?.nombre;
+        const nacionalidadNombre = persona.nacionalidadObj?.nombre;
+
+        if (generos && generos.length > 0) {
+            if (!generoNombre || !generos.includes(generoNombre)) return;
+        }
+
+        if (nacionalidades && nacionalidades.length > 0) {
+            if (!nacionalidadNombre || !nacionalidades.includes(nacionalidadNombre)) return;
+        }
+        // -----------
 
         const fechaNac = new Date(persona.fecha_nacimiento);
 
@@ -86,7 +106,7 @@ const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21) => {
             estado = 'Escolarizado';
         }
 
-        // Inicializar estructura para esta edad
+        // --- Agregación por Edad ---
         if (!reporte[edad]) {
             reporte[edad] = {
                 edad,
@@ -95,19 +115,38 @@ const obtenerReporteEscolaridad = async (anio, minEdad = 5, maxEdad = 21) => {
                 total: 0
             };
         }
-
         reporte[edad].total += 1;
         if (estado === 'Escolarizado') {
             reporte[edad].escolarizados += 1;
         } else {
             reporte[edad].no_escolarizados += 1;
         }
+
+        // --- Agregación por Género ---
+        const gKey = generoNombre || 'No Especificado';
+        if (!reporteGenero[gKey]) {
+            reporteGenero[gKey] = { label: gKey, escolarizados: 0, no_escolarizados: 0, total: 0 };
+        }
+        reporteGenero[gKey].total += 1;
+        if (estado === 'Escolarizado') reporteGenero[gKey].escolarizados += 1;
+        else reporteGenero[gKey].no_escolarizados += 1;
+
+        // --- Agregación por Nacionalidad ---
+        const nKey = nacionalidadNombre || 'No Especificada';
+        if (!reporteNacionalidad[nKey]) {
+            reporteNacionalidad[nKey] = { label: nKey, escolarizados: 0, no_escolarizados: 0, total: 0 };
+        }
+        reporteNacionalidad[nKey].total += 1;
+        if (estado === 'Escolarizado') reporteNacionalidad[nKey].escolarizados += 1;
+        else reporteNacionalidad[nKey].no_escolarizados += 1;
     });
 
     // Convertir objeto a array ordenado por edad
-    const resultado = Object.values(reporte).sort((a, b) => a.edad - b.edad);
+    const por_edad = Object.values(reporte).sort((a, b) => a.edad - b.edad);
+    const por_genero = Object.values(reporteGenero);
+    const por_nacionalidad = Object.values(reporteNacionalidad);
 
-    return resultado;
+    return { por_edad, por_genero, por_nacionalidad };
 };
 
 const obtenerAniosDisponibles = async () => {
@@ -136,6 +175,11 @@ const obtenerAniosDisponibles = async () => {
 
 // --- Helper para generar subrangos ---
 const generarSubRangos = (min, max) => {
+    // FIX: Si min == max, devolvemos un único rango
+    if (min === max) {
+        return [{ min: min, max: min, label: `${min} años` }];
+    }
+
     const total = max - min;
     const subRangos = [];
 
@@ -143,6 +187,10 @@ const generarSubRangos = (min, max) => {
     if (total <= 10) pasos = 2; // e.g. 5-15 -> split 2
     else if (total <= 20) pasos = 3; // e.g 0-20 -> split 3
     else pasos = 4; // > 20 -> split 4
+
+    // Evitar pasos mayor que la diferencia si es muy chica (ej 5-6 años)
+    // Si total < pasos, ajustamos pasos a total o 1
+    if (total < pasos) pasos = Math.max(1, total);
 
     const tamaño = Math.ceil(total / pasos);
 
@@ -154,20 +202,31 @@ const generarSubRangos = (min, max) => {
         // Ajuste para el último rango si queda muy chico o para cerrar justo
         if (subRangos.length === pasos - 1) fin = max;
 
+        // Validar que no nos pasemos
+        if (actual > max) break;
+
         subRangos.push({ min: actual, max: fin, label: `${actual} - ${fin} años` });
         actual = fin + 1;
     }
+
+    // Safety check: si no se generó nada (ej min=10 max=11 y logica falla), forzamos al menos uno
+    if (subRangos.length === 0) {
+        subRangos.push({ min: min, max: max, label: `${min} - ${max} años` });
+    }
+
     return subRangos;
 };
 
-const obtenerReporteCondicionesVida = async ({ minEdad = 0, maxEdad = 100 }) => {
+const obtenerReporteCondicionesVida = async ({ minEdad = 0, maxEdad = 100, generos = [], nacionalidades = [] }) => {
     // 1. Obtener Base de Personas con relaciones
-    // Traemos campos necesarios para filtros y datos
+    // 1. Obtener Base de Personas con relaciones
     let query = supabase
         .from('persona')
         .select(`
             dni,
             fecha_nacimiento,
+            generoObj:genero(nombre),
+            nacionalidadObj:nacionalidad(nombre),
             condiciones:condiciones_vida(*),
             viviendas:vivienda(tipo_vivienda(*))
         `);
@@ -185,22 +244,18 @@ const obtenerReporteCondicionesVida = async ({ minEdad = 0, maxEdad = 100 }) => 
             sin_internet: 0,
             tipos_vivienda: {}
         },
-        por_edad: []
+        por_edad: [],
+        por_genero: [],
+        por_nacionalidad: []
     };
 
     // Generar rangos etarios dinámicos
     const subRangos = generarSubRangos(parseInt(minEdad), parseInt(maxEdad));
 
     // Inicializar grupos por edad
-    const gruposEdad = subRangos.map(r => ({
-        rango: r,
-        total: 0,
-        sin_agua: 0,
-        sin_luz: 0,
-        sin_gas: 0,
-        sin_internet: 0,
-        tipos_vivienda: {}
-    }));
+    const gruposEdad = subRangos.map(r => initGroup(r.label, r));
+    const gruposGenero = {}; // Dinámico
+    const gruposNacionalidad = {}; // Dinámico
 
     const fechaReferencia = new Date();
 
@@ -216,83 +271,64 @@ const obtenerReporteCondicionesVida = async ({ minEdad = 0, maxEdad = 100 }) => 
 
         if (edad < minEdad || edad > maxEdad) return;
 
+        // --- Obtener Nombres de Genero y Nacionalidad ---
+        const generoNombre = p.generoObj?.nombre;
+        const nacionalidadNombre = p.nacionalidadObj?.nombre;
+
+        // --- Filtro 2: Género ---
+        // generos array vacio implica 'todos'
+        if (generos && generos.length > 0) {
+            // Si no tiene genero y estamos filtrando, ¿lo excluimos? Asumimos que si.
+            if (!generoNombre || !generos.includes(generoNombre)) return;
+        }
+
+        // --- Filtro 3: Nacionalidad ---
+        // nacionalidades array vacio implica 'todos'
+        if (nacionalidades && nacionalidades.length > 0) {
+            if (!nacionalidadNombre || !nacionalidades.includes(nacionalidadNombre)) return;
+        }
+
         // --- Procesar Datos ---
-
-        // Condiciones de Vida (Usamos el único registro si existe)
         const cond = p.condiciones && p.condiciones.length > 0 ? p.condiciones[0] : null;
-
-        // Vivienda (Usamos la última, query ya trae array, tomamos la ultima si ordenamos o asumimos lógica de negocio.
-        // Supabase devuelve orden inserción default, ideal ordenar en query o aquí. 
-        // Como 'viviendas' es array, y queremos la mas reciente, asumimos que no hay fecha en vivienda en este scope simple,
-        // pero idealmente deberíamos ordenar por fecha_carga o fecha_real. 
-        // SIMPLIFICACION: Tomamos la última del array (asumiendo orden cronológico de carga).
         const vivienda = p.viviendas && p.viviendas.length > 0 ? p.viviendas[p.viviendas.length - 1] : null;
-
-        // Flags de carencia (true si le FALTAN cosas)
-        // La DB tiene 'acceso_luz': true/false. Si es false o null -> cuenta como carencia?
-        // Asumiremos: false = no tiene, null = no relevado (no cuenta o cuenta como no? user prompt dice "sin acceso")
-        // Interpretación: Si acceso_luz === false -> sumar 1.
 
         const sinLuz = cond?.acceso_luz === false;
         const sinGas = cond?.acceso_gas === false;
         const sinAgua = cond?.acceso_agua === false;
         const sinInternet = cond?.acceso_internet === false;
 
-        // Agregado Global
+        const tipoVivienda = (vivienda && vivienda.tipo_vivienda) ? vivienda.tipo_vivienda.tipo : null;
+
+        // Update Global
+        updateStats(resultado.global, sinLuz, sinGas, sinAgua, sinInternet, tipoVivienda);
         resultado.global.total_personas++;
-        if (sinLuz) resultado.global.sin_luz++;
-        if (sinGas) resultado.global.sin_gas++;
-        if (sinAgua) resultado.global.sin_agua++;
-        if (sinInternet) resultado.global.sin_internet++;
 
-        if (vivienda && vivienda.tipo_vivienda) {
-            const tipo = vivienda.tipo_vivienda.tipo;
-            resultado.global.tipos_vivienda[tipo] = (resultado.global.tipos_vivienda[tipo] || 0) + 1;
+        // Update Por Edad
+        const grupoEdad = gruposEdad.find(g => edad >= g.metadata.min && edad <= g.metadata.max);
+        if (grupoEdad) {
+            updateStats(grupoEdad, sinLuz, sinGas, sinAgua, sinInternet, tipoVivienda);
+            grupoEdad.total++;
         }
 
-        // Agregado por Edad
-        // Buscar en qué subrango cae
-        const grupo = gruposEdad.find(g => edad >= g.rango.min && edad <= g.rango.max);
-        if (grupo) {
-            grupo.total++;
-            if (sinLuz) grupo.sin_luz++;
-            if (sinGas) grupo.sin_gas++;
-            if (sinAgua) grupo.sin_agua++;
-            if (sinInternet) grupo.sin_internet++;
-            if (vivienda && vivienda.tipo_vivienda) {
-                const tipo = vivienda.tipo_vivienda.tipo;
-                grupo.tipos_vivienda[tipo] = (grupo.tipos_vivienda[tipo] || 0) + 1;
-            }
-        }
+        // Update Por Genero
+        const generoKey = generoNombre || 'No Especificado';
+        if (!gruposGenero[generoKey]) gruposGenero[generoKey] = initGroup(generoKey);
+        updateStats(gruposGenero[generoKey], sinLuz, sinGas, sinAgua, sinInternet, tipoVivienda);
+        gruposGenero[generoKey].total++;
+
+        // Update Por Nacionalidad
+        const nacKey = nacionalidadNombre || 'No Especificada';
+        if (!gruposNacionalidad[nacKey]) gruposNacionalidad[nacKey] = initGroup(nacKey);
+        updateStats(gruposNacionalidad[nacKey], sinLuz, sinGas, sinAgua, sinInternet, tipoVivienda);
+        gruposNacionalidad[nacKey].total++;
     });
 
-    // Formatear resultados por edad
-    resultado.por_edad = gruposEdad.map(g => {
-        // Calcular predominante vivienda
-        let tipoPredominante = 'N/A';
-        let maxCount = 0;
-        Object.entries(g.tipos_vivienda).forEach(([tipo, count]) => {
-            if (count > maxCount) {
-                maxCount = count;
-                tipoPredominante = tipo;
-            }
-        });
+    // Formatear resultados
+    resultado.por_edad = gruposEdad.map(formatGroupResult);
+    resultado.por_genero = Object.values(gruposGenero).map(formatGroupResult);
+    resultado.por_nacionalidad = Object.values(gruposNacionalidad).map(formatGroupResult);
 
-        // Calcular porcentajes
-        const total = g.total || 1; // evitar div 0
-        return {
-            rango: g.rango.label,
-            total_personas: g.total,
-            porcentaje_sin_luz: Math.round((g.sin_luz / total) * 100),
-            porcentaje_sin_gas: Math.round((g.sin_gas / total) * 100),
-            porcentaje_sin_agua: Math.round((g.sin_agua / total) * 100),
-            porcentaje_sin_internet: Math.round((g.sin_internet / total) * 100),
-            vivienda_predominante: tipoPredominante,
-            vivienda_predominante_porcentaje: Math.round((maxCount / total) * 100)
-        };
-    });
-
-    // Formatear Globales a porcentajes
+    // Formatear Globales
     const totalG = resultado.global.total_personas || 1;
     resultado.global.porcentaje_sin_luz = Math.round((resultado.global.sin_luz / totalG) * 100);
     resultado.global.porcentaje_sin_gas = Math.round((resultado.global.sin_gas / totalG) * 100);
@@ -301,6 +337,55 @@ const obtenerReporteCondicionesVida = async ({ minEdad = 0, maxEdad = 100 }) => 
 
     return resultado;
 };
+
+// Helper init group
+function initGroup(label, metadata = {}) {
+    return {
+        label, // Used for final display name
+        metadata, // Used for internal logic (e.g. range min/max)
+        total: 0,
+        sin_agua: 0,
+        sin_luz: 0,
+        sin_gas: 0,
+        sin_internet: 0,
+        tipos_vivienda: {}
+    };
+}
+
+// Helper update stats
+function updateStats(obj, sinLuz, sinGas, sinAgua, sinInternet, tipoVivienda) {
+    if (sinLuz) obj.sin_luz++;
+    if (sinGas) obj.sin_gas++;
+    if (sinAgua) obj.sin_agua++;
+    if (sinInternet) obj.sin_internet++;
+    if (tipoVivienda) {
+        obj.tipos_vivienda[tipoVivienda] = (obj.tipos_vivienda[tipoVivienda] || 0) + 1;
+    }
+}
+
+// Helper format result
+function formatGroupResult(g) {
+    let tipoPredominante = 'N/A';
+    let maxCount = 0;
+    Object.entries(g.tipos_vivienda).forEach(([tipo, count]) => {
+        if (count > maxCount) {
+            maxCount = count;
+            tipoPredominante = tipo;
+        }
+    });
+
+    const total = g.total || 1;
+    return {
+        rango: g.label, // "rango" es el nombre generico que usa el front (podria ser genero o nacionalidad)
+        total_personas: g.total,
+        porcentaje_sin_luz: Math.round((g.sin_luz / total) * 100),
+        porcentaje_sin_gas: Math.round((g.sin_gas / total) * 100),
+        porcentaje_sin_agua: Math.round((g.sin_agua / total) * 100),
+        porcentaje_sin_internet: Math.round((g.sin_internet / total) * 100),
+        vivienda_predominante: tipoPredominante,
+        vivienda_predominante_porcentaje: Math.round((maxCount / total) * 100)
+    };
+}
 
 module.exports = {
     obtenerReporteEscolaridad,

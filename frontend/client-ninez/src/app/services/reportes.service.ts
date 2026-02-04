@@ -10,8 +10,11 @@ export interface ReporteEscolaridadItem {
 }
 
 export interface ReporteEscolaridadResponse {
-    anio: number;
-    data: ReporteEscolaridadItem[];
+    data: {
+        por_edad: ReporteEscolaridadItem[];
+        por_genero: { label: string, escolarizados: number, no_escolarizados: number, total: number }[];
+        por_nacionalidad: { label: string, escolarizados: number, no_escolarizados: number, total: number }[];
+    }
 }
 
 export interface ReporteCondicionesVidaItem {
@@ -27,15 +30,10 @@ export interface ReporteCondicionesVidaItem {
 
 export interface ReporteCondicionesVidaResponse {
     data: {
-        global: {
-            total_personas: number;
-            porcentaje_sin_luz: number;
-            porcentaje_sin_gas: number;
-            porcentaje_sin_agua: number;
-            porcentaje_sin_internet: number;
-            tipos_vivienda: Record<string, number>;
-        };
-        por_edad: ReporteCondicionesVidaItem[];
+        global: any;
+        por_edad: any[];
+        por_genero: any[];
+        por_nacionalidad: any[];
     };
 }
 
@@ -47,10 +45,10 @@ export class ReportesService {
     // Asumimos que environment.apiUrl está definido, si no usaremos path relativo o hardcoded por ahora para asegurar
     private apiUrl = 'http://localhost:8080/api';
 
-    getReporteEscolaridad(anio?: number, minEdad?: number, maxEdad?: number): Observable<ReporteEscolaridadResponse> {
-        let params = `?anio=${anio || ''}`;
-        if (minEdad !== undefined) params += `&minEdad=${minEdad}`;
-        if (maxEdad !== undefined) params += `&maxEdad=${maxEdad}`;
+    getReporteEscolaridad(anio: number, minEdad: number = 0, maxEdad: number = 100, generos: string[] = [], nacionalidades: string[] = []): Observable<ReporteEscolaridadResponse> {
+        let params = `?anio=${anio}&minEdad=${minEdad}&maxEdad=${maxEdad}`;
+        if (generos && generos.length > 0) params += `&generos=${generos.join(',')}`;
+        if (nacionalidades && nacionalidades.length > 0) params += `&nacionalidades=${nacionalidades.join(',')}`;
 
         return this.http.get<ReporteEscolaridadResponse>(`${this.apiUrl}/reportes/escolaridad${params}`);
     }
@@ -59,11 +57,21 @@ export class ReportesService {
         return this.http.get<number[]>(`${this.apiUrl}/reportes/escolaridad/anios`);
     }
 
-    getReporteCondicionesVida(filters: { minEdad?: number, maxEdad?: number, filtroSL?: string, idEquipo?: number }): Observable<ReporteCondicionesVidaResponse> {
+    getReporteCondicionesVida(filters: { minEdad?: number, maxEdad?: number, filtroSL?: string, idEquipo?: number, generos?: string[], nacionalidades?: string[] }): Observable<ReporteCondicionesVidaResponse> {
         let params = `?minEdad=${filters.minEdad || ''}&maxEdad=${filters.maxEdad || ''}`;
         if (filters.filtroSL) params += `&filtroSL=${filters.filtroSL}`;
         if (filters.idEquipo) params += `&idEquipo=${filters.idEquipo}`;
+        if (filters.generos && filters.generos.length > 0) params += `&generos=${filters.generos.join(',')}`;
+        if (filters.nacionalidades && filters.nacionalidades.length > 0) params += `&nacionalidades=${filters.nacionalidades.join(',')}`;
 
         return this.http.get<ReporteCondicionesVidaResponse>(`${this.apiUrl}/reportes/condiciones-vida${params}`);
+    }
+
+    getGeneros(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/generos`);
+    }
+
+    getNacionalidades(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/nacionalidades`);
     }
 }

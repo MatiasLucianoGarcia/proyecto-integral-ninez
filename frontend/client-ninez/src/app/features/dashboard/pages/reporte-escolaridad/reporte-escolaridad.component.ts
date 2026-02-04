@@ -34,11 +34,20 @@ export class ReporteEscolaridadComponent implements OnInit {
 
   // Estado
   anioSeleccionado = signal<number>(new Date().getFullYear());
-  minEdad = signal<number>(5);
-  maxEdad = signal<number>(21);
+  minEdad = signal<number>(0);
+  maxEdad = signal<number>(100);
+  generosSeleccionados = signal<string[]>([]);
+  nacionalidadesSeleccionadas = signal<string[]>([]);
+
   aniosDisponibles = signal<number[]>([]);
-  datosReporte = signal<ReporteEscolaridadItem[]>([]);
+  datosReporte = signal<ReporteEscolaridadItem[]>([]); // Por edad
+  generoStats = signal<any[]>([]);
+  nationalityStats = signal<any[]>([]);
   loading = signal<boolean>(false);
+
+  // Listas para filtros
+  listaGeneros = signal<string[]>([]);
+  listaNacionalidades = signal<string[]>([]);
 
   // Computados
   totalEscolarizados = computed(() => this.datosReporte().reduce((acc, curr) => acc + curr.escolarizados, 0));
@@ -48,7 +57,23 @@ export class ReporteEscolaridadComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.cargarListas();
     this.cargarAnios();
+  }
+
+  cargarListas() {
+    this.reportesService.getGeneros().subscribe(res => {
+      const generos = res.map(g => g.nombre);
+      this.listaGeneros.set(generos);
+      this.generosSeleccionados.set(generos); // Pre-seleccionar todos
+      this.cargarDatos(); // Recargar datos iniciales con todo seleccionado
+    });
+    this.reportesService.getNacionalidades().subscribe(res => {
+      const nacionalidades = res.map(n => n.nombre);
+      this.listaNacionalidades.set(nacionalidades);
+      this.nacionalidadesSeleccionadas.set(nacionalidades); // Pre-seleccionar todos
+      this.cargarDatos(); // Recargar datos iniciales con todo seleccionado
+    });
   }
 
   cargarAnios() {
@@ -78,14 +103,22 @@ export class ReporteEscolaridadComponent implements OnInit {
 
   cargarDatos() {
     this.loading.set(true);
-    this.reportesService.getReporteEscolaridad(this.anioSeleccionado(), this.minEdad(), this.maxEdad())
+    this.reportesService.getReporteEscolaridad(
+      this.anioSeleccionado(),
+      this.minEdad(),
+      this.maxEdad(),
+      this.generosSeleccionados(),
+      this.nacionalidadesSeleccionadas()
+    )
       .subscribe({
         next: (response) => {
-          this.datosReporte.set(response.data);
+          this.datosReporte.set(response.data.por_edad);
+          this.generoStats.set(response.data.por_genero);
+          this.nationalityStats.set(response.data.por_nacionalidad);
           this.loading.set(false);
         },
         error: (err) => {
-          console.error('Error cargando reporte', err);
+          console.error('Error cargando reporte escolaridad', err);
           this.loading.set(false);
         }
       });
@@ -96,10 +129,20 @@ export class ReporteEscolaridadComponent implements OnInit {
   }
 
   // Helpers para el gráfico
-  getBarHeight(valor: number): string {
+  getBarHeight(value: number): string {
     const max = this.maxCantidad();
-    // Altura máxima del gráfico digamos 200px
-    const percentage = (valor / max) * 100;
-    return `${percentage}%`;
+    if (max === 0) return '0%';
+    return (value / max * 100) + '%';
+  }
+
+  // Método helper para reutilizar en nuevos gráficos (si needed)
+  getMaxFromStats(stats: any[]): number {
+    if (!stats || stats.length === 0) return 1;
+    return Math.max(...stats.map(d => Math.max(d.escolarizados, d.no_escolarizados)), 1);
+  }
+
+  getBarHeightFor(value: number, stats: any[]): string {
+    const max = this.getMaxFromStats(stats);
+    return (value / max * 100) + '%';
   }
 }

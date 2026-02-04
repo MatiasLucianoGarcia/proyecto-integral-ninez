@@ -17,6 +17,20 @@
                     <mat-label>Edad Máxima</mat-label>
                     <input matInput type="number" [(ngModel)]="maxEdad" (change)="onFilterChange()" min="0">
                 </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width: 200px;">
+                    <mat-label>Género</mat-label>
+                    <mat-select [(ngModel)]="generosSeleccionados" (selectionChange)="onFilterChange()" multiple>
+                        <mat-option *ngFor="let g of listaGeneros()" [value]="g">{{g}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width: 200px;">
+                    <mat-label>Nacionalidad</mat-label>
+                    <mat-select [(ngModel)]="nacionalidadesSeleccionadas" (selectionChange)="onFilterChange()" multiple>
+                        <mat-option *ngFor="let n of listaNacionalidades()" [value]="n">{{n}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
     </div>
@@ -150,6 +164,100 @@
                         <span class="val">{{ group.porcentaje_sin_luz }}%</span>
                     </div>
                     <!-- Mini Bar Gas -->
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_gas * group.total_personas / 100 | number:'1.0-0') + ' personas sin gas (' + group.porcentaje_sin_gas + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_gas"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_gas)"></div>
+                        <mat-icon class="tiny-icon">local_fire_department</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_gas }}%</span>
+                    </div>
+                </div>
+
+                <div class="housing-dominance">
+                    <small>Vivienda Predominante</small>
+                    <div class="dom-val">
+                        <strong>{{ group.vivienda_predominante }}</strong>
+                        <span>({{ group.vivienda_predominante_porcentaje }}%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gender Analysis Section -->
+        <div class="section-title mt-4">
+            <h2>Análisis por Género</h2>
+            <span class="badge-outline">Comparativa de carencias</span>
+        </div>
+
+        <div class="age-charts-container">
+            <div class="age-group-card" *ngFor="let group of genderStats()">
+                <div class="group-header">
+                    <h3>{{ group.rango }}</h3>
+                    <span class="group-total">{{ group.total_personas }} personas</span>
+                </div>
+
+                <div class="mini-bars">
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_agua * group.total_personas / 100 | number:'1.0-0') + ' personas sin agua (' + group.porcentaje_sin_agua + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_agua"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_agua)"></div>
+                        <mat-icon class="tiny-icon">water_drop</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_agua }}%</span>
+                    </div>
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_luz * group.total_personas / 100 | number:'1.0-0') + ' personas sin luz (' + group.porcentaje_sin_luz + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_luz"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_luz)"></div>
+                        <mat-icon class="tiny-icon">lightbulb</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_luz }}%</span>
+                    </div>
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_gas * group.total_personas / 100 | number:'1.0-0') + ' personas sin gas (' + group.porcentaje_sin_gas + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_gas"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_gas)"></div>
+                        <mat-icon class="tiny-icon">local_fire_department</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_gas }}%</span>
+                    </div>
+                </div>
+
+                <div class="housing-dominance">
+                    <small>Vivienda Predominante</small>
+                    <div class="dom-val">
+                        <strong>{{ group.vivienda_predominante }}</strong>
+                        <span>({{ group.vivienda_predominante_porcentaje }}%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nationality Analysis Section -->
+        <div class="section-title mt-4">
+            <h2>Análisis por Nacionalidad</h2>
+            <span class="badge-outline">Comparativa de carencias</span>
+        </div>
+
+        <div class="age-charts-container">
+            <div class="age-group-card" *ngFor="let group of nationalityStats()">
+                <div class="group-header">
+                    <h3>{{ group.rango }}</h3>
+                    <span class="group-total">{{ group.total_personas }} personas</span>
+                </div>
+
+                <div class="mini-bars">
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_agua * group.total_personas / 100 | number:'1.0-0') + ' personas sin agua (' + group.porcentaje_sin_agua + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_agua"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_agua)"></div>
+                        <mat-icon class="tiny-icon">water_drop</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_agua }}%</span>
+                    </div>
+                    <div class="mini-bar-col"
+                        [matTooltip]="(group.porcentaje_sin_luz * group.total_personas / 100 | number:'1.0-0') + ' personas sin luz (' + group.porcentaje_sin_luz + '%)'">
+                        <div class="fill" [style.height.%]="group.porcentaje_sin_luz"
+                            [style.background-color]="getColorForPercentage(group.porcentaje_sin_luz)"></div>
+                        <mat-icon class="tiny-icon">lightbulb</mat-icon>
+                        <span class="val">{{ group.porcentaje_sin_luz }}%</span>
+                    </div>
                     <div class="mini-bar-col"
                         [matTooltip]="(group.porcentaje_sin_gas * group.total_personas / 100 | number:'1.0-0') + ' personas sin gas (' + group.porcentaje_sin_gas + '%)'">
                         <div class="fill" [style.height.%]="group.porcentaje_sin_gas"

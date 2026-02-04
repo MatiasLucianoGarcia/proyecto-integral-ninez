@@ -8,7 +8,14 @@ const getReporteEscolaridad = async (req, res) => {
         const minEdad = req.query.minEdad;
         const maxEdad = req.query.maxEdad;
 
-        const reporte = await reportesService.obtenerReporteEscolaridad(anio, minEdad, maxEdad);
+        let generos = req.query.generos ? (Array.isArray(req.query.generos) ? req.query.generos : Object.values(req.query.generos)) : [];
+        let nacionalidades = req.query.nacionalidades ? (Array.isArray(req.query.nacionalidades) ? req.query.nacionalidades : Object.values(req.query.nacionalidades)) : [];
+
+        // Handle stringified arrays if passed as "Masculino,Femenino" or single string
+        if (typeof req.query.generos === 'string') generos = req.query.generos.split(',');
+        if (typeof req.query.nacionalidades === 'string') nacionalidades = req.query.nacionalidades.split(',');
+
+        const reporte = await reportesService.obtenerReporteEscolaridad(anio, minEdad, maxEdad, generos, nacionalidades);
 
         res.json({
             anio: parseInt(anio, 10),
@@ -39,9 +46,19 @@ const getAniosDisponibles = async (req, res) => {
 const getReporteCondicionesVida = async (req, res) => {
     try {
         const { minEdad, maxEdad } = req.query;
+
+        let generos = req.query.generos ? (Array.isArray(req.query.generos) ? req.query.generos : Object.values(req.query.generos)) : [];
+        let nacionalidades = req.query.nacionalidades ? (Array.isArray(req.query.nacionalidades) ? req.query.nacionalidades : Object.values(req.query.nacionalidades)) : [];
+
+        // Handle stringified arrays if passed as "Masculino,Femenino" or single string
+        if (typeof req.query.generos === 'string') generos = req.query.generos.split(',');
+        if (typeof req.query.nacionalidades === 'string') nacionalidades = req.query.nacionalidades.split(',');
+
         const reporte = await reportesService.obtenerReporteCondicionesVida({
             minEdad: minEdad ? parseInt(minEdad) : undefined,
-            maxEdad: maxEdad ? parseInt(maxEdad) : undefined
+            maxEdad: maxEdad ? parseInt(maxEdad) : undefined,
+            generos,
+            nacionalidades
         });
         res.json({ data: reporte });
     } catch (error) {

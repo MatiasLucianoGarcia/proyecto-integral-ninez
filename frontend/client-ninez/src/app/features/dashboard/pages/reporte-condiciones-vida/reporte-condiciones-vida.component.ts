@@ -35,6 +35,12 @@ export class ReporteCondicionesVidaComponent implements OnInit {
   // Filtros
   minEdad = signal<number>(0);
   maxEdad = signal<number>(100);
+  generosSeleccionados = signal<string[]>([]);
+  nacionalidadesSeleccionadas = signal<string[]>([]);
+
+  // Listas para filtros (cargadas dinámicamente)
+  listaGeneros = signal<string[]>([]);
+  listaNacionalidades = signal<string[]>([]);
 
   // Estado
   loading = signal<boolean>(false);
@@ -43,9 +49,25 @@ export class ReporteCondicionesVidaComponent implements OnInit {
   // Computados para template
   globalStats = computed(() => this.datos()?.data?.global);
   ageStats = computed(() => this.datos()?.data?.por_edad || []);
+  genderStats = computed(() => this.datos()?.data?.por_genero || []);
+  nationalityStats = computed(() => this.datos()?.data?.por_nacionalidad || []);
 
   ngOnInit() {
+    this.cargarListas();
     this.cargarDatos();
+  }
+
+  cargarListas() {
+    this.reportesService.getGeneros().subscribe(res => {
+      const generos = res.map(g => g.nombre);
+      this.listaGeneros.set(generos);
+      this.generosSeleccionados.set(generos); // Pre-seleccionar todos
+    });
+    this.reportesService.getNacionalidades().subscribe(res => {
+      const nacionalidades = res.map(n => n.nombre);
+      this.listaNacionalidades.set(nacionalidades);
+      this.nacionalidadesSeleccionadas.set(nacionalidades); // Pre-seleccionar todos
+    });
   }
 
   cargarDatos() {
@@ -53,7 +75,9 @@ export class ReporteCondicionesVidaComponent implements OnInit {
     // Convert signal values to simple types for the service
     const params = {
       minEdad: this.minEdad(),
-      maxEdad: this.maxEdad()
+      maxEdad: this.maxEdad(),
+      generos: this.generosSeleccionados(),
+      nacionalidades: this.nacionalidadesSeleccionadas()
     };
 
     this.reportesService.getReporteCondicionesVida(params).subscribe({
