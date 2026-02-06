@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DrillDownDialogComponent } from '../../components/drill-down-dialog/drill-down-dialog.component';
 import { ReportesService, ReporteCondicionesVidaResponse } from '../../../../services/reportes.service';
 
 @Component({
@@ -26,13 +28,16 @@ import { ReportesService, ReporteCondicionesVidaResponse } from '../../../../ser
     MatIconModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatTabsModule
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    MatDialogModule
   ],
   templateUrl: './reporte-condiciones-vida.component.html',
   styleUrls: ['./reporte-condiciones-vida.component.scss']
 })
 export class ReporteCondicionesVidaComponent implements OnInit {
   private reportesService = inject(ReportesService);
+  private dialog = inject(MatDialog);
 
   // Filtros
   minEdad = signal<number>(0);
@@ -110,5 +115,46 @@ export class ReporteCondicionesVidaComponent implements OnInit {
     const b = Math.round(235 + (68 - 235) * p);
 
     return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  verDetalle(scope: 'GLOBAL' | 'EDAD' | 'GENERO' | 'NACIONALIDAD', item: any, carencia: 'SIN_AGUA' | 'SIN_LUZ' | 'SIN_GAS' | 'SIN_INTERNET') {
+    const filtros: any = {
+      carencia: carencia,
+      minEdad: this.minEdad(),
+      maxEdad: this.maxEdad(),
+      generos: this.generosSeleccionados().length === this.listaGeneros().length ? undefined : this.generosSeleccionados(),
+      nacionalidades: this.nacionalidadesSeleccionadas().length === this.listaNacionalidades().length ? undefined : this.nacionalidadesSeleccionadas()
+    };
+
+    let tituloSuffix = '';
+
+    if (scope === 'GLOBAL') {
+      tituloSuffix = 'Global';
+    } else if (scope === 'EDAD') {
+      filtros.minEdad = item.metadata.min;
+      filtros.maxEdad = item.metadata.max;
+      tituloSuffix = `Rango Edad ${item.rango}`;
+    } else if (scope === 'GENERO') {
+      filtros.genero = item.rango; // item.rango holds the label (gender name) here due to mapping in service
+      tituloSuffix = `Género ${item.rango}`;
+    } else if (scope === 'NACIONALIDAD') {
+      filtros.nacionalidad = item.rango; // item.rango holds nationality name
+      tituloSuffix = `Nacionalidad ${item.rango}`;
+    }
+
+    const carenciaLabel = carencia.replace('SIN_', 'Sin ').toLowerCase();
+
+    this.reportesService.obtenerDetalle({
+      tipo: 'CONDICIONES_VIDA',
+      filtros
+    }).subscribe(personas => {
+      this.dialog.open(DrillDownDialogComponent, {
+        width: '800px',
+        data: {
+          title: `Detalle: ${carenciaLabel} - ${tituloSuffix}`,
+          people: personas
+        }
+      });
+    });
   }
 }

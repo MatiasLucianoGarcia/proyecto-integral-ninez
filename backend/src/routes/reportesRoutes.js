@@ -7,5 +7,6 @@ const reportesController = require('../controllers/reportesController');
 router.get('/escolaridad', reportesController.getReporteEscolaridad); // Updated to match controller rename if happened, or check alias
 router.get('/escolaridad/anios', reportesController.getAniosDisponibles);
 router.get('/condiciones-vida', reportesController.getReporteCondicionesVida);
+router.post('/detalle', reportesController.getReporteDetalle);
 
 module.exports = router;

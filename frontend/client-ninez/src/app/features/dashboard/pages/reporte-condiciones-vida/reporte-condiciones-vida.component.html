@@ -62,7 +62,8 @@
                             <div class="bar-label">
                                 <mat-icon class="icon-sm">water_drop</mat-icon> <span>Agua</span>
                             </div>
-                            <div class="bar-track"
+                            <div class="bar-track" style="cursor: pointer;"
+                                (click)="verDetalle('GLOBAL', null, 'SIN_AGUA')"
                                 [matTooltip]="((globalStats()?.porcentaje_sin_agua ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin agua'">
                                 <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_agua"
                                     [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_agua)">
@@ -75,7 +76,8 @@
                             <div class="bar-label">
                                 <mat-icon class="icon-sm">lightbulb</mat-icon> <span>Luz</span>
                             </div>
-                            <div class="bar-track"
+                            <div class="bar-track" style="cursor: pointer;"
+                                (click)="verDetalle('GLOBAL', null, 'SIN_LUZ')"
                                 [matTooltip]="((globalStats()?.porcentaje_sin_luz ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin luz'">
                                 <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_luz"
                                     [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_luz)">
@@ -88,7 +90,8 @@
                             <div class="bar-label">
                                 <mat-icon class="icon-sm">local_fire_department</mat-icon> <span>Gas</span>
                             </div>
-                            <div class="bar-track"
+                            <div class="bar-track" style="cursor: pointer;"
+                                (click)="verDetalle('GLOBAL', null, 'SIN_GAS')"
                                 [matTooltip]="((globalStats()?.porcentaje_sin_gas ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin gas'">
                                 <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_gas"
                                     [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_gas)">
@@ -101,7 +104,8 @@
                             <div class="bar-label">
                                 <mat-icon class="icon-sm">wifi_off</mat-icon> <span>Internet</span>
                             </div>
-                            <div class="bar-track"
+                            <div class="bar-track" style="cursor: pointer;"
+                                (click)="verDetalle('GLOBAL', null, 'SIN_INTERNET')"
                                 [matTooltip]="((globalStats()?.porcentaje_sin_internet ?? 0) * (globalStats()?.total_personas ?? 0) / 100 | number:'1.0-0') + ' personas sin internet'">
                                 <div class="bar-fill" [style.width.%]="globalStats()?.porcentaje_sin_internet"
                                     [style.background-color]="getColorForPercentage(globalStats()?.porcentaje_sin_internet)">
@@ -157,7 +161,8 @@
 
                             <div class="mini-bars">
                                 <!-- Mini Bar Agua -->
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('EDAD', group, 'SIN_AGUA')"
                                     [matTooltip]="(group.porcentaje_sin_agua * group.total_personas / 100 | number:'1.0-0') + ' personas sin agua (' + group.porcentaje_sin_agua + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_agua"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_agua)">
@@ -166,7 +171,8 @@
                                     <span class="val">{{ group.porcentaje_sin_agua }}%</span>
                                 </div>
                                 <!-- Mini Bar Luz -->
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('EDAD', group, 'SIN_LUZ')"
                                     [matTooltip]="(group.porcentaje_sin_luz * group.total_personas / 100 | number:'1.0-0') + ' personas sin luz (' + group.porcentaje_sin_luz + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_luz"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_luz)">
@@ -175,7 +181,8 @@
                                     <span class="val">{{ group.porcentaje_sin_luz }}%</span>
                                 </div>
                                 <!-- Mini Bar Gas -->
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('EDAD', group, 'SIN_GAS')"
                                     [matTooltip]="(group.porcentaje_sin_gas * group.total_personas / 100 | number:'1.0-0') + ' personas sin gas (' + group.porcentaje_sin_gas + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_gas"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_gas)">
@@ -218,7 +225,8 @@
                             </div>
 
                             <div class="mini-bars">
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('GENERO', group, 'SIN_AGUA')"
                                     [matTooltip]="(group.porcentaje_sin_agua * group.total_personas / 100 | number:'1.0-0') + ' personas sin agua (' + group.porcentaje_sin_agua + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_agua"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_agua)">
@@ -226,7 +234,8 @@
                                     <mat-icon class="tiny-icon">water_drop</mat-icon>
                                     <span class="val">{{ group.porcentaje_sin_agua }}%</span>
                                 </div>
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('GENERO', group, 'SIN_LUZ')"
                                     [matTooltip]="(group.porcentaje_sin_luz * group.total_personas / 100 | number:'1.0-0') + ' personas sin luz (' + group.porcentaje_sin_luz + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_luz"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_luz)">
@@ -234,7 +243,8 @@
                                     <mat-icon class="tiny-icon">lightbulb</mat-icon>
                                     <span class="val">{{ group.porcentaje_sin_luz }}%</span>
                                 </div>
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('GENERO', group, 'SIN_GAS')"
                                     [matTooltip]="(group.porcentaje_sin_gas * group.total_personas / 100 | number:'1.0-0') + ' personas sin gas (' + group.porcentaje_sin_gas + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_gas"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_gas)">
@@ -277,7 +287,8 @@
                             </div>
 
                             <div class="mini-bars">
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('NACIONALIDAD', group, 'SIN_AGUA')"
                                     [matTooltip]="(group.porcentaje_sin_agua * group.total_personas / 100 | number:'1.0-0') + ' personas sin agua (' + group.porcentaje_sin_agua + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_agua"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_agua)">
@@ -285,7 +296,8 @@
                                     <mat-icon class="tiny-icon">water_drop</mat-icon>
                                     <span class="val">{{ group.porcentaje_sin_agua }}%</span>
                                 </div>
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('NACIONALIDAD', group, 'SIN_LUZ')"
                                     [matTooltip]="(group.porcentaje_sin_luz * group.total_personas / 100 | number:'1.0-0') + ' personas sin luz (' + group.porcentaje_sin_luz + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_luz"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_luz)">
@@ -293,7 +305,8 @@
                                     <mat-icon class="tiny-icon">lightbulb</mat-icon>
                                     <span class="val">{{ group.porcentaje_sin_luz }}%</span>
                                 </div>
-                                <div class="mini-bar-col"
+                                <div class="mini-bar-col" style="cursor: pointer;"
+                                    (click)="verDetalle('NACIONALIDAD', group, 'SIN_GAS')"
                                     [matTooltip]="(group.porcentaje_sin_gas * group.total_personas / 100 | number:'1.0-0') + ' personas sin gas (' + group.porcentaje_sin_gas + '%)'">
                                     <div class="fill" [style.height.%]="group.porcentaje_sin_gas"
                                         [style.background-color]="getColorForPercentage(group.porcentaje_sin_gas)">

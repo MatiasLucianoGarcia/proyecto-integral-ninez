@@ -377,6 +377,7 @@ function formatGroupResult(g) {
     const total = g.total || 1;
     return {
         rango: g.label, // "rango" es el nombre generico que usa el front (podria ser genero o nacionalidad)
+        metadata: g.metadata,
         total_personas: g.total,
         porcentaje_sin_luz: Math.round((g.sin_luz / total) * 100),
         porcentaje_sin_gas: Math.round((g.sin_gas / total) * 100),
@@ -387,8 +388,144 @@ function formatGroupResult(g) {
     };
 }
 
+// --- Función para obtener detalle de personas (Drill-down) ---
+const obtenerDetallePersonas = async (params) => {
+    const { tipo, anio, filtros } = params;
+
+    // 1. Obtener base de datos de personas con datos básicos
+    const { data: personas, error } = await supabase
+        .from('persona')
+        .select(`
+            nombre,
+            apellido,
+            dni,
+            fecha_nacimiento,
+            generoObj:genero(nombre),
+            nacionalidadObj:nacionalidad(nombre),
+            condiciones:condiciones_vida(*),
+            escolaridad(*)
+        `);
+
+    if (error) throw error;
+
+    const resultados = [];
+    const fechaReferencia = tipo === 'ESCOLARIDAD'
+        ? (parseInt(anio) === new Date().getFullYear() ? new Date() : new Date(parseInt(anio), 11, 31))
+        : new Date();
+
+    // Preparar mapa de escolaridad si es necesario (Optimización)
+    let escolaridadMap = new Map();
+    if (tipo === 'ESCOLARIDAD') {
+        // Filtrar registros de escolaridad para el año específico
+        // Replicamos la lógica de obtenerReporteEscolaridad
+        // Buscar escolaridad que coincida con fecha_real o fecha_carga en ese año
+        // Esto es costoso hacerlo en memoria si son muchos, idealmente filtrar query
+        // Para consistencia exacta, iteramos lo que trajimos o hacemos fetch especifico
+        // Haremos fetch especifico de escolaridad para asegurarnos
+        const anioNum = parseInt(anio, 10);
+        const start = `${anioNum}-01-01T00:00:00`;
+        const end = `${anioNum + 1}-01-01T00:00:00`;
+
+        const { data: rawEsc } = await supabase
+            .from('escolaridad')
+            .select('dni, fecha_real, fecha_carga')
+            .or(`and(fecha_real.gte.${start},fecha_real.lt.${end}),and(fecha_carga.gte.${start},fecha_carga.lt.${end})`);
+
+        if (rawEsc) {
+            rawEsc.forEach(reg => {
+                const fechaEfectiva = reg.fecha_real ? new Date(reg.fecha_real) : new Date(reg.fecha_carga);
+                if (fechaEfectiva.getFullYear() === anioNum) {
+                    escolaridadMap.set(reg.dni, true);
+                }
+            });
+        }
+    }
+
+    personas.forEach(p => {
+        if (!p.fecha_nacimiento) return;
+
+        // Calcular edad
+        const fechaNac = new Date(p.fecha_nacimiento);
+        let edad = fechaReferencia.getFullYear() - fechaNac.getFullYear();
+        const m = fechaReferencia.getMonth() - fechaNac.getMonth();
+        if (m < 0 || (m === 0 && fechaReferencia.getDate() < fechaNac.getDate())) {
+            edad--;
+        }
+
+        const genero = p.generoObj?.nombre;
+        const nacionalidad = p.nacionalidadObj?.nombre;
+
+        // --- Aplicar Filtros ---
+
+        // 1. Edad
+        if (filtros.edadExacta !== undefined) {
+            if (edad !== parseInt(filtros.edadExacta)) return;
+        } else if (filtros.minEdad !== undefined && filtros.maxEdad !== undefined) {
+            if (edad < parseInt(filtros.minEdad) || edad > parseInt(filtros.maxEdad)) return;
+        }
+
+        // 2. Género
+        if (filtros.genero && filtros.genero !== 'Todos' && !Array.isArray(filtros.genero)) {
+            if (genero !== filtros.genero) return;
+        }
+        if (filtros.generos && Array.isArray(filtros.generos) && filtros.generos.length > 0) {
+            if (!filtros.generos.includes(genero)) return;
+        }
+        // Soporte para cuando se envía array en campo singular (legacy frontend compatibility)
+        if (Array.isArray(filtros.genero) && filtros.genero.length > 0) {
+            if (!filtros.genero.includes(genero)) return;
+        }
+
+
+        // 3. Nacionalidad
+        if (filtros.nacionalidad && filtros.nacionalidad !== 'Todas' && !Array.isArray(filtros.nacionalidad)) {
+            if (nacionalidad !== filtros.nacionalidad) return;
+        }
+        if (filtros.nacionalidades && Array.isArray(filtros.nacionalidades) && filtros.nacionalidades.length > 0) {
+            if (!filtros.nacionalidades.includes(nacionalidad)) return;
+        }
+        // Soporte para array en campo singular
+        if (Array.isArray(filtros.nacionalidad) && filtros.nacionalidad.length > 0) {
+            if (!filtros.nacionalidad.includes(nacionalidad)) return;
+        }
+
+        // --- Lógica Específica por Tipo ---
+
+        if (tipo === 'ESCOLARIDAD') {
+            const esEscolarizado = escolaridadMap.has(p.dni);
+            const buscaEscolarizado = filtros.escolarizado === true || filtros.escolarizado === 'true';
+
+            if (buscaEscolarizado !== esEscolarizado) return;
+        }
+        else if (tipo === 'CONDICIONES_VIDA') {
+            const cond = p.condiciones && p.condiciones.length > 0 ? p.condiciones[0] : null;
+
+            if (filtros.carencia) {
+                if (filtros.carencia === 'SIN_LUZ' && (cond?.acceso_luz !== false)) return;
+                if (filtros.carencia === 'SIN_GAS' && (cond?.acceso_gas !== false)) return;
+                if (filtros.carencia === 'SIN_AGUA' && (cond?.acceso_agua !== false)) return;
+                if (filtros.carencia === 'SIN_INTERNET' && (cond?.acceso_internet !== false)) return;
+            }
+        }
+
+        // Si pasó todos los filtros, agregamos
+        resultados.push({
+            nombre: p.nombre,
+            apellido: p.apellido,
+            dni: p.dni,
+            edad: edad, // util para debug
+            genero: genero,
+            nacionalidad: nacionalidad
+        });
+    });
+
+    // Ordenar alfabeticamente
+    return resultados.sort((a, b) => a.apellido.localeCompare(b.apellido));
+};
+
 module.exports = {
     obtenerReporteEscolaridad,
     obtenerAniosDisponibles,
-    obtenerReporteCondicionesVida
+    obtenerReporteCondicionesVida,
+    obtenerDetallePersonas
 };

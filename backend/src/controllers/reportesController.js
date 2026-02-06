@@ -67,8 +67,25 @@ const getReporteCondicionesVida = async (req, res) => {
     }
 };
 
+const getReporteDetalle = async (req, res) => {
+    try {
+        const { tipo, anio, filtros } = req.body;
+
+        if (!tipo) {
+            return res.status(400).json({ message: 'El tipo de reporte es requerido' });
+        }
+
+        const detalle = await reportesService.obtenerDetallePersonas({ tipo, anio, filtros });
+        res.json(detalle);
+    } catch (error) {
+        console.error('Error obteniendo detalle:', error);
+        res.status(500).json({ message: error.message || 'Error interno al obtener detalle' });
+    }
+};
+
 module.exports = {
     getReporteEscolaridad,
     getAniosDisponibles,
-    getReporteCondicionesVida
+    getReporteCondicionesVida,
+    getReporteDetalle
 };

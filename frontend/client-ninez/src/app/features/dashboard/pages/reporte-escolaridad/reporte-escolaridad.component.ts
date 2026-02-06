@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DrillDownDialogComponent } from '../../components/drill-down-dialog/drill-down-dialog.component';
 import { ReportesService, ReporteEscolaridadItem } from '../../../../services/reportes.service';
 
 @Component({
@@ -26,13 +28,16 @@ import { ReportesService, ReporteEscolaridadItem } from '../../../../services/re
     MatIconModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatTabsModule
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    MatDialogModule
   ],
   templateUrl: './reporte-escolaridad.component.html',
   styleUrls: ['./reporte-escolaridad.component.scss']
 })
 export class ReporteEscolaridadComponent implements OnInit {
   private reportesService = inject(ReportesService);
+  private dialog = inject(MatDialog);
 
   // Estado
   anioSeleccionado = signal<number>(new Date().getFullYear());
@@ -146,5 +151,42 @@ export class ReporteEscolaridadComponent implements OnInit {
   getBarHeightFor(value: number, stats: any[]): string {
     const max = this.getMaxFromStats(stats);
     return (value / max * 100) + '%';
+  }
+
+  verDetalle(criterio: 'EDAD' | 'GENERO' | 'NACIONALIDAD', item: any, esEscolarizado: boolean) {
+    const filtros: any = {
+      escolarizado: esEscolarizado,
+      genero: this.generosSeleccionados().length === this.listaGeneros().length ? undefined : this.generosSeleccionados(), // Pasar array si hay filtro
+      nacionalidad: this.nacionalidadesSeleccionadas().length === this.listaNacionalidades().length ? undefined : this.nacionalidadesSeleccionadas()
+    };
+
+    let tituloSuffix = '';
+
+    if (criterio === 'EDAD') {
+      filtros.edadExacta = item.edad;
+      tituloSuffix = `Edad ${item.edad}`;
+    } else if (criterio === 'GENERO') {
+      filtros.genero = item.label; // Sobreescribimos el filtro de genero global para este drill-down especifico
+      tituloSuffix = `Género ${item.label}`;
+    } else if (criterio === 'NACIONALIDAD') {
+      filtros.nacionalidad = item.label; // Sobreescribimos filtro nacionalidad
+      tituloSuffix = `Nacionalidad ${item.label}`;
+    }
+
+    const estado = esEscolarizado ? 'Escolarizados' : 'No Escolarizados';
+
+    this.reportesService.obtenerDetalle({
+      tipo: 'ESCOLARIDAD',
+      anio: this.anioSeleccionado(),
+      filtros
+    }).subscribe(personas => {
+      this.dialog.open(DrillDownDialogComponent, {
+        width: '800px',
+        data: {
+          title: `Detalle: ${estado} - ${tituloSuffix}`,
+          people: personas
+        }
+      });
+    });
   }
 }

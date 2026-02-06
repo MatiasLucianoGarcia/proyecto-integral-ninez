@@ -74,4 +74,8 @@ export class ReportesService {
     getNacionalidades(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/nacionalidades`);
     }
+
+    obtenerDetalle(payload: { tipo: string, anio?: number, filtros: any }): Observable<any[]> {
+        return this.http.post<any[]>(`${this.apiUrl}/reportes/detalle`, payload);
+    }
 }

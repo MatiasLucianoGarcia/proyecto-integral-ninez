@@ -120,14 +120,16 @@
                                         <div class="age-column" *ngFor="let item of datosReporte()">
                                             <div class="bars-stack">
                                                 <!-- Escolarizados Bar -->
-                                                <div class="bar primary"
+                                                <div class="bar primary" style="cursor: pointer;"
                                                     [style.height]="getBarHeight(item.escolarizados)"
-                                                    [matTooltip]="'Escolarizados: ' + item.escolarizados + ' (' + item.edad + ' años)'">
+                                                    [matTooltip]="'Escolarizados: ' + item.escolarizados + ' (' + item.edad + ' años)'"
+                                                    (click)="verDetalle('EDAD', item, true)">
                                                 </div>
                                                 <!-- No Escolarizados Bar -->
-                                                <div class="bar warn"
+                                                <div class="bar warn" style="cursor: pointer;"
                                                     [style.height]="getBarHeight(item.no_escolarizados)"
-                                                    [matTooltip]="'No Escolarizados: ' + item.no_escolarizados + ' (' + item.edad + ' años)'">
+                                                    [matTooltip]="'No Escolarizados: ' + item.no_escolarizados + ' (' + item.edad + ' años)'"
+                                                    (click)="verDetalle('EDAD', item, false)">
                                                 </div>
                                             </div>
                                             <span class="x-label">{{ item.edad }}</span>
@@ -184,13 +186,15 @@
                                     <div class="bars-container">
                                         <div class="age-column" *ngFor="let item of generoStats()">
                                             <div class="bars-stack">
-                                                <div class="bar primary"
+                                                <div class="bar primary" style="cursor: pointer;"
                                                     [style.height]="getBarHeightFor(item.escolarizados, generoStats())"
-                                                    [matTooltip]="'Escolarizados: ' + item.escolarizados">
+                                                    [matTooltip]="'Escolarizados: ' + item.escolarizados"
+                                                    (click)="verDetalle('GENERO', item, true)">
                                                 </div>
-                                                <div class="bar warn"
+                                                <div class="bar warn" style="cursor: pointer;"
                                                     [style.height]="getBarHeightFor(item.no_escolarizados, generoStats())"
-                                                    [matTooltip]="'No Escolarizados: ' + item.no_escolarizados">
+                                                    [matTooltip]="'No Escolarizados: ' + item.no_escolarizados"
+                                                    (click)="verDetalle('GENERO', item, false)">
                                                 </div>
                                             </div>
                                             <span class="x-label">{{ item.label }}</span>
@@ -250,13 +254,15 @@
                                     <div class="bars-container">
                                         <div class="age-column" *ngFor="let item of nationalityStats()">
                                             <div class="bars-stack">
-                                                <div class="bar primary"
+                                                <div class="bar primary" style="cursor: pointer;"
                                                     [style.height]="getBarHeightFor(item.escolarizados, nationalityStats())"
-                                                    [matTooltip]="'Escolarizados: ' + item.escolarizados">
+                                                    [matTooltip]="'Escolarizados: ' + item.escolarizados"
+                                                    (click)="verDetalle('NACIONALIDAD', item, true)">
                                                 </div>
-                                                <div class="bar warn"
+                                                <div class="bar warn" style="cursor: pointer;"
                                                     [style.height]="getBarHeightFor(item.no_escolarizados, nationalityStats())"
-                                                    [matTooltip]="'No Escolarizados: ' + item.no_escolarizados">
+                                                    [matTooltip]="'No Escolarizados: ' + item.no_escolarizados"
+                                                    (click)="verDetalle('NACIONALIDAD', item, false)">
                                                 </div>
                                             </div>
                                             <span class="x-label">{{ item.label }}</span>
