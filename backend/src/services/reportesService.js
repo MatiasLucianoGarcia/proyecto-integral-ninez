@@ -765,10 +765,31 @@ const obtenerDetallePersonas = async ({ tipo, anio, filtros }) => {
     return resultados.sort((a, b) => a.apellido.localeCompare(b.apellido));
 };
 
+const obtenerAniosDerechosVulnerados = async () => {
+    // Obtenemos todas las fechas de ingreso de servicios locales
+    const { data, error } = await supabase
+        .from('servicio_local')
+        .select('fecha_ingreso');
+
+    if (error) throw error;
+
+    const aniosSet = new Set();
+    data.forEach(registro => {
+        if (registro.fecha_ingreso) {
+            const anio = new Date(registro.fecha_ingreso).getFullYear();
+            aniosSet.add(anio);
+        }
+    });
+
+    // Convertir a array y ordenar descendente
+    return Array.from(aniosSet).sort((a, b) => b - a);
+};
+
 module.exports = {
     obtenerReporteEscolaridad,
     obtenerAniosDisponibles,
     obtenerReporteCondicionesVida,
     obtenerReporteDerechosVulnerados,
-    obtenerDetallePersonas
+    obtenerDetallePersonas,
+    obtenerAniosDerechosVulnerados
 };

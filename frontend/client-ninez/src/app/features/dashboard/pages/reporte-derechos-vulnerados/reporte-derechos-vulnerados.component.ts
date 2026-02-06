@@ -75,7 +75,7 @@ export class ReporteDerechosVulneradosComponent implements OnInit {
     }
 
     cargarAnios() {
-        this.reportesService.getAniosDisponibles().subscribe(anios => {
+        this.reportesService.getAniosDerechosVulnerados().subscribe(anios => {
             this.aniosDisponibles.set(anios);
             if (anios.length > 0 && !anios.includes(this.anio())) {
                 this.anio.set(anios[0]); // Seleccionar el más reciente si el actual no está

@@ -83,6 +83,10 @@ export class ReportesService {
         return this.http.get<any>(`${this.apiUrl}/reportes/derechos-vulnerados${params}`);
     }
 
+    getAniosDerechosVulnerados(): Observable<number[]> {
+        return this.http.get<number[]>(`${this.apiUrl}/reportes/derechos-vulnerados/anios`);
+    }
+
     obtenerDetalle(payload: { tipo: string, anio?: number, filtros: any }): Observable<any[]> {
         return this.http.post<any[]>(`${this.apiUrl}/reportes/detalle`, payload);
     }

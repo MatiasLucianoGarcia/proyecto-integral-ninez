@@ -109,10 +109,20 @@ const getReporteDerechosVulnerados = async (req, res, next) => {
     }
 };
 
+const getAniosDerechosVulnerados = async (req, res, next) => {
+    try {
+        const anios = await reportesService.obtenerAniosDerechosVulnerados();
+        res.json(anios);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getReporteEscolaridad,
     getAniosDisponibles,
     getReporteCondicionesVida,
     getReporteDetalle,
-    getReporteDerechosVulnerados
+    getReporteDerechosVulnerados,
+    getAniosDerechosVulnerados
 };

@@ -9,5 +9,6 @@ router.get('/escolaridad/anios', reportesController.getAniosDisponibles);
 router.get('/condiciones-vida', reportesController.getReporteCondicionesVida);
 router.post('/detalle', reportesController.getReporteDetalle);
 router.get('/derechos-vulnerados', reportesController.getReporteDerechosVulnerados);
+router.get('/derechos-vulnerados/anios', reportesController.getAniosDerechosVulnerados);
 
 module.exports = router;
