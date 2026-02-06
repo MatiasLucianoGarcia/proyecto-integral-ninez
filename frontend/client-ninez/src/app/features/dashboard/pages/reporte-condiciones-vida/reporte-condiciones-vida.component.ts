@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ReportesService, ReporteCondicionesVidaResponse } from '../../../../services/reportes.service';
 
 @Component({
@@ -24,7 +25,8 @@ import { ReportesService, ReporteCondicionesVidaResponse } from '../../../../ser
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTabsModule
   ],
   templateUrl: './reporte-condiciones-vida.component.html',
   styleUrls: ['./reporte-condiciones-vida.component.scss']
