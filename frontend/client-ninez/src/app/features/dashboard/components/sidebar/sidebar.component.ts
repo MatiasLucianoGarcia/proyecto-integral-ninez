@@ -27,8 +27,6 @@ export class SidebarComponent {
 	});
 
 	canViewDerechosReport = computed(() => {
-		const user = this.userDataService.getUser();
-		const role = user?.rol?.nombre_rol;
-		return role === 'Administrador' || role === 'Proteccion';
+		return true; // Visible para todos
 	});
 }

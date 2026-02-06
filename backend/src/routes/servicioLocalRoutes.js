@@ -7,7 +7,7 @@ const { createServicioLocalSchema, updateServicioLocalSchema } = require('../val
 
 // Todos los autenticados
 router.get('/', authenticate, authorizeRoles('Administrador', 'Proteccion'), servicioLocalController.getAllServicioLocal);
-router.get('/dni/:dni', authenticate, authorizeRoles('Administrador', 'Proteccion'), servicioLocalController.getServiciosLocalesByDni);
+router.get('/dni/:dni', authenticate, servicioLocalController.getServiciosLocalesByDni);
 router.get('/:id', authenticate, authorizeRoles('Administrador', 'Proteccion'), servicioLocalController.getServicioLocalById);
 router.post('/', authenticate, authorizeRoles('Administrador', 'Proteccion'), validar(createServicioLocalSchema), servicioLocalController.createServicioLocal);
 

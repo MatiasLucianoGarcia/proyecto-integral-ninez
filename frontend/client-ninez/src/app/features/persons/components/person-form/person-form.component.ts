@@ -75,6 +75,7 @@ import { AddViviendaDialogComponent } from '../add-vivienda-dialog/add-vivienda-
 import { CondicionesVidaComponent } from '../condiciones-vida/condiciones-vida.component';
 import { ServicioLocalListComponent } from '../servicio-local-list/servicio-local-list.component';
 import { HojaRutaListComponent } from '../hoja-ruta-list/hoja-ruta-list.component';
+import { ServicioLocalService } from '../../services/servicio-local.service';
 
 
 type FormMode = 'create' | 'edit' | 'view';
@@ -139,7 +140,9 @@ export class PersonFormComponent implements OnInit {
 	private ingresoService = inject(IngresoService);
 	private articulacionService = inject(ArticulacionService);
 	private viviendaService = inject(ViviendaService);
+	private servicioLocalService = inject(ServicioLocalService);
 	private userDataService = inject(UserDataService);
+
 
 	onAddServicioLocal(): void {
 		this.servicioLocalList?.openAddDialog();
@@ -242,6 +245,9 @@ export class PersonFormComponent implements OnInit {
 				this.loadIngresos(dni);
 				this.loadArticulaciones(dni);
 				this.loadViviendas(dni);
+				if (this.isRestrictedServicioLocal) {
+					this.loadServicioLocalStatus(dni);
+				}
 			}
 
 			// Si es modo view, deshabilitar todo el formulario
@@ -252,18 +258,30 @@ export class PersonFormComponent implements OnInit {
 	}
 
 	get canViewServicioLocal(): boolean {
+		// Now visible to everyone, but with restricted content for some
+		return true;
+	}
+
+	get isRestrictedServicioLocal(): boolean {
 		const user = this.userDataService.getUser();
-		if (!user || !user.rol) {
-			return false;
-		}
-
-		// Rol is now typed as an object with nombre_rol
+		if (!user || !user.rol) return true;
 		const roleName = user.rol.nombre_rol;
-
-		if (!roleName) return false;
-
+		if (!roleName) return true;
 		const normalizedRole = roleName.toLowerCase();
-		return normalizedRole === 'administrador' || normalizedRole === 'proteccion';
+		return normalizedRole !== 'administrador' && normalizedRole !== 'proteccion';
+	}
+
+	servicioLocalStatus = signal<{ intervenido: boolean, ultima_actualizacion: string | null } | null>(null);
+
+	private loadServicioLocalStatus(dni: string): void {
+		this.servicioLocalService.getServiciosLocalesByDni(Number(dni)).subscribe({
+			next: (data: any) => {
+				if (data.restricted) {
+					this.servicioLocalStatus.set(data);
+				}
+			},
+			error: (err: any) => console.error('Error cargando estado servicio local', err)
+		});
 	}
 
 	private initForm(): void {

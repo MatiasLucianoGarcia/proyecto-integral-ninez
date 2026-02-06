@@ -64,11 +64,22 @@ const deleteServicioLocal = async (req, res) => {
 };
 
 // Obtener por DNI
+// Obtener por DNI (con lógica de permisos)
 const getServiciosLocalesByDni = async (req, res) => {
   try {
     const { dni } = req.params;
-    const servicios = await obtenerServiciosLocalesPorDni(dni);
-    res.json(servicios); // [] si no tiene registros
+    const userRole = req.user.rol; // Asumimos string, e.g. "Administrador"
+
+    // Roles privilegiados ven todo el detalle
+    if (['Administrador', 'Proteccion'].includes(userRole)) {
+      const servicios = await obtenerServiciosLocalesPorDni(dni);
+      return res.json(servicios);
+    }
+
+    // Otros roles ven solo el estado
+    const estado = await require('../services/servicioLocalService').obtenerEstadoIntervencion(dni);
+    res.json(estado);
+
   } catch (error) {
     res.status(error.status || 400).json({ message: error.message || 'Error al obtener servicios locales por DNI' });
   }

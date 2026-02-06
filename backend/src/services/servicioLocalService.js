@@ -76,6 +76,40 @@ const obtenerServiciosLocalesPorDni = async (dni) => {
   return data; // puede venir vacío []
 };
 
+// Obtener estado de intervención (Restringido)
+const obtenerEstadoIntervencion = async (dni) => {
+  await validarPersonaExiste(dni);
+
+  // 1. Obtener servicios del DNI
+  const { data: servicios, error: errorServ } = await supabase
+    .from('servicio_local')
+    .select('id')
+    .eq('dni', dni);
+
+  if (errorServ) throw errorServ;
+
+  const intervenido = servicios && servicios.length > 0;
+  let ultima_actualizacion = null;
+
+  if (intervenido) {
+    const idsServicios = servicios.map(s => s.id);
+
+    // 2. Buscar la última hoja de ruta asociada
+    const { data: hojaRuta, error: errorHR } = await supabase
+      .from('hoja_ruta')
+      .select('fecha')
+      .in('id_servicio_local', idsServicios)
+      .order('fecha', { ascending: false })
+      .limit(1);
+
+    if (!errorHR && hojaRuta && hojaRuta.length > 0) {
+      ultima_actualizacion = hojaRuta[0].fecha;
+    }
+  }
+
+  return { intervenido, ultima_actualizacion, restricted: true };
+};
+
 module.exports = {
   crearServicioLocal,
   obtenerServiciosLocales,
@@ -83,4 +117,5 @@ module.exports = {
   actualizarServicioLocal,
   eliminarServicioLocal,
   obtenerServiciosLocalesPorDni,
+  obtenerEstadoIntervencion
 };

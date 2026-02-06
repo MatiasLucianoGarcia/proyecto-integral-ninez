@@ -643,40 +643,92 @@
 			@if(canViewServicioLocal) {
 			<mat-tab label="Servicio Local">
 				<div class="tab-content">
-					<div class="family-tab-header">
-						<div class="header-info">
-							<mat-icon class="header-icon">security</mat-icon>
-							<div>
-								<h2 class="family-title">Servicios Locales Asociados</h2>
-								<p class="family-subtitle">
-									{{ servicioLocalList?.items()?.length || 0 > 0 ? 'Intervenciones registradas' : 'No
-									hay intervenciones registradas' }}
-								</p>
-							</div>
-						</div>
-						@if(!isViewMode) {
-						<button mat-raised-button color="primary" class="add-family-button"
-							(click)="onAddServicioLocal()">
-							<mat-icon>add_moderator</mat-icon>
-							Agregar Intervención
-						</button>
-						}
-					</div>
+                    
+                    <!-- VISTA RESTRINGIDA -->
+                    @if(isRestrictedServicioLocal) {
+                         <div class="family-tab-header">
+                            <div class="header-info">
+                                <mat-icon class="header-icon">security</mat-icon>
+                                <div>
+                                    <h2 class="family-title">Servicio Local</h2>
+                                    <p class="family-subtitle">Estado de intervención</p>
+                                </div>
+                            </div>
+                        </div>
 
-					@if(personDni()) {
-					<app-servicio-local-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-servicio-local-list>
-					} @else {
-					<div class="empty-state-placeholder">
-						<mat-icon>info</mat-icon>
-						<p>Guarde la persona primero para acceder a las funciones de Servicio Local.</p>
-					</div>
-					}
+                        <div style="margin-top: 24px;">
+                            @if(servicioLocalStatus()?.intervenido) {
+                                <div class="status-card active-intervention">
+                                   <div class="status-icon">
+                                        <mat-icon>warning</mat-icon>
+                                   </div>
+                                   <div class="status-info">
+                                        <h3>Intervención Activa</h3>
+                                        <p>Esta persona cuenta con registros en el Servicio Local.</p>
+                                        
+                                        @if(servicioLocalStatus()?.ultima_actualizacion) {
+                                            <div class="last-update">
+                                                <strong>Última actualización de Hoja de Ruta:</strong>
+                                                <span>{{ servicioLocalStatus()?.ultima_actualizacion | date:'dd/MM/yyyy' }}</span>
+                                            </div>
+                                        } @else {
+                                            <div class="last-update">
+                                                <span>Sin movimientos recientes en Hoja de Ruta.</span>
+                                            </div>
+                                        }
+                                   </div>
+                                </div>
+                            } @else {
+                                 <div class="status-card no-intervention">
+                                   <div class="status-icon">
+                                        <mat-icon>check_circle</mat-icon>
+                                   </div>
+                                   <div class="status-info">
+                                        <h3>Sin Intervención</h3>
+                                        <p>No se registran intervenciones activas del Servicio Local para esta persona.</p>
+                                   </div>
+                                </div>
+                            }
+                        </div>
+                    } 
+                    
+                    <!-- VISTA COMPLETA (ADMIN/PROTECCION) -->
+                    @else {
+                        <div class="family-tab-header">
+                            <div class="header-info">
+                                <mat-icon class="header-icon">security</mat-icon>
+                                <div>
+                                    <h2 class="family-title">Servicios Locales Asociados</h2>
+                                    <p class="family-subtitle">
+                                        {{ servicioLocalList?.items()?.length || 0 > 0 ? 'Intervenciones registradas' : 'No
+                                        hay intervenciones registradas' }}
+                                    </p>
+                                </div>
+                            </div>
+                            @if(!isViewMode) {
+                            <button mat-raised-button color="primary" class="add-family-button"
+                                (click)="onAddServicioLocal()">
+                                <mat-icon>add_moderator</mat-icon>
+                                Agregar Intervención
+                            </button>
+                            }
+                        </div>
 
-					<mat-divider style="margin: 20px 0;"></mat-divider>
+                        @if(personDni()) {
+                        <app-servicio-local-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-servicio-local-list>
+                        } @else {
+                        <div class="empty-state-placeholder">
+                            <mat-icon>info</mat-icon>
+                            <p>Guarde la persona primero para acceder a las funciones de Servicio Local.</p>
+                        </div>
+                        }
 
-					@if(personDni()) {
-					<app-hoja-ruta-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-hoja-ruta-list>
-					}
+                        <mat-divider style="margin: 20px 0;"></mat-divider>
+
+                        @if(personDni()) {
+                        <app-hoja-ruta-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-hoja-ruta-list>
+                        }
+                    }
 				</div>
 			</mat-tab>
 			}
