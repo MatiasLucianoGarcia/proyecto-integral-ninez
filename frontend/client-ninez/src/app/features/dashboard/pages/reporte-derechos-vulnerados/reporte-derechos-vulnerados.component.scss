@@ -1,0 +1,394 @@
+// Variables
+$primary: rgb(37, 99, 235);
+$primary-dark: rgb(30, 64, 175);
+$warn: var(--warn-color, #f44336);
+$text-primary: #1f2937;
+$text-secondary: #6b7280;
+$radius: 16px;
+
+.report-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    animation: fadeIn 0.4s ease-out;
+    position: relative;
+
+    // Decorative background splash (User requested gradient)
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 280px;
+        background: linear-gradient(to right, $primary, $primary-dark);
+        border-radius: 0 0 2rem 2rem;
+        z-index: 0;
+        opacity: 0.95;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Header
+.header-section {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    flex-wrap: nowrap; // Keep on same line by default (Desktop)
+    gap: 1.5rem;
+    padding-top: 1rem;
+
+    @media (max-width: 768px) {
+        flex-wrap: wrap; // Allow wrapping on mobile
+    }
+
+    .title-group {
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            margin: 0.5rem 0 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+    }
+}
+
+.filter-group {
+    background: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    mat-form-field {
+        width: 140px;
+
+        .mat-mdc-form-field-subscript-wrapper {
+            display: none;
+        }
+    }
+}
+
+// Layout
+.content-grid {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $text-primary;
+        margin: 0;
+    }
+
+    &.white-text h2 {
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .badge-outline {
+        border: 1px solid $text-secondary;
+        color: $text-secondary;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+// Global Stats Cards
+.stats-row {
+    display: grid;
+    grid-template-columns: 1fr; // Full width
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.kpi-card {
+    border-radius: $radius;
+    padding: 1rem;
+    background: white;
+
+    mat-card-header {
+        margin-bottom: 1.5rem;
+
+        mat-icon {
+            color: $text-secondary;
+        }
+
+        mat-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        mat-card-subtitle {
+            font-size: 0.9rem;
+        }
+    }
+}
+
+// Horizontal Bars
+.horizontal-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .bar-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 250px; // Wider for rights names
+            font-size: 0.9rem;
+            color: $text-secondary;
+
+            .icon-sm {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 24px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            // background: handled by inline calculation
+            display: flex;
+            align-items: center;
+            padding-right: 8px;
+            justify-content: flex-end;
+            transition: width 0.6s ease-out;
+            min-width: 2px;
+            border-radius: 4px;
+
+            &.warn {
+                // background: handled by inline calculation
+            }
+
+            &.neutral {
+                // background: handled by inline calculation
+            }
+
+            .bar-value {
+                color: white;
+                font-size: 0.8rem;
+                font-weight: 600;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            }
+        }
+    }
+}
+
+// Housing List
+.housing-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .housing-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 8px;
+
+        .housing-name {
+            font-weight: 500;
+            color: $text-primary;
+        }
+
+        .housing-count {
+            font-weight: 600;
+            color: $primary;
+        }
+    }
+}
+
+// Age Charts Container
+.age-charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.age-group-card {
+    background: white;
+    border-radius: $radius;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .group-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+
+        h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: $primary;
+        }
+
+        .group-total {
+            font-size: 0.8rem;
+            color: $text-secondary;
+        }
+    }
+
+    .mini-bars {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 8px;
+        height: 120px;
+        width: 100%;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 4px;
+
+        .mini-bar-col {
+            width: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            position: relative;
+
+            .fill {
+                width: 100%;
+                // background: handled by inline calculation
+                border-radius: 4px 4px 0 0;
+                transition: height 0.4s;
+                opacity: 0.9;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            .tiny-icon {
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+                margin-top: 4px;
+                color: $text-secondary;
+            }
+
+            .val {
+                position: absolute;
+                top: -20px;
+                font-size: 0.7rem;
+                color: $text-primary;
+                display: none; // Show on hover if needed, or keeping clean
+            }
+
+            &:hover .val {
+                display: block;
+            }
+        }
+    }
+
+    .housing-dominance {
+        text-align: center;
+        background: #f3f4f6;
+        padding: 0.75rem;
+        border-radius: 8px;
+        width: 100%;
+
+        small {
+            display: block;
+            color: $text-secondary;
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+        }
+
+        .dom-val {
+            display: flex;
+            flex-direction: column;
+
+            strong {
+                color: $text-primary;
+                font-size: 0.9rem;
+            }
+
+            span {
+                font-size: 0.8rem;
+                color: $primary;
+            }
+        }
+    }
+}
+
+.loading-overlay {
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

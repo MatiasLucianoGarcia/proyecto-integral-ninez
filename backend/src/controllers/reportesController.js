@@ -83,9 +83,36 @@ const getReporteDetalle = async (req, res) => {
     }
 };
 
+// --- REPORTE DERECHOS VULNERADOS ---
+const getReporteDerechosVulnerados = async (req, res, next) => {
+    try {
+        const anio = req.query.anio || new Date().getFullYear();
+        const minEdad = req.query.minEdad;
+        const maxEdad = req.query.maxEdad;
+
+        let generos = req.query.generos ? (Array.isArray(req.query.generos) ? req.query.generos : Object.values(req.query.generos)) : [];
+        let nacionalidades = req.query.nacionalidades ? (Array.isArray(req.query.nacionalidades) ? req.query.nacionalidades : Object.values(req.query.nacionalidades)) : [];
+
+        if (typeof req.query.generos === 'string') generos = req.query.generos.split(',');
+        if (typeof req.query.nacionalidades === 'string') nacionalidades = req.query.nacionalidades.split(',');
+
+        const reporte = await reportesService.obtenerReporteDerechosVulnerados({ anio, minEdad, maxEdad, generos, nacionalidades });
+
+        res.json({
+            anio: parseInt(anio, 10),
+            minEdad: minEdad ? parseInt(minEdad, 10) : 0,
+            maxEdad: maxEdad ? parseInt(maxEdad, 10) : 100,
+            data: reporte
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getReporteEscolaridad,
     getAniosDisponibles,
     getReporteCondicionesVida,
-    getReporteDetalle
+    getReporteDetalle,
+    getReporteDerechosVulnerados
 };

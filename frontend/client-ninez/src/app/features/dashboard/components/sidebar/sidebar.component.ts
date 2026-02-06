@@ -25,4 +25,10 @@ export class SidebarComponent {
 		const user = this.userDataService.getUser();
 		return user?.rol?.nombre_rol === 'Administrador';
 	});
+
+	canViewDerechosReport = computed(() => {
+		const user = this.userDataService.getUser();
+		const role = user?.rol?.nombre_rol;
+		return role === 'Administrador' || role === 'Proteccion';
+	});
 }

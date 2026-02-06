@@ -30,6 +30,10 @@
 				<mat-icon class="nav-icon">cottage</mat-icon>
 				<span class="nav-label">Condiciones de Vida</span>
 			</a>
+			<a class="nav-item" routerLink="/reportes/derechos-vulnerados" *ngIf="canViewDerechosReport()">
+				<mat-icon class="nav-icon">gavel</mat-icon>
+				<span class="nav-label">Derechos Vulnerados</span>
+			</a>
 
 		</div>
 

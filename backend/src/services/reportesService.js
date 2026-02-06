@@ -388,11 +388,253 @@ function formatGroupResult(g) {
     };
 }
 
-// --- Función para obtener detalle de personas (Drill-down) ---
-const obtenerDetallePersonas = async (params) => {
-    const { tipo, anio, filtros } = params;
+// --- REPORTE DERECHOS VULNERADOS ---
+const obtenerReporteDerechosVulnerados = async ({ anio, minEdad = 0, maxEdad = 100, generos = [], nacionalidades = [] }) => {
+    let anioNum = parseInt(anio, 10);
+    if (isNaN(anioNum)) anioNum = new Date().getFullYear();
 
-    // 1. Obtener base de datos de personas con datos básicos
+    let min = parseInt(minEdad, 10);
+    let max = parseInt(maxEdad, 10);
+    if (isNaN(min)) min = 0;
+    if (isNaN(max)) max = 100;
+
+    const start = `${anioNum}-01-01T00:00:00`;
+    const end = `${anioNum + 1}-01-01T00:00:00`;
+
+    // 1. Obtener Servicios Locales del año con relaciones
+    const { data: servicios, error } = await supabase
+        .from('servicio_local')
+        .select(`
+            id,
+            fecha_ingreso,
+            persona:dni (
+                dni,
+                fecha_nacimiento,
+                generoObj:genero(nombre),
+                nacionalidadObj:nacionalidad(nombre)
+            ),
+            derecho:derecho_vulnerado (*)
+        `)
+        .gte('fecha_ingreso', start)
+        .lt('fecha_ingreso', end);
+
+    if (error) throw error;
+
+    // 2. Procesamiento en Memoria
+    const resultado = {
+        ranking_general: [],
+        por_edad: [],
+        por_genero: [],
+        por_nacionalidad: []
+    };
+
+    // Estructuras auxiliares
+    // Estructuras auxiliares
+    const rankingMap = {};
+    const subRangos = generarSubRangos(min, max);
+    const gruposEdad = subRangos.map(r => initDerechoGroup(r.label, r));
+    const gruposGenero = {};
+    const gruposNacionalidad = {};
+
+    const fechaReferencia = (anioNum === new Date().getFullYear()) ? new Date() : new Date(anioNum, 11, 31);
+
+    servicios.forEach(s => {
+        const p = s.persona;
+        const derecho = s.derecho; // Puede ser null si se borró el derecho pero quedó el servicio (data integrity)
+
+        if (!p || !derecho) return;
+
+        // --- Filtro Demográfico: Edad ---
+        if (!p.fecha_nacimiento) return;
+        const fechaNac = new Date(p.fecha_nacimiento);
+        let edad = fechaReferencia.getFullYear() - fechaNac.getFullYear();
+        const m = fechaReferencia.getMonth() - fechaNac.getMonth();
+        if (m < 0 || (m === 0 && fechaReferencia.getDate() < fechaNac.getDate())) {
+            edad--;
+        }
+
+        if (edad < min || edad > max) return;
+
+        // --- Filtro Demográfico: Género y Nacionalidad ---
+        const generoNombre = p.generoObj?.nombre;
+        const nacionalidadNombre = p.nacionalidadObj?.nombre;
+
+        if (generos && generos.length > 0) {
+            if (!generoNombre || !generos.includes(generoNombre)) return;
+        }
+        if (nacionalidades && nacionalidades.length > 0) {
+            if (!nacionalidadNombre || !nacionalidades.includes(nacionalidadNombre)) return;
+        }
+
+        // --- Agregar al Ranking General ---
+        // Contamos por derecho vulnerado
+        const derechoDesc = derecho.descripcion;
+        if (!rankingMap[derechoDesc]) {
+            rankingMap[derechoDesc] = { derecho: derechoDesc, cantidad: 0, id_derecho: derecho.id };
+        }
+        rankingMap[derechoDesc].cantidad++;
+
+        // --- Agregar a Grupos por Edad ---
+        const grupoEdad = gruposEdad.find(g => edad >= g.metadata.min && edad <= g.metadata.max);
+        if (grupoEdad) {
+            updateDerechoStats(grupoEdad, derechoDesc);
+        }
+
+        // --- Agregar a Grupos por Genero ---
+        const generoKey = generoNombre || 'No Especificado';
+        if (!gruposGenero[generoKey]) gruposGenero[generoKey] = initDerechoGroup(generoKey);
+        updateDerechoStats(gruposGenero[generoKey], derechoDesc);
+
+        // --- Agregar a Grupos por Nacionalidad ---
+        const nacKey = nacionalidadNombre || 'No Especificada';
+        if (!gruposNacionalidad[nacKey]) gruposNacionalidad[nacKey] = initDerechoGroup(nacKey);
+        updateDerechoStats(gruposNacionalidad[nacKey], derechoDesc);
+    });
+
+    // Formatear Ranking General (Top 10 por ejemplo, o todos ordenados)
+    resultado.ranking_general = Object.values(rankingMap).sort((a, b) => b.cantidad - a.cantidad);
+
+    // Formatear Demográficos
+    resultado.por_edad = gruposEdad.map(formatDerechoGroupResult);
+    resultado.por_genero = Object.values(gruposGenero).map(formatDerechoGroupResult);
+    resultado.por_nacionalidad = Object.values(gruposNacionalidad).map(formatDerechoGroupResult);
+
+    return resultado;
+};
+
+// Helper init group reportes derechos
+function initDerechoGroup(label, metadata = {}) {
+    return {
+        label,
+        metadata,
+        total_casos: 0,
+        derechos_map: {} // mapa interno para contar cada derecho en este grupo
+    };
+}
+
+function updateDerechoStats(group, derechoDesc) {
+    group.total_casos++;
+    group.derechos_map[derechoDesc] = (group.derechos_map[derechoDesc] || 0) + 1;
+}
+
+function formatDerechoGroupResult(g) {
+    // Convertir el mapa de derechos a un array ordenado para que el front muestre el "top" de ese grupo o similar
+    const ranking = Object.entries(g.derechos_map)
+        .map(([der, count]) => ({ derecho: der, cantidad: count }))
+        .sort((a, b) => b.cantidad - a.cantidad);
+
+    // Obtenemos el más frecuente para mostrar "Principal: Violencia (5)" por ejemplo
+    const principal = ranking.length > 0 ? ranking[0] : null;
+
+    return {
+        rango: g.label,
+        metadata: g.metadata,
+        total_casos: g.total_casos,
+        ranking: ranking, // Detalle completo por si se quiere tooltip complejo
+        principal_derecho: principal ? principal.derecho : 'N/A',
+        principal_cantidad: principal ? principal.cantidad : 0
+    };
+}
+
+
+// --- Función para obtener detalle de personas (Drill-down) ---
+const obtenerDetallePersonas = async ({ tipo, anio, filtros }) => {
+    if (tipo === 'DERECHOS_VULNERADOS') {
+        const anioNum = parseInt(anio, 10);
+        const start = `${anioNum}-01-01T00:00:00`;
+        const end = `${anioNum + 1}-01-01T00:00:00`;
+
+        const query = supabase
+            .from('servicio_local')
+            .select(`
+                 fecha_ingreso,
+                 persona:dni (
+                     nombre,
+                     apellido,
+                     dni,
+                     fecha_nacimiento,
+                     generoObj:genero(nombre),
+                     nacionalidadObj:nacionalidad(nombre)
+                 ),
+                 derecho:derecho_vulnerado (*)
+             `)
+            .gte('fecha_ingreso', start)
+            .lt('fecha_ingreso', end);
+
+        const { data: servicios, error } = await query;
+        if (error) throw error;
+
+        const resultados = [];
+        const fechaReferencia = (anioNum === new Date().getFullYear()) ? new Date() : new Date(anioNum, 11, 31);
+
+        servicios.forEach(s => {
+            const p = s.persona;
+            const d = s.derecho;
+            if (!p || !d) return; // Skip si falta data
+
+            // Calcular edad
+            if (!p.fecha_nacimiento) return;
+            const fechaNac = new Date(p.fecha_nacimiento);
+            let edad = fechaReferencia.getFullYear() - fechaNac.getFullYear();
+            const m = fechaReferencia.getMonth() - fechaNac.getMonth();
+            if (m < 0 || (m === 0 && fechaReferencia.getDate() < fechaNac.getDate())) {
+                edad--;
+            }
+
+            const genero = p.generoObj?.nombre;
+            const nacionalidad = p.nacionalidadObj?.nombre;
+            const derechoDesc = d.descripcion;
+
+            // --- APLICAR FILTROS DRILL-DOWN ---
+
+            // 1. Rango Etario
+            if (filtros.minEdad !== undefined && filtros.maxEdad !== undefined) {
+                if (edad < parseInt(filtros.minEdad) || edad > parseInt(filtros.maxEdad)) return;
+            }
+
+            // 2. Género
+            if (filtros.genero && filtros.genero !== 'Todos' && !Array.isArray(filtros.genero)) {
+                if (genero !== filtros.genero) return;
+            }
+            if (filtros.generos && Array.isArray(filtros.generos) && filtros.generos.length > 0) {
+                if (!filtros.generos.includes(genero)) return;
+            }
+            if (Array.isArray(filtros.genero) && filtros.genero.length > 0) {
+                if (!filtros.genero.includes(genero)) return;
+            }
+
+            // 3. Nacionalidad
+            if (filtros.nacionalidad && filtros.nacionalidad !== 'Todas' && !Array.isArray(filtros.nacionalidad)) {
+                if (nacionalidad !== filtros.nacionalidad) return;
+            }
+            if (filtros.nacionalidades && Array.isArray(filtros.nacionalidades) && filtros.nacionalidades.length > 0) {
+                if (!filtros.nacionalidades.includes(nacionalidad)) return;
+            }
+            if (Array.isArray(filtros.nacionalidad) && filtros.nacionalidad.length > 0) {
+                if (!filtros.nacionalidad.includes(nacionalidad)) return;
+            }
+
+            // 4. Derecho Específico (para drill down desde el ranking general)
+            // El front mandará 'derecho' como filtro si clickea en el grafico general
+            if (filtros.derecho) {
+                if (derechoDesc !== filtros.derecho) return;
+            }
+
+            resultados.push({
+                nombre: p.nombre,
+                apellido: p.apellido,
+                dni: p.dni,
+                edad: edad,
+                genero: genero,
+                nacionalidad: nacionalidad,
+                info_adicional: `Derecho: ${derechoDesc} (Ingreso: ${new Date(s.fecha_ingreso).toLocaleDateString()})`
+            });
+        });
+
+        return resultados;
+    }
+
+    // 1. Obtener base de personas con datos básicos
     const { data: personas, error } = await supabase
         .from('persona')
         .select(`
@@ -527,5 +769,6 @@ module.exports = {
     obtenerReporteEscolaridad,
     obtenerAniosDisponibles,
     obtenerReporteCondicionesVida,
+    obtenerReporteDerechosVulnerados,
     obtenerDetallePersonas
 };

@@ -75,6 +75,14 @@ export class ReportesService {
         return this.http.get<any[]>(`${this.apiUrl}/nacionalidades`);
     }
 
+    getReporteDerechosVulnerados(filters: { anio?: number, minEdad?: number, maxEdad?: number, generos?: string[], nacionalidades?: string[] }): Observable<any> {
+        let params = `?anio=${filters.anio || new Date().getFullYear()}&minEdad=${filters.minEdad || ''}&maxEdad=${filters.maxEdad || ''}`;
+        if (filters.generos && filters.generos.length > 0) params += `&generos=${filters.generos.join(',')}`;
+        if (filters.nacionalidades && filters.nacionalidades.length > 0) params += `&nacionalidades=${filters.nacionalidades.join(',')}`;
+
+        return this.http.get<any>(`${this.apiUrl}/reportes/derechos-vulnerados${params}`);
+    }
+
     obtenerDetalle(payload: { tipo: string, anio?: number, filtros: any }): Observable<any[]> {
         return this.http.post<any[]>(`${this.apiUrl}/reportes/detalle`, payload);
     }

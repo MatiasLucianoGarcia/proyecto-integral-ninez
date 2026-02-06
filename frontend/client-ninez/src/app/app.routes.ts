@@ -39,6 +39,10 @@ export const routes: Routes = [
 				path: 'condiciones-vida',
 				loadComponent: () => import('./features/dashboard/pages/reporte-condiciones-vida/reporte-condiciones-vida.component').then(m => m.ReporteCondicionesVidaComponent)
 			},
+			{
+				path: 'derechos-vulnerados',
+				loadComponent: () => import('./features/dashboard/pages/reporte-derechos-vulnerados/reporte-derechos-vulnerados.component').then(m => m.ReporteDerechosVulneradosComponent)
+			},
 			{ path: '', redirectTo: 'escolaridad', pathMatch: 'full' }
 		]
 	},

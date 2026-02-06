@@ -1,0 +1,233 @@
+<div class="report-container">
+    <!-- Header Section -->
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="title-group">
+            <h1>Derechos Vulnerados</h1>
+            <p class="subtitle">Análisis de intervenciones del Equipo Local</p>
+        </div>
+
+        <div class="filter-group">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Edad Mínima</mat-label>
+                <input matInput type="number" [(ngModel)]="minEdad" (change)="onFilterChange()" min="0">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Edad Máxima</mat-label>
+                <input matInput type="number" [(ngModel)]="maxEdad" (change)="onFilterChange()" min="0">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Año</mat-label>
+                <mat-select [(ngModel)]="anio" (selectionChange)="onFilterChange()">
+                    <mat-option *ngFor="let a of aniosDisponibles()" [value]="a">{{a}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width: 170px;">
+                <mat-label>Género</mat-label>
+                <mat-select [(ngModel)]="generosSeleccionados" (selectionChange)="onFilterChange()" multiple>
+                    <mat-option *ngFor="let g of listaGeneros()" [value]="g">{{g}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width: 170px;">
+                <mat-label>Nacionalidad</mat-label>
+                <mat-select [(ngModel)]="nacionalidadesSeleccionadas" (selectionChange)="onFilterChange()" multiple>
+                    <mat-option *ngFor="let n of listaNacionalidades()" [value]="n">{{n}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="loading-overlay" *ngIf="loading()">
+        <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading() && rankingGeneral().length > 0" class="content-grid">
+
+        <!-- Global Stats Section (Ranking) -->
+        <div class="section-title white-text">
+            <h2>Ranking General</h2>
+            <span class="badge">Top Causas de Ingreso</span>
+        </div>
+
+        <div class="stats-row">
+            <mat-card class="kpi-card" appearance="outlined">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar>gavel</mat-icon>
+                    <mat-card-title>Ranking de Derechos Vulnerados</mat-card-title>
+                    <mat-card-subtitle>Distribución por tipo de derecho</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="horizontal-bars">
+                        <div class="bar-row" *ngFor="let item of rankingGeneral(); let i = index">
+                            <div class="bar-label">
+                                <span [matTooltip]="item.derecho">{{ item.derecho }}</span>
+                            </div>
+                            <div class="bar-track" (click)="verDetalle('RANKING', item)"
+                                [matTooltip]="item.cantidad + ' casos (' + (calculatePercentage(item.cantidad, totalCasos()) | number:'1.0-1') + '%)'">
+                                <div class="bar-fill"
+                                    [style.width.%]="calculatePercentage(item.cantidad, rankingGeneral()[0].cantidad)"
+                                    [style.background-color]="getColorForPercentage(calculatePercentage(item.cantidad, totalCasos()))">
+                                    <span class="bar-value">{{ item.cantidad }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <!-- Tabs Detalle -->
+        <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="center" style="margin-top: 32px; min-height: 500px">
+
+            <!-- Por Edad -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon style="margin-right: 8px;">bar_chart</mat-icon>
+                    Por Edad
+                </ng-template>
+
+                <div class="tab-content" style="padding-top: 24px;">
+                    <div class="section-title">
+                        <h2>Análisis por Edad</h2>
+                        <span class="badge-outline">Comparativa de derechos</span>
+                    </div>
+
+                    <div class="age-charts-container">
+                        <div class="age-group-card" *ngFor="let group of ageStats()">
+                            <div class="group-header">
+                                <h3>{{ group.rango }}</h3>
+                                <span class="group-total">{{ group.total_casos }} casos</span>
+                            </div>
+
+                            <!-- Mini Bars (Top 3 info visual) -->
+                            <div class="mini-bars">
+                                <div class="mini-bar-col" *ngFor="let r of group.ranking.slice(0, 4); let i = index"
+                                    (click)="verDetalle('EDAD', group, r.derecho)"
+                                    [matTooltip]="r.derecho + ': ' + r.cantidad + ' casos'">
+
+                                    <div class="val">{{ r.cantidad }}</div>
+                                    <div class="fill"
+                                        [style.height.%]="calculatePercentage(r.cantidad, group.total_casos)"
+                                        [style.background-color]="getColorForPercentage(calculatePercentage(r.cantidad, group.total_casos))">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="housing-dominance">
+                                <small>Causa Principal</small>
+                                <div class="dom-val">
+                                    <strong>{{ group.principal_derecho }}</strong>
+                                    <span>({{ group.principal_cantidad }} casos)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- Por Género -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon style="margin-right: 8px;">wc</mat-icon>
+                    Por Género
+                </ng-template>
+
+                <div class="tab-content" style="padding-top: 24px;">
+                    <div class="section-title">
+                        <h2>Análisis por Género</h2>
+                        <span class="badge-outline">Comparativa de derechos</span>
+                    </div>
+
+                    <div class="age-charts-container">
+                        <div class="age-group-card" *ngFor="let group of genderStats()">
+                            <div class="group-header">
+                                <h3>{{ group.rango }}</h3>
+                                <span class="group-total">{{ group.total_casos }} casos</span>
+                            </div>
+
+                            <!-- Mini Bars -->
+                            <div class="mini-bars">
+                                <div class="mini-bar-col" *ngFor="let r of group.ranking.slice(0, 4); let i = index"
+                                    (click)="verDetalle('GENERO', group, r.derecho)"
+                                    [matTooltip]="r.derecho + ': ' + r.cantidad + ' casos'">
+
+                                    <div class="val">{{ r.cantidad }}</div>
+                                    <div class="fill"
+                                        [style.height.%]="calculatePercentage(r.cantidad, group.total_casos)"
+                                        [style.background-color]="getColorForPercentage(calculatePercentage(r.cantidad, group.total_casos))">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="housing-dominance">
+                                <small>Causa Principal</small>
+                                <div class="dom-val">
+                                    <strong>{{ group.principal_derecho }}</strong>
+                                    <span>({{ group.principal_cantidad }} casos)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- Por Nacionalidad -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon style="margin-right: 8px;">public</mat-icon>
+                    Por Nacionalidad
+                </ng-template>
+
+                <div class="tab-content" style="padding-top: 24px;">
+                    <div class="section-title">
+                        <h2>Análisis por Nacionalidad</h2>
+                        <span class="badge-outline">Comparativa de derechos</span>
+                    </div>
+
+                    <div class="age-charts-container">
+                        <div class="age-group-card" *ngFor="let group of nationalityStats()">
+                            <div class="group-header">
+                                <h3>{{ group.rango }}</h3>
+                                <span class="group-total">{{ group.total_casos }} casos</span>
+                            </div>
+
+                            <!-- Mini Bars -->
+                            <div class="mini-bars">
+                                <div class="mini-bar-col" *ngFor="let r of group.ranking.slice(0, 4); let i = index"
+                                    (click)="verDetalle('NACIONALIDAD', group, r.derecho)"
+                                    [matTooltip]="r.derecho + ': ' + r.cantidad + ' casos'">
+
+                                    <div class="val">{{ r.cantidad }}</div>
+                                    <div class="fill"
+                                        [style.height.%]="calculatePercentage(r.cantidad, group.total_casos)"
+                                        [style.background-color]="getColorForPercentage(calculatePercentage(r.cantidad, group.total_casos))">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="housing-dominance">
+                                <small>Causa Principal</small>
+                                <div class="dom-val">
+                                    <strong>{{ group.principal_derecho }}</strong>
+                                    <span>({{ group.principal_cantidad }} casos)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+
+    </div>
+
+    <div *ngIf="!loading() && rankingGeneral().length === 0" class="no-data">
+        <mat-icon>info</mat-icon>
+        <p>No se encontraron datos con los filtros seleccionados.</p>
+    </div>
+</div>
