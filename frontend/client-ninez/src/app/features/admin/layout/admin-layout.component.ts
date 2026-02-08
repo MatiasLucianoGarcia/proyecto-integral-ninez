@@ -3,7 +3,7 @@ import { NavBarComponent } from '../../dashboard/components/nav-bar/nav-bar.comp
 import { DashboardSidebarService } from '../../dashboard/services/dashboard-sidebar.service';
 import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
 import { SidebarComponent } from '../../dashboard/components/sidebar/sidebar.component';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-admin-layout',
@@ -14,5 +14,11 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AdminLayoutComponent {
     private dashboardSidebarServices: DashboardSidebarService = inject(DashboardSidebarService);
+    private router = inject(Router);
+
     showSidebar = this.dashboardSidebarServices.getInfo();
+
+    get isProfilePage(): boolean {
+        return this.router.url.includes('/perfil');
+    }
 }

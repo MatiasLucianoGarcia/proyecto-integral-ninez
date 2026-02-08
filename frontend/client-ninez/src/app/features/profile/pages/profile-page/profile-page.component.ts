@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
-import { NavBarComponent } from '../../../dashboard/components/nav-bar/nav-bar.component';
+
 import { UserDataService } from '../../../login/data/user-data.service';
 import { ProfileService } from '../../services/profile.service';
 import { Router } from '@angular/router';
@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
         MatFormFieldModule,
         MatIconModule,
         MatDividerModule,
-        NavBarComponent
+
     ],
     templateUrl: './profile-page.component.html',
     styleUrl: './profile-page.component.scss'

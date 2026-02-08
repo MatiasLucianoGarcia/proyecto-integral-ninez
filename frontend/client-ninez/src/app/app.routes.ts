@@ -19,8 +19,14 @@ export const routes: Routes = [
 	},
 	{
 		path: 'perfil',
+		component: AdminLayoutComponent,
 		canActivate: [SessionGuard],
-		loadComponent: () => import('./features/profile/pages/profile-page/profile-page.component').then((m) => m.ProfilePageComponent),
+		children: [
+			{
+				path: '',
+				loadComponent: () => import('./features/profile/pages/profile-page/profile-page.component').then((m) => m.ProfilePageComponent),
+			}
+		]
 	},
 	{
 		path: 'person-form',

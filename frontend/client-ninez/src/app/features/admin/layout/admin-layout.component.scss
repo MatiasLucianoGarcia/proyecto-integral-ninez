@@ -32,4 +32,12 @@
     @media (max-width: 768px) {
         padding: var(--spacing-md);
     }
+
+    &.full-width {
+        max-width: 100%;
+        padding: 0;
+
+        // Ensure child content handles its own spacing/centering if needed, 
+        // but for profile page specifically we want edge-to-edge for the banner.
+    }
 }
