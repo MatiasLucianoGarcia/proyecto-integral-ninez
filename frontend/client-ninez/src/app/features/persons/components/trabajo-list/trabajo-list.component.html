@@ -1,10 +1,10 @@
+@if (sortedTrabajos.length === 0) {
+<div class="empty-state">
+    <mat-icon>work_off</mat-icon>
+    <p>No hay registros de trabajo</p>
+</div>
+} @else {
 <div class="person-card-grid">
-    @if (sortedTrabajos.length === 0) {
-    <div class="empty-state">
-        <mat-icon>work_off</mat-icon>
-        <p>No hay registros de trabajo</p>
-    </div>
-    } @else {
     @for (item of sortedTrabajos; track item.id) {
     <mat-card class="person-card">
         <div class="card-icon-container">
@@ -30,5 +30,5 @@
         </div>
     </mat-card>
     }
-    }
 </div>
+}

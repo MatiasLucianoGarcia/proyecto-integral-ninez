@@ -269,7 +269,8 @@
 						}
 
 						<!-- Contactos Section -->
-						<mat-divider class="section-divider" style="margin: 24px 0;"></mat-divider>
+						<mat-divider class="section-divider"
+							style="margin-top: 24px; margin-bottom: 24px;"></mat-divider>
 						<div class="family-tab-header">
 							<div class="header-info">
 								<mat-icon class="header-icon">contact_phone</mat-icon>
@@ -297,7 +298,6 @@
 			</mat-tab>
 
 			<!-- Tab 2: Familia y Comunidad -->
-			@if(personDni()) {
 			<mat-tab>
 				<ng-template mat-tab-label>
 					<mat-icon class="tab-icon">groups</mat-icon>
@@ -307,6 +307,7 @@
 				</ng-template>
 
 				<div class="tab-content">
+					@if(personDni()) {
 					<!-- Header de la pestaña Familia -->
 					<div class="family-tab-header">
 						<div class="header-info">
@@ -342,30 +343,45 @@
 						(editMember)="onEditFamilyMember($event)" (deleteMember)="onDeleteFamilyMember($event)"
 						(viewMember)="onViewFamilyMember($event)"></app-family-tree>
 					}
-				</div>
 
-				<!-- SUGERERENCIAS -->
 
-				<mat-divider class="section-divider"></mat-divider>
+					<!-- SUGERERENCIAS -->
 
-				<div class="suggested-family-section">
-					<div class="family-tab-header suggested-header">
-						<div class="header-info">
-							<mat-icon class="header-icon">person_search</mat-icon>
-							<div>
-								<h2 class="family-title">Sugerencias de Familia</h2>
-								<p class="family-subtitle">Personas posiblemente relacionadas</p>
+					<mat-divider class="section-divider" [class.extra-spacing]="familyMembers().length === 0"
+						style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>
+
+					<div class="suggested-family-section">
+						<div class="family-tab-header suggested-header">
+							<div class="header-info">
+								<mat-icon class="header-icon">person_search</mat-icon>
+								<div>
+									<h2 class="family-title">Sugerencias de Familia</h2>
+									<p class="family-subtitle">Personas posiblemente relacionadas</p>
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<div class="suggested-list">
-						<app-suggested-person-card *ngFor="let suggestion of suggestedFamily()" [person]="suggestion"
-							(add)="addSuggestedFamily($event)" (view)="onViewSuggestedPerson($event)" />
+						@if(suggestedFamily().length > 0) {
+						<div class="suggested-list">
+							<app-suggested-person-card *ngFor="let suggestion of suggestedFamily()"
+								[person]="suggestion" (add)="addSuggestedFamily($event)"
+								(view)="onViewSuggestedPerson($event)" />
+						</div>
+						} @else {
+						<div class="empty-state">
+							<mat-icon>person_search</mat-icon>
+							<p>No hay sugerencias de familia</p>
+						</div>
+						}
 					</div>
+					} @else {
+					<div class="empty-state-placeholder">
+						<mat-icon>info</mat-icon>
+						<p>Primero complete los datos generales para agregar información familiar.</p>
+					</div>
+					}
 				</div>
 			</mat-tab>
-			}
 
 			<!-- Tab 3: Salud y Educación -->
 			<mat-tab>
@@ -398,7 +414,7 @@
 					</app-education-list>
 
 					<!-- Divider -->
-					<mat-divider style="margin: 30px 0;"></mat-divider>
+					<mat-divider class="section-divider" style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>
 
 					<!-- Salud General -->
 					@if(loadingSalud()) {
@@ -411,7 +427,7 @@
 					}
 
 					<!-- Divider -->
-					<mat-divider style="margin: 30px 0;"></mat-divider>
+					<mat-divider class="section-divider" style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>
 
 					<!-- Controles Médicos Placeholder -->
 					<!-- Controles Médicos -->
@@ -451,6 +467,7 @@
 			<!-- Tab 4: Datos Importantes -->
 			<mat-tab label="Datos Importantes">
 				<div class="tab-content">
+					@if(personDni()) {
 					<!-- Trabajo -->
 					<div class="family-tab-header">
 						<div class="header-info">
@@ -477,7 +494,7 @@
 					</app-trabajo-list>
 					}
 
-					<mat-divider style="margin: 24px 0;"></mat-divider>
+					<mat-divider class="section-divider" style="margin-top: 24px; margin-bottom: 24px;"></mat-divider>
 
 					<!-- Actividades Extracurriculares -->
 					<div class="family-tab-header">
@@ -505,7 +522,7 @@
 					</app-actividades-extra-list>
 					}
 
-
+					<mat-divider class="section-divider" style="margin-top: 24px; margin-bottom: 24px;"></mat-divider>
 
 					<!-- Pérdidas -->
 					<div class="family-tab-header">
@@ -533,12 +550,15 @@
 					</app-perdida-list>
 					}
 
-					<mat-divider style="margin: 24px 0;"></mat-divider>
+					<mat-divider class="section-divider" style="margin-top: 24px; margin-bottom: 24px;"></mat-divider>
 
-					<!-- Intereses -->
-					@if(personDni()) {
 					<app-intereses [dni]="personDni()!" [isViewMode]="isViewMode">
 					</app-intereses>
+					} @else {
+					<div class="empty-state-placeholder">
+						<mat-icon>info</mat-icon>
+						<p>Primero complete los datos generales para agregar datos importantes.</p>
+					</div>
 					}
 				</div>
 			</mat-tab>
@@ -546,6 +566,8 @@
 			<!-- Tab 5: Articulaciones -->
 			<mat-tab label="Articulaciones">
 				<div class="tab-content">
+					@if(personDni()) {
+					<!-- Header moved inside if -->
 					<div class="family-tab-header">
 						<div class="header-info">
 							<mat-icon class="header-icon">hub</mat-icon>
@@ -577,13 +599,20 @@
 					<app-articulacion-list [articulaciones]="articulaciones()" [isViewMode]="isViewMode"
 						(deleteArticulacion)="onDeleteArticulacion($event)"></app-articulacion-list>
 					}
+					} @else {
+					<div class="empty-state-placeholder">
+						<mat-icon>info</mat-icon>
+						<p>Primero complete los datos generales para agregar articulaciones.</p>
+					</div>
+					}
 				</div>
 			</mat-tab>
 
 			<!-- Tab 6: Condiciones de Vida -->
 			<mat-tab label="Condiciones de Vida">
 				<div class="tab-content">
-					<!-- Condiciones de Vida Section (Placeholder) -->
+					@if(personDni()) {
+					<!-- Condiciones de Vida Section -->
 					<div class="family-tab-header">
 						<div class="header-info">
 							<mat-icon class="header-icon">other_houses</mat-icon>
@@ -594,16 +623,9 @@
 						</div>
 					</div>
 
-					@if(personDni()) {
 					<app-condiciones-vida [dni]="personDni()!" [isViewMode]="isViewMode"></app-condiciones-vida>
-					} @else {
-					<div class="empty-state-placeholder" style="margin: 1rem 0 2rem 0;">
-						<mat-icon>info</mat-icon>
-						<p>Guarde la persona para gestionar sus condiciones de vida</p>
-					</div>
-					}
 
-					<mat-divider style="margin: 30px 0;"></mat-divider>
+					<mat-divider class="section-divider" style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>
 
 					<!-- Vivienda Section -->
 					<div class="family-tab-header">
@@ -636,6 +658,12 @@
 					<app-vivienda-list [viviendas]="viviendas()" [isViewMode]="isViewMode"
 						(deleteVivienda)="onDeleteVivienda($event)"></app-vivienda-list>
 					}
+					} @else {
+					<div class="empty-state-placeholder">
+						<mat-icon>info</mat-icon>
+						<p>Primero complete los datos generales para gestionar condiciones de vida y vivienda.</p>
+					</div>
+					}
 				</div>
 			</mat-tab>
 
@@ -643,92 +671,90 @@
 			@if(canViewServicioLocal) {
 			<mat-tab label="Servicio Local">
 				<div class="tab-content">
-                    
-                    <!-- VISTA RESTRINGIDA -->
-                    @if(isRestrictedServicioLocal) {
-                         <div class="family-tab-header">
-                            <div class="header-info">
-                                <mat-icon class="header-icon">security</mat-icon>
-                                <div>
-                                    <h2 class="family-title">Servicio Local</h2>
-                                    <p class="family-subtitle">Estado de intervención</p>
-                                </div>
-                            </div>
-                        </div>
+					@if(personDni()) {
 
-                        <div style="margin-top: 24px;">
-                            @if(servicioLocalStatus()?.intervenido) {
-                                <div class="status-card active-intervention">
-                                   <div class="status-icon">
-                                        <mat-icon>warning</mat-icon>
-                                   </div>
-                                   <div class="status-info">
-                                        <h3>Intervención Activa</h3>
-                                        <p>Esta persona cuenta con registros en el Servicio Local.</p>
-                                        
-                                        @if(servicioLocalStatus()?.ultima_actualizacion) {
-                                            <div class="last-update">
-                                                <strong>Última actualización de Hoja de Ruta:</strong>
-                                                <span>{{ servicioLocalStatus()?.ultima_actualizacion | date:'dd/MM/yyyy' }}</span>
-                                            </div>
-                                        } @else {
-                                            <div class="last-update">
-                                                <span>Sin movimientos recientes en Hoja de Ruta.</span>
-                                            </div>
-                                        }
-                                   </div>
-                                </div>
-                            } @else {
-                                 <div class="status-card no-intervention">
-                                   <div class="status-icon">
-                                        <mat-icon>check_circle</mat-icon>
-                                   </div>
-                                   <div class="status-info">
-                                        <h3>Sin Intervención</h3>
-                                        <p>No se registran intervenciones activas del Servicio Local para esta persona.</p>
-                                   </div>
-                                </div>
-                            }
-                        </div>
-                    } 
-                    
-                    <!-- VISTA COMPLETA (ADMIN/PROTECCION) -->
-                    @else {
-                        <div class="family-tab-header">
-                            <div class="header-info">
-                                <mat-icon class="header-icon">security</mat-icon>
-                                <div>
-                                    <h2 class="family-title">Servicios Locales Asociados</h2>
-                                    <p class="family-subtitle">
-                                        {{ servicioLocalList?.items()?.length || 0 > 0 ? 'Intervenciones registradas' : 'No
-                                        hay intervenciones registradas' }}
-                                    </p>
-                                </div>
-                            </div>
-                            @if(!isViewMode) {
-                            <button mat-raised-button color="primary" class="add-family-button"
-                                (click)="onAddServicioLocal()">
-                                <mat-icon>add_moderator</mat-icon>
-                                Agregar Intervención
-                            </button>
-                            }
-                        </div>
+					<!-- VISTA RESTRINGIDA -->
+					@if(isRestrictedServicioLocal) {
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">security</mat-icon>
+							<div>
+								<h2 class="family-title">Servicio Local</h2>
+								<p class="family-subtitle">Estado de intervención</p>
+							</div>
+						</div>
+					</div>
 
-                        @if(personDni()) {
-                        <app-servicio-local-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-servicio-local-list>
-                        } @else {
-                        <div class="empty-state-placeholder">
-                            <mat-icon>info</mat-icon>
-                            <p>Guarde la persona primero para acceder a las funciones de Servicio Local.</p>
-                        </div>
-                        }
+					<div style="margin-top: 24px;">
+						@if(servicioLocalStatus()?.intervenido) {
+						<div class="status-card active-intervention">
+							<div class="status-icon">
+								<mat-icon>warning</mat-icon>
+							</div>
+							<div class="status-info">
+								<h3>Intervención Activa</h3>
+								<p>Esta persona cuenta con registros en el Servicio Local.</p>
 
-                        <mat-divider style="margin: 20px 0;"></mat-divider>
+								@if(servicioLocalStatus()?.ultima_actualizacion) {
+								<div class="last-update">
+									<strong>Última actualización de Hoja de Ruta:</strong>
+									<span>{{ servicioLocalStatus()?.ultima_actualizacion | date:'dd/MM/yyyy' }}</span>
+								</div>
+								} @else {
+								<div class="last-update">
+									<span>Sin movimientos recientes en Hoja de Ruta.</span>
+								</div>
+								}
+							</div>
+						</div>
+						} @else {
+						<div class="status-card no-intervention">
+							<div class="status-icon">
+								<mat-icon>check_circle</mat-icon>
+							</div>
+							<div class="status-info">
+								<h3>Sin Intervención</h3>
+								<p>No se registran intervenciones activas del Servicio Local para esta persona.</p>
+							</div>
+						</div>
+						}
+					</div>
+					}
 
-                        @if(personDni()) {
-                        <app-hoja-ruta-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-hoja-ruta-list>
-                        }
-                    }
+					<!-- VISTA COMPLETA (ADMIN/PROTECCION) -->
+					@else {
+					<div class="family-tab-header">
+						<div class="header-info">
+							<mat-icon class="header-icon">security</mat-icon>
+							<div>
+								<h2 class="family-title">Servicios Locales Asociados</h2>
+								<p class="family-subtitle">
+									{{ servicioLocalList?.items()?.length || 0 > 0 ? 'Intervenciones registradas' : 'No
+									hay intervenciones registradas' }}
+								</p>
+							</div>
+						</div>
+						@if(!isViewMode) {
+						<button mat-raised-button color="primary" class="add-family-button"
+							(click)="onAddServicioLocal()">
+							<mat-icon>add_moderator</mat-icon>
+							Agregar Intervención
+						</button>
+						}
+					</div>
+
+					<app-servicio-local-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-servicio-local-list>
+
+					<mat-divider class="section-divider" style="margin-top: 20px; margin-bottom: 20px;"></mat-divider>
+
+					<app-hoja-ruta-list [dni]="personDni()!" [isViewMode]="isViewMode"></app-hoja-ruta-list>
+					}
+					} @else {
+					<div class="empty-state-placeholder">
+						<mat-icon>info</mat-icon>
+						<p>Primero complete los datos generales para acceder a la información del Servicio Local.</p>
+					</div>
+					}
 				</div>
 			</mat-tab>
 			}

@@ -20,10 +20,11 @@
             </button>
         </div>
     </mat-card>
-    } @empty {
-    <div class="empty-state">
-        <mat-icon>sports_handball</mat-icon>
-        <p>No hay actividades registradas</p>
-    </div>
     }
 </div>
+@if (sortedActividades.length === 0) {
+<div class="empty-state">
+    <mat-icon>sports_handball</mat-icon>
+    <p>No hay actividades registradas</p>
+</div>
+}

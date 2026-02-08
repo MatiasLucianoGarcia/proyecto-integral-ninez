@@ -568,3 +568,20 @@
 		}
 	}
 }
+
+/* Full Width Separators */
+/* Full Width Separators */
+.section-divider {
+	margin-left: calc(var(--spacing-2xl) * -1);
+	margin-right: calc(var(--spacing-2xl) * -1);
+	border-top-color: var(--border-color);
+
+	@media (max-width: 768px) {
+		margin-left: calc(var(--spacing-lg) * -1);
+		margin-right: calc(var(--spacing-lg) * -1);
+	}
+
+	&.extra-spacing {
+		margin-top: var(--spacing-2xl) !important;
+	}
+}

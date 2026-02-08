@@ -22,10 +22,11 @@
             </button>
         </div>
     </mat-card>
-    } @empty {
-    <div class="empty-state">
-        <mat-icon>location_off</mat-icon>
-        <p>No hay domicilios registrados</p>
-    </div>
     }
 </div>
+@if (sortedDomicilios().length === 0) {
+<div class="empty-state">
+    <mat-icon>location_off</mat-icon>
+    <p>No hay domicilios registrados</p>
+</div>
+}

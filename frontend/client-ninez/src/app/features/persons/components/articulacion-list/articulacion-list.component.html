@@ -26,10 +26,11 @@
             </button>
         </div>
     </mat-card>
-    } @empty {
-    <div class="empty-state">
-        <mat-icon>hub</mat-icon>
-        <p>No hay articulaciones registradas</p>
-    </div>
     }
 </div>
+@if (sortedArticulaciones().length === 0) {
+<div class="empty-state">
+    <mat-icon>hub</mat-icon>
+    <p>No hay articulaciones registradas</p>
+</div>
+}

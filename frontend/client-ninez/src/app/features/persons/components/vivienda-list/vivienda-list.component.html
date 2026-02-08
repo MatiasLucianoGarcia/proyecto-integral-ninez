@@ -27,10 +27,11 @@
             </button>
         </div>
     </mat-card>
-    } @empty {
-    <div class="empty-state">
-        <mat-icon>home</mat-icon>
-        <p>No hay datos de vivienda registrados</p>
-    </div>
     }
 </div>
+@if (sortedViviendas().length === 0) {
+<div class="empty-state">
+    <mat-icon>home</mat-icon>
+    <p>No hay datos de vivienda registrados</p>
+</div>
+}

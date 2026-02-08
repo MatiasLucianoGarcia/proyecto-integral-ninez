@@ -472,7 +472,7 @@ export class PersonFormComponent implements OnInit {
 						});
 						this.loading.set(false);
 						this.router.navigate(['/person-form'], {
-							queryParams: { mode: 'view', dni: newPerson.dni },
+							queryParams: { mode: 'edit', dni: newPerson.dni },
 						});
 					},
 					error: (err) => {

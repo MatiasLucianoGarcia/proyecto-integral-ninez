@@ -23,10 +23,11 @@
             </button>
         </div>
     </mat-card>
-    } @empty {
-    <div class="empty-state">
-        <mat-icon>volunteer_activism</mat-icon>
-        <p>No hay pérdidas registradas</p>
-    </div>
     }
 </div>
+@if (sortedPerdidas.length === 0) {
+<div class="empty-state">
+    <mat-icon>volunteer_activism</mat-icon>
+    <p>No hay pérdidas registradas</p>
+</div>
+}

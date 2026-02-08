@@ -1,10 +1,10 @@
+@if (sortedEscolaridades.length === 0) {
+<div class="empty-state">
+    <mat-icon>school</mat-icon>
+    <p>No hay registros de escolaridad</p>
+</div>
+} @else {
 <div class="person-card-grid">
-    @if (sortedEscolaridades.length === 0) {
-    <div class="empty-state">
-        <mat-icon>school</mat-icon>
-        <p>No hay registros de escolaridad</p>
-    </div>
-    } @else {
     @for (item of sortedEscolaridades; track item.id) {
     <mat-card class="person-card">
         <div class="card-icon-container">
@@ -26,5 +26,5 @@
         </div>
     </mat-card>
     }
-    }
 </div>
+}
