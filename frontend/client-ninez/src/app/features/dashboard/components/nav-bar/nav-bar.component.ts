@@ -22,6 +22,7 @@ export class NavBarComponent {
 	private dashboardSidebarService: DashboardSidebarService = inject(DashboardSidebarService);
 	private router = inject(Router);
 	private userService = inject(UserDataService);
+	user = this.userService.getUser();
 	@Output() menuClick = new EventEmitter<void>();
 	opened: Signal<boolean> = this.dashboardSidebarService.getInfo();
 

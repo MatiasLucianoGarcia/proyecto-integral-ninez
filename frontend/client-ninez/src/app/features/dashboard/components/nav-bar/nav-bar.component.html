@@ -14,7 +14,8 @@
 
 		<div class="navbar-right">
 			<button mat-icon-button class="notification-button" aria-label="Notificaciones">
-				<mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">notifications</mat-icon>
+				<mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small"
+					aria-hidden="false">notifications</mat-icon>
 			</button>
 
 			<button mat-icon-button class="account-button" aria-label="Menú de usuario" [matMenuTriggerFor]="userMenu">
@@ -27,8 +28,8 @@
 		<div class="user-info">
 			<mat-icon class="user-avatar">account_circle</mat-icon>
 			<div class="user-details">
-				<span class="user-name">Usuario</span>
-				<span class="user-role">Administrador</span>
+				<span class="user-name">{{ user?.nombre || 'Usuario' }}</span>
+				<span class="user-role">{{ user?.rol?.nombre_rol || 'Rol' }}</span>
 			</div>
 		</div>
 		<mat-divider></mat-divider>

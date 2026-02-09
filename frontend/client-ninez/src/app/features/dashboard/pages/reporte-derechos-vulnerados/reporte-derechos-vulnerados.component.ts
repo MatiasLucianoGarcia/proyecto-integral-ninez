@@ -14,6 +14,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DrillDownDialogComponent } from '../../components/drill-down-dialog/drill-down-dialog.component';
 import { ReportesService } from '../../../../services/reportes.service';
 
+import { UserDataService } from '../../../login/data/user-data.service';
+
 @Component({
     selector: 'app-reporte-derechos-vulnerados',
     standalone: true,
@@ -37,6 +39,7 @@ import { ReportesService } from '../../../../services/reportes.service';
 export class ReporteDerechosVulneradosComponent implements OnInit {
     private reportesService = inject(ReportesService);
     private dialog = inject(MatDialog);
+    private userDataService = inject(UserDataService);
 
     // Filtros
     anio = signal<number>(new Date().getFullYear());
@@ -144,6 +147,14 @@ export class ReporteDerechosVulneradosComponent implements OnInit {
 
     // --- Drill Down ---
     verDetalle(scope: 'RANKING' | 'EDAD' | 'GENERO' | 'NACIONALIDAD', item: any, derechoEspecifico?: string) {
+        // Restriction: Only Admin or Proteccion can see details
+        const user = this.userDataService.getUser();
+        const role = user?.rol?.nombre_rol;
+
+        if (role !== 'Administrador' && role !== 'Proteccion') {
+            return;
+        }
+
         const filtros: any = {
             derecho: derechoEspecifico,
             minEdad: this.minEdad(),
