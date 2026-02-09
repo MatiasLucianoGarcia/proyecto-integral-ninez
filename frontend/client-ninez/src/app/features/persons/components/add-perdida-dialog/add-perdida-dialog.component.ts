@@ -42,10 +42,11 @@ import { MatNativeDateModule } from '@angular/material/core';
 
         <div class="form-field">
             <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Fecha Real (Opcional)</mat-label>
+                <mat-label>Fecha</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="fecha_real">
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="form.get('fecha_real')?.hasError('required')">Requerido</mat-error>
             </mat-form-field>
         </div>
       </mat-dialog-content>
@@ -73,7 +74,7 @@ export class AddPerdidaDialogComponent {
     this.form = this.fb.group({
       dni: [data.dni, Validators.required],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
-      fecha_real: [new Date()]
+      fecha_real: [new Date(), Validators.required]
     });
   }
 

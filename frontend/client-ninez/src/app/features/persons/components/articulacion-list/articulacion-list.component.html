@@ -17,7 +17,7 @@
                 }
             </div>
             <div class="card-footer-info">
-                <p class="date-info">Fecha: {{ articulacion.fecha_articulacion | date:'dd/MM/yyyy' }}</p>
+                <p class="date-info">{{ articulacion.fecha_articulacion | date:'dd/MM/yyyy' }}</p>
             </div>
         </div>
         <div class="card-actions" *ngIf="!isViewMode()">

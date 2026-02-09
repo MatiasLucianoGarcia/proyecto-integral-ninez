@@ -43,7 +43,7 @@ export class AddAddressDialogComponent {
         this.addressForm = this.fb.group({
             nombre: ['', [Validators.required, Validators.minLength(2)]],
             numero: ['', [Validators.required]],
-            fecha_real: [new Date()],
+            fecha_real: [new Date(), Validators.required],
         });
     }
 

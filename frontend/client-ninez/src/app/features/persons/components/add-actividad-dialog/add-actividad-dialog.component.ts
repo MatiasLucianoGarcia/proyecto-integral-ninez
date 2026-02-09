@@ -56,10 +56,11 @@ import { Actividad } from '../../domain/actividad.model';
 
         <div class="form-field">
             <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Fecha Real (Opcional)</mat-label>
+                <mat-label>Fecha</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="fecha_real">
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="form.get('fecha_real')?.hasError('required')">Requerido</mat-error>
             </mat-form-field>
         </div>
       </mat-dialog-content>
@@ -89,7 +90,7 @@ export class AddActividadDialogComponent {
       actividad: ['', Validators.required],
       horario: ['', Validators.required],
       observaciones: [''],
-      fecha_real: [new Date()]
+      fecha_real: [new Date(), Validators.required]
     });
   }
 

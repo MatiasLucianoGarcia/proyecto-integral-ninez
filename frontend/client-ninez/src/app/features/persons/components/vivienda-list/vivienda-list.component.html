@@ -13,10 +13,10 @@
             </div>
             <div class="card-footer-info">
                 @if (vivienda.fecha_real) {
-                <p class="date-info">Fecha: {{ vivienda.fecha_real | date:'dd/MM/yyyy' }}</p>
+                <p class="date-info">{{ vivienda.fecha_real | date:'dd/MM/yyyy' }}</p>
                 } @else {
                 @if (vivienda.fecha_carga) {
-                <p class="date-info">Registrado el: {{ vivienda.fecha_carga | date:'dd/MM/yyyy' }}</p>
+                <p class="date-info">{{ vivienda.fecha_carga | date:'dd/MM/yyyy' }}</p>
                 }
                 }
             </div>

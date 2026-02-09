@@ -11,9 +11,9 @@
             </div>
             <div class="card-footer-info">
                 @if (perdida.fecha_real) {
-                <p class="date-info">Fecha: {{ perdida.fecha_real | date:'dd/MM/yyyy' }}</p>
+                <p class="date-info">{{ perdida.fecha_real | date:'dd/MM/yyyy' }}</p>
                 } @else {
-                <p class="date-info">Registrado: {{ perdida.fecha_carga | date:'dd/MM/yyyy' }}</p>
+                <p class="date-info">{{ perdida.fecha_carga | date:'dd/MM/yyyy' }}</p>
                 }
             </div>
         </div>

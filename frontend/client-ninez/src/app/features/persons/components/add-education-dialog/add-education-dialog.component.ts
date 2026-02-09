@@ -40,7 +40,7 @@ export class AddEducationDialogComponent {
       escuela: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       nivel: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       anio: ['', [Validators.required, Validators.maxLength(50)]],
-      fecha_real: [new Date()]
+      fecha_real: [new Date(), Validators.required]
     });
   }
 

@@ -37,7 +37,7 @@ export class AddContactDialogComponent {
     ) {
         this.contactForm = this.fb.group({
             telefono: ['', [Validators.required, Validators.pattern(/^\d{11,15}$/)]],
-            fecha_real: [new Date()]
+            fecha_real: [new Date(), Validators.required]
         });
     }
 

@@ -38,7 +38,7 @@ export class AddTrabajoDialogComponent {
             dni: [data.dni, Validators.required],
             descripcion: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
             horario: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-            fecha_real: [new Date()]
+            fecha_real: [new Date(), Validators.required]
         });
     }
 

@@ -52,7 +52,7 @@ export class AddViviendaDialogComponent implements OnInit {
     this.viviendaForm = this.fb.group({
       tipo_vivienda: ['', Validators.required],
       observaciones: [''],
-      fecha_real: [new Date()]
+      fecha_real: [new Date(), Validators.required]
     });
   }
 
