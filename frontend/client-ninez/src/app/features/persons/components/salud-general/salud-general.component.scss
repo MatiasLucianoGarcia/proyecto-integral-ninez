@@ -1,4 +1,6 @@
 /* Ported from PersonFormComponent.scss for consistency */
+@use '../../../../styles/form-section.scss';
+
 .salud-general-container {
     padding: 0;
     /* Removing padding to align with other sections if they have internal padding, or keeping it if needed. Let's start with 0 as header handles margins */

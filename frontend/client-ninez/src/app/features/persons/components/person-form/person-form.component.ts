@@ -495,9 +495,12 @@ export class PersonFormComponent implements OnInit {
 								duration: 3000,
 							});
 							this.loading.set(false);
-							this.router.navigate(['/person-form'], {
+							this.loading.set(false);
+							// Ya no navegamos a view, nos quedamos en edit
+							/* this.router.navigate(['/person-form'], {
 								queryParams: { mode: 'view', dni: currentPerson.dni },
-							});
+							}); */
+							this.personForm.markAsPristine();
 						},
 						error: (err) => {
 							console.error('Error al actualizar persona:', JSON.stringify(err));

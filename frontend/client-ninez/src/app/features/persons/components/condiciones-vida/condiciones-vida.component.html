@@ -1,35 +1,44 @@
-<div class="condiciones-container" [class.view-mode]="isViewMode()">
-    @if (!loading()) {
-    <form [formGroup]="form" class="condiciones-form">
-        <div class="toggles-grid">
-            @for (item of conditions; track item.key) {
-            <div class="condition-chip" [class.active]="form.get(item.key)?.value" [class.readonly]="isViewMode()"
-                (click)="toggleCondition(item.key)">
+<mat-card class="form-section">
+    <mat-card-header>
+        <mat-card-title class="section-title">
+            <mat-icon class="section-icon">other_houses</mat-icon>
+            Condiciones de Vida
+        </mat-card-title>
+    </mat-card-header>
 
-                <div class="icon-container">
-                    @if (form.get(item.key)?.value) {
-                    <mat-icon>check</mat-icon>
-                    } @else {
-                    <div class="empty-circle"></div>
-                    }
+    <mat-card-content>
+        @if (!loading()) {
+        <form [formGroup]="form" class="condiciones-form">
+            <div class="toggles-grid">
+                @for (item of conditions; track item.key) {
+                <div class="condition-chip" [class.active]="form.get(item.key)?.value" [class.readonly]="isViewMode()"
+                    (click)="toggleCondition(item.key)">
+
+                    <div class="icon-container">
+                        @if (form.get(item.key)?.value) {
+                        <mat-icon>check</mat-icon>
+                        } @else {
+                        <div class="empty-circle"></div>
+                        }
+                    </div>
+                    <span class="label">{{ item.label }}</span>
                 </div>
-                <span class="label">{{ item.label }}</span>
+                }
             </div>
-            }
-        </div>
-
-        @if (!isViewMode()) {
-        <div class="actions">
-            <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading()">
-                <mat-icon>save</mat-icon>
-                Guardar Cambios
-            </button>
+        </form>
+        } @else {
+        <div class="loading-state">
+            <p>Cargando datos...</p>
         </div>
         }
-    </form>
-    } @else {
-    <div class="loading-state">
-        <p>Cargando datos...</p>
-    </div>
+    </mat-card-content>
+
+    @if (!isViewMode()) {
+    <mat-card-actions align="end">
+        <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading() || form.pristine">
+            <mat-icon>save</mat-icon>
+            Guardar Cambios
+        </button>
+    </mat-card-actions>
     }
-</div>
+</mat-card>

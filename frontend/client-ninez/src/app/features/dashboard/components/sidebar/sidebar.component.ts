@@ -13,7 +13,7 @@ import { computed } from '@angular/core';
 	templateUrl: './sidebar.component.html',
 	styleUrls: ['./sidebar.component.scss'],
 	standalone: true,
-	imports: [CommonModule, MatSidenavModule, MatButtonModule, MatIconModule, RouterLink],
+	imports: [CommonModule, MatSidenavModule, MatButtonModule, MatIconModule, RouterLink, RouterLinkActive],
 })
 export class SidebarComponent {
 	private dashboardSidebarService: DashboardSidebarService = inject(DashboardSidebarService);

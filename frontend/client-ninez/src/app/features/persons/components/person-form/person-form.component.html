@@ -22,12 +22,7 @@
 					</p>
 				</div>
 			</div>
-			@if(!isViewMode) {
-			<mat-chip class="mode-chip" *ngIf="!isViewMode">
-				<mat-icon>{{ isCreateMode ? 'add_circle' : 'edit_note' }}</mat-icon>
-				{{ isCreateMode ? 'Modo Creación' : 'Modo Edición' }}
-			</mat-chip>
-			}
+
 		</div>
 	</div>
 
@@ -176,22 +171,18 @@
 									</mat-form-field>
 								</div>
 							</mat-card-content>
+							@if(!isViewMode) {
+							<mat-card-actions align="end">
+								<button mat-raised-button color="primary" type="submit"
+									[disabled]="personForm.invalid || personForm.pristine || loading()">
+									<mat-icon>{{ isCreateMode ? 'add' : 'save' }}</mat-icon>
+									{{ submitButtonText }}
+								</button>
+							</mat-card-actions>
+							}
 						</mat-card>
 
-						<!-- Action Buttons -->
-						<div class="form-actions">
-							@if(!isViewMode) {
-							<button mat-raised-button color="primary" type="submit" class="submit-button"
-								[disabled]="personForm.invalid || loading()">
-								<mat-icon>{{ isCreateMode ? 'add' : 'save' }}</mat-icon>
-								{{ submitButtonText }}
-							</button>
-							}
-							<button mat-stroked-button type="button" class="cancel-button" (click)="onCancel()">
-								<mat-icon>{{ isViewMode ? 'arrow_back' : 'close' }}</mat-icon>
-								{{ isViewMode ? 'Volver' : 'Cancelar' }}
-							</button>
-						</div>
+
 					</form>
 
 					<!-- Ingresos Section -->
@@ -392,6 +383,19 @@
 
 				<div class="tab-content">
 					@if(personDni()) {
+					<!-- Salud General (Moved to top) -->
+					@if(loadingSalud()) {
+					<div class="loading-container">
+						<mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+					</div>
+					} @else {
+					<app-salud-general [salud]="salud()" [isViewMode]="isViewMode" (save)="onUpdateSalud($event)">
+					</app-salud-general>
+					}
+
+					<!-- Divider -->
+					<mat-divider class="section-divider" style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>
+
 					<!-- Escolaridad -->
 					<div class="family-tab-header">
 						<div class="header-info">
@@ -416,18 +420,6 @@
 					<!-- Divider -->
 					<mat-divider class="section-divider" style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>
 
-					<!-- Salud General -->
-					@if(loadingSalud()) {
-					<div class="loading-container">
-						<mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
-					</div>
-					} @else {
-					<app-salud-general [salud]="salud()" [isViewMode]="isViewMode" (save)="onUpdateSalud($event)">
-					</app-salud-general>
-					}
-
-					<!-- Divider -->
-					<mat-divider class="section-divider" style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>
 
 					<!-- Controles Médicos Placeholder -->
 					<!-- Controles Médicos -->
@@ -612,17 +604,7 @@
 			<mat-tab label="Condiciones de Vida">
 				<div class="tab-content">
 					@if(personDni()) {
-					<!-- Condiciones de Vida Section -->
-					<div class="family-tab-header">
-						<div class="header-info">
-							<mat-icon class="header-icon">other_houses</mat-icon>
-							<div>
-								<h2 class="family-title">Condiciones de Vida</h2>
-								<p class="family-subtitle">Información habitacional y del entorno</p>
-							</div>
-						</div>
-					</div>
-
+					<!-- Condiciones de Vida Section (Header removed, internal now) -->
 					<app-condiciones-vida [dni]="personDni()!" [isViewMode]="isViewMode"></app-condiciones-vida>
 
 					<mat-divider class="section-divider" style="margin-top: 30px; margin-bottom: 30px;"></mat-divider>

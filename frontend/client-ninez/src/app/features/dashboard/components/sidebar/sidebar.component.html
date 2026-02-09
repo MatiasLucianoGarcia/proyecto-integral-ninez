@@ -6,7 +6,8 @@
 	<nav class="sidebar-nav">
 		<div class="nav-section">
 			<h3 class="section-title">Principal</h3>
-			<a class="nav-item active" routerLink="/dashboard">
+			<a class="nav-item" routerLink="/dashboard" routerLinkActive="active"
+				[routerLinkActiveOptions]="{exact: true}">
 				<mat-icon class="nav-icon">dashboard</mat-icon>
 				<span class="nav-label">Dashboard</span>
 			</a>
@@ -22,15 +23,16 @@
 				<mat-icon class="nav-icon">assessment</mat-icon>
 				<span class="nav-label">Reportes General</span>
 			</a>
-			<a class="nav-item" routerLink="/reportes/escolaridad">
+			<a class="nav-item" routerLink="/reportes/escolaridad" routerLinkActive="active">
 				<mat-icon class="nav-icon">school</mat-icon>
 				<span class="nav-label">Escolaridad</span>
 			</a>
-			<a class="nav-item" routerLink="/reportes/condiciones-vida">
+			<a class="nav-item" routerLink="/reportes/condiciones-vida" routerLinkActive="active">
 				<mat-icon class="nav-icon">cottage</mat-icon>
 				<span class="nav-label">Condiciones de Vida</span>
 			</a>
-			<a class="nav-item" routerLink="/reportes/derechos-vulnerados" *ngIf="canViewDerechosReport()">
+			<a class="nav-item" routerLink="/reportes/derechos-vulnerados" *ngIf="canViewDerechosReport()"
+				routerLinkActive="active">
 				<mat-icon class="nav-icon">gavel</mat-icon>
 				<span class="nav-label">Derechos Vulnerados</span>
 			</a>
@@ -39,19 +41,19 @@
 
 		<div class="nav-section" *ngIf="isAdmin()">
 			<h3 class="section-title">Administración</h3>
-			<a class="nav-item" routerLink="/admin/usuarios">
+			<a class="nav-item" routerLink="/admin/usuarios" routerLinkActive="active">
 				<mat-icon class="nav-icon">manage_accounts</mat-icon>
 				<span class="nav-label">Usuarios</span>
 			</a>
-			<a class="nav-item" routerLink="/admin/datos-personas">
+			<a class="nav-item" routerLink="/admin/datos-personas" routerLinkActive="active">
 				<mat-icon class="nav-icon">folder_shared</mat-icon>
 				<span class="nav-label">Datos Personas</span>
 			</a>
-			<a class="nav-item" routerLink="/admin/proteccion-promocion">
+			<a class="nav-item" routerLink="/admin/proteccion-promocion" routerLinkActive="active">
 				<mat-icon class="nav-icon">security</mat-icon>
 				<span class="nav-label">Protección y Promoción</span>
 			</a>
-			<a class="nav-item" routerLink="/admin/equipo-local">
+			<a class="nav-item" routerLink="/admin/equipo-local" routerLinkActive="active">
 				<mat-icon class="nav-icon">groups</mat-icon>
 				<span class="nav-label">Equipo Local</span>
 			</a>

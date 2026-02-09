@@ -86,6 +86,7 @@ export class CondicionesVidaComponent {
                     acceso_internet: data.acceso_internet,
                     alimentos_propios: data.alimentos_propios
                 });
+                this.form.markAsPristine();
                 this.loading.set(false);
             },
             error: (err) => {
@@ -102,6 +103,7 @@ export class CondicionesVidaComponent {
         this.condicionesService.updateCondicionesVida(Number(this.dni()), this.form.value).subscribe({
             next: () => {
                 this.snackBar.open('Condiciones de vida actualizadas', 'Cerrar', { duration: 3000 });
+                this.form.markAsPristine();
                 this.loading.set(false);
             },
             error: (err) => {

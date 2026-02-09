@@ -60,29 +60,15 @@ export class SaludGeneralComponent implements OnChanges {
             nombre: data.nombre || '',
             enfermedad_cronica: data.enfermedad_cronica || '',
             tratamiento_prolongado: data.tratamiento_prolongado || '',
-            discapacidad: data.discapacidad || '',
             adicciones: data.adicciones || ''
         });
-    }
-
-    toggleEdit(): void {
-        if (this.isViewMode) return;
-        this.isEditing.set(true);
-    }
-
-    onCancel(): void {
-        this.isEditing.set(false);
-        if (this.salud) {
-            this.updateForm(this.salud);
-        } else {
-            this.saludForm.reset();
-        }
+        this.saludForm.markAsPristine();
     }
 
     onSave(): void {
         if (this.saludForm.valid) {
             this.save.emit(this.saludForm.value);
-            this.isEditing.set(false);
+            this.saludForm.markAsPristine();
         }
     }
 }
