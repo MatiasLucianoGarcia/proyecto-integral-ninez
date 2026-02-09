@@ -6,7 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
     selector: 'app-drill-down-dialog',
@@ -28,7 +28,8 @@ export class DrillDownDialogComponent implements OnInit {
 
     constructor(
         public dialogRef: MatDialogRef<DrillDownDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { title: string, people: any[] }
+        @Inject(MAT_DIALOG_DATA) public data: { title: string, people: any[] },
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -39,5 +40,10 @@ export class DrillDownDialogComponent implements OnInit {
     }
 
     verPersona(id: number): void {
+    }
+
+    navigateToPerson(mode: string, dni: number): void {
+        this.dialogRef.close();
+        this.router.navigate(['/person-form'], { queryParams: { mode, dni } });
     }
 }
