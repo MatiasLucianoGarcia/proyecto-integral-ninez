@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -43,7 +44,7 @@ export interface ReporteCondicionesVidaResponse {
 export class ReportesService {
     private http = inject(HttpClient);
     // Asumimos que environment.apiUrl está definido, si no usaremos path relativo o hardcoded por ahora para asegurar
-    private apiUrl = 'http://localhost:8080/api';
+    private apiUrl = environment.apiUrl;
 
     getReporteEscolaridad(anio: number, minEdad: number = 0, maxEdad: number = 100, generos: string[] = [], nacionalidades: string[] = []): Observable<ReporteEscolaridadResponse> {
         let params = `?anio=${anio}&minEdad=${minEdad}&maxEdad=${maxEdad}`;

@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -10,9 +11,9 @@ export class ServicioLocalService {
     private http = inject(HttpClient);
 
     // Base URLs
-    private apiUrl = 'http://localhost:8080/api/servicioLocal';
-    private equipoUrl = 'http://localhost:8080/api/equipoLocal';
-    private derechoUrl = 'http://localhost:8080/api/derechoVulnerado';
+    private apiUrl = environment.apiUrl + '/servicioLocal';
+    private equipoUrl = environment.apiUrl + '/equipoLocal';
+    private derechoUrl = environment.apiUrl + '/derechoVulnerado';
 
     getServiciosLocalesByDni(dni: number): Observable<ServicioLocal[]> {
         return this.http.get<ServicioLocal[]>(`${this.apiUrl}/dni/${dni}`);

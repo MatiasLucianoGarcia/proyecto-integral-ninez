@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -8,7 +9,7 @@ import { Escolaridad } from '../domain/escolaridad.model';
 })
 export class EscolaridadService {
     private http: HttpClient = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/escolaridades';
+    private apiUrl = environment.apiUrl + '/escolaridades';
 
     constructor() { }
 

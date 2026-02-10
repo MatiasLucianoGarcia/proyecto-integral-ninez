@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,7 +9,7 @@ import { Salud } from '../domain/salud.model';
 })
 export class SaludService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/salud';
+    private apiUrl = environment.apiUrl + '/salud';
 
     getSalud(dni: number): Observable<Salud> {
         return this.http.get<Salud>(`${this.apiUrl}/${dni}`);

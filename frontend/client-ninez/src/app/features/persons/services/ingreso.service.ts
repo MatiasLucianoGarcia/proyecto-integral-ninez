@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -8,7 +9,7 @@ import { Ingreso, CreateIngreso } from '../domain/ingreso.model';
 })
 export class IngresoService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/ingreso';
+    private apiUrl = environment.apiUrl + '/ingreso';
 
     getAllIngresos(): Observable<Ingreso[]> {
         return this.http.get<Ingreso[]>(this.apiUrl);

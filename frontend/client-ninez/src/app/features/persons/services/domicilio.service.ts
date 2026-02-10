@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -8,7 +9,7 @@ import { CreateDomicilio, Domicilio } from '../domain/domicilio.model';
 })
 export class DomicilioService {
     private http: HttpClient = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/domicilios';
+    private apiUrl = environment.apiUrl + '/domicilios';
 
     constructor() { }
 

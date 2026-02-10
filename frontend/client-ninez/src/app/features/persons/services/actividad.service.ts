@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -7,7 +8,7 @@ import { Actividad } from '../domain/actividad.model';
     providedIn: 'root'
 })
 export class ActividadService {
-    private apiUrl = 'http://localhost:8080/api/actividad';
+    private apiUrl = environment.apiUrl + '/actividad';
 
     constructor(private http: HttpClient) { }
 

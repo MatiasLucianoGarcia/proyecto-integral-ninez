@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
@@ -11,7 +12,7 @@ export class GenderService {
   constructor() { }
 
   getAllGenders() {
-    return this.http.get('http://localhost:8080/api/generos');
+    return this.http.get(environment.apiUrl + '/generos');
   }
 
 }

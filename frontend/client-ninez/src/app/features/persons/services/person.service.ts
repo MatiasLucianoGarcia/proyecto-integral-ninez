@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Persona } from '../domain';
@@ -12,33 +13,33 @@ export class PersonService {
 	constructor() { }
 
 	getPersons(): Observable<Persona[]> {
-		return this.http.get<Persona[]>('http://localhost:8080/api/personas');
+		return this.http.get<Persona[]>(environment.apiUrl + '/personas');
 	}
 
 	getPersonByDNI(dni: string): Observable<Persona> {
-		return this.http.get<Persona>(`http://localhost:8080/api/personas/${dni}`);
+		return this.http.get<Persona>(`${environment.apiUrl}/personas/${dni}`);
 	}
 
 	searchPersons(dni?: string, nombre?: string): Observable<Persona[]> {
-		return this.http.post<Persona[]>('http://localhost:8080/api/personas/search', {
+		return this.http.post<Persona[]>(environment.apiUrl + '/personas/search', {
 			...(dni ? { dni } : {}),
 			...(nombre ? { nombre } : {}),
 		});
 	}
 
 	createPerson(person: Partial<Persona>): Observable<Persona> {
-		return this.http.post<Persona>('http://localhost:8080/api/personas', person);
+		return this.http.post<Persona>(environment.apiUrl + '/personas', person);
 	}
 
 	updatePerson(dni: number, person: Partial<Persona>): Observable<Persona> {
-		return this.http.put<Persona>(`http://localhost:8080/api/personas/${dni}`, person);
+		return this.http.put<Persona>(`${environment.apiUrl}/personas/${dni}`, person);
 	}
 
 	getGeneros(): Observable<any[]> {
-		return this.http.get<any[]>('http://localhost:8080/api/generos');
+		return this.http.get<any[]>(environment.apiUrl + '/generos');
 	}
 
 	getNacionalidades(): Observable<any[]> {
-		return this.http.get<any[]>('http://localhost:8080/api/nacionalidades');
+		return this.http.get<any[]>(environment.apiUrl + '/nacionalidades');
 	}
 }

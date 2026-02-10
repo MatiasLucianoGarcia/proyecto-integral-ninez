@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -7,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ProfileService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/usuarios';
+    private apiUrl = environment.apiUrl + '/usuarios';
 
     updatePassword(password: string): Observable<any> {
         return this.http.put(`${this.apiUrl}/perfil/clave`, { contraseña: password });

@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { HojaRuta, CreateHojaRuta } from '../domain/hoja-ruta.model';
 })
 export class HojaRutaService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/hojaRuta';
+    private apiUrl = environment.apiUrl + '/hojaRuta';
 
     getHojasRutaByDni(dni: number): Observable<HojaRuta[]> {
         return this.http.get<HojaRuta[]>(`${this.apiUrl}/dni/${dni}`);

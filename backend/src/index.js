@@ -81,6 +81,11 @@ app.get('/', (req, res) => {
   res.send('Servidor funcionando');
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor en http://localhost:${PORT}`);
-});
+// Only start server if run directly (local dev), otherwise export for Vercel
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

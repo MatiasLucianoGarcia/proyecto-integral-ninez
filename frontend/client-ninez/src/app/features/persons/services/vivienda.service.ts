@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -8,8 +9,8 @@ import { CreateVivienda, TipoVivienda, Vivienda } from '../domain/vivienda.model
 })
 export class ViviendaService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/vivienda';
-    private tipoUrl = 'http://localhost:8080/api/tipoVivienda';
+    private apiUrl = environment.apiUrl + '/vivienda';
+    private tipoUrl = environment.apiUrl + '/tipoVivienda';
 
     getViviendasByDni(dni: number): Observable<Vivienda[]> {
         return this.http.get<Vivienda[]>(`${this.apiUrl}/${dni}`);

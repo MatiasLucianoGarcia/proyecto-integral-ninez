@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -8,7 +9,7 @@ import { FamilyMember, CreateFamilyMember, Parentezco } from '../domain/familia.
 })
 export class FamilyService {
 	private http = inject(HttpClient);
-	private apiUrl = 'http://localhost:8080/api';
+	private apiUrl = environment.apiUrl;
 
 	getFamilyByDNI(dni: number): Observable<FamilyMember[]> {
 		return this.http.get<FamilyMember[]>(`${this.apiUrl}/familia/${dni}`);

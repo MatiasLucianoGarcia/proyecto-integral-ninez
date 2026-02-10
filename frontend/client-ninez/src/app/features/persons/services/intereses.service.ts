@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -7,7 +8,7 @@ import { Intereses } from '../domain/intereses.model';
     providedIn: 'root'
 })
 export class InteresesService {
-    private apiUrl = 'http://localhost:8080/api/intereses';
+    private apiUrl = environment.apiUrl + '/intereses';
 
     constructor(private http: HttpClient) { }
 

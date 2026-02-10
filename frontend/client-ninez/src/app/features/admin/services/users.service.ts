@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { User } from '../../login/domain/user';
 export class UsersService {
     private http = inject(HttpClient);
     // Using localhost:8080 as verified in .env
-    private apiUrl = 'http://localhost:8080/api/usuarios';
+    private apiUrl = environment.apiUrl + '/usuarios';
 
     constructor() { }
 

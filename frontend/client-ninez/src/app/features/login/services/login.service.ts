@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { delay, Observable, of, tap, throwError } from 'rxjs';
@@ -13,7 +14,7 @@ export class LoginService {
 	private userDataService = inject(UserDataService);
 
 	login(nombre: string, contraseña: string): Observable<UserSessionsDTO> {
-		return this.http.post<UserSessionsDTO>('http://localhost:8080/api/auth/login', { nombre, contraseña }).pipe(
+		return this.http.post<UserSessionsDTO>(environment.apiUrl + '/auth/login', { nombre, contraseña }).pipe(
 			tap((res) => {
 				this.userDataService.setUser(res);
 			}),

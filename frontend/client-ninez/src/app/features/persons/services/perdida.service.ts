@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -7,7 +8,7 @@ import { Perdida } from '../domain/perdida.model';
     providedIn: 'root'
 })
 export class PerdidaService {
-    private apiUrl = 'http://localhost:8080/api/perdida';
+    private apiUrl = environment.apiUrl + '/perdida';
 
     constructor(private http: HttpClient) { }
 

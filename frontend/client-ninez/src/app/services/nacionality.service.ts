@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
@@ -11,6 +12,6 @@ export class NacionalityService {
   constructor() { }
 
   getAllNationalities() {
-    return this.http.get('http://localhost:8080/api/nacionalidades');
+    return this.http.get(environment.apiUrl + '/nacionalidades');
   }
 }

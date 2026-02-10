@@ -1,3 +1,4 @@
+import { environment } from '@env/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { ControlMedico } from '../domain/control-medico.model';
 export class ControlMedicoService {
     private http = inject(HttpClient);
     // Using hardcoded URL as per project standard
-    private apiUrl = 'http://localhost:8080/api/controlMedico';
+    private apiUrl = environment.apiUrl + '/controlMedico';
 
     getControles(dni: number): Observable<ControlMedico[]> {
         return this.http.get<ControlMedico[]>(`${this.apiUrl}/${dni}`);
