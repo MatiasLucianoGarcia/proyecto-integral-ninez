@@ -26,13 +26,13 @@ import { DashboardSidebarService } from '../../services/dashboard-sidebar.servic
         SidebarComponent
     ],
     template: `
+    <app-nav-bar (menuClick)="toggleSidebar()"></app-nav-bar>
     <mat-drawer-container class="dashboard-container" autosize>
-        <mat-drawer #drawer [opened]="showSidebar()" mode="side">
+        <mat-drawer #drawer class="dashboard-sidenav" [opened]="showSidebar()" mode="side">
             <app-sidebar></app-sidebar>
         </mat-drawer>
 
         <div class="page-content-wrapper">
-             <app-nav-bar></app-nav-bar>
              
              <div class="scrollable-content">
                 <!-- Hero Header -->
@@ -277,9 +277,19 @@ import { DashboardSidebarService } from '../../services/dashboard-sidebar.servic
   `,
     styles: [`
     .dashboard-container {
-        height: 100vh;
+        height: calc(100vh - 64px); /* Subtract navbar height */
         width: 100%;
         background-color: #f8fafc;
+    }
+    
+    .dashboard-sidenav {
+        width: 280px;
+        max-width: 280px;
+        min-width: 280px;
+        background-color: #ffffff; /* Using explicit white or variable if available */
+        border-right: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        overflow-y: auto;
     }
 
     .page-content-wrapper {
@@ -515,7 +525,13 @@ import { DashboardSidebarService } from '../../services/dashboard-sidebar.servic
 export class HelpPageComponent {
     private userDataService = inject(UserDataService);
     private dashboardSidebarService = inject(DashboardSidebarService);
-    showSidebar = this.dashboardSidebarService.getInfo();
+    showSidebar() {
+        return this.dashboardSidebarService.getInfo()();
+    }
+
+    toggleSidebar() {
+        this.dashboardSidebarService.setInfo(!this.dashboardSidebarService.getInfo()());
+    }
 
     userRole: string = '';
 
