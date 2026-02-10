@@ -90,4 +90,8 @@ export class ReportesService {
     obtenerDetalle(payload: { tipo: string, anio?: number, filtros: any }): Observable<any[]> {
         return this.http.post<any[]>(`${this.apiUrl}/reportes/detalle`, payload);
     }
+
+    getAlertas(minEdad: number = 0, maxEdad: number = 21): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/reportes/alertas?minEdad=${minEdad}&maxEdad=${maxEdad}`);
+    }
 }

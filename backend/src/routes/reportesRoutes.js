@@ -10,5 +10,6 @@ router.get('/condiciones-vida', reportesController.getReporteCondicionesVida);
 router.post('/detalle', reportesController.getReporteDetalle);
 router.get('/derechos-vulnerados', reportesController.getReporteDerechosVulnerados);
 router.get('/derechos-vulnerados/anios', reportesController.getAniosDerechosVulnerados);
+router.get('/alertas', reportesController.getAlertas);
 
 module.exports = router;

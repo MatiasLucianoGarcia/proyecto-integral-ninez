@@ -539,6 +539,139 @@ function formatDerechoGroupResult(g) {
 
 // --- Función para obtener detalle de personas (Drill-down) ---
 const obtenerDetallePersonas = async ({ tipo, anio, filtros }) => {
+    // --- NUEVO: Lógica para Alertas ---
+    if (tipo && tipo.startsWith('ALERTA_')) {
+        const resultados = [];
+
+        // Fetch Personas Basic Data needed for all alerts
+        const { data: personas, error: errP } = await supabase
+            .from('persona')
+            .select(`
+                dni, fecha_nacimiento, nombre, apellido,
+                generoObj:genero(nombre),
+                nacionalidadObj:nacionalidad(nombre)
+            `);
+        if (errP) throw errP;
+
+        if (tipo === 'ALERTA_SIN_FAMILIA') {
+            const min = filtros.minEdad ? parseInt(filtros.minEdad) : 0;
+            const max = filtros.maxEdad ? parseInt(filtros.maxEdad) : 21;
+
+            const { data: familias } = await supabase.from('familia').select('dni_origen, dni_destino');
+            const dnisConFamilia = new Set();
+            familias?.forEach(f => {
+                dnisConFamilia.add(f.dni_origen);
+                dnisConFamilia.add(f.dni_destino);
+            });
+
+            personas.forEach(p => {
+                if (!p.fecha_nacimiento) return;
+                const edad = _calcularEdad(new Date(p.fecha_nacimiento));
+                if (edad < min || edad > max) return;
+
+                if (!dnisConFamilia.has(p.dni)) {
+                    resultados.push({
+                        nombre: p.nombre, apellido: p.apellido, dni: p.dni, edad,
+                        genero: p.generoObj?.nombre, nacionalidad: p.nacionalidadObj?.nombre,
+                        info_adicional: 'Sin vínculos familiares registrados'
+                    });
+                }
+            });
+        }
+        else if (tipo === 'ALERTA_SIN_MOVIMIENTOS') {
+            const min = filtros.minEdad ? parseInt(filtros.minEdad) : 0;
+            const max = filtros.maxEdad ? parseInt(filtros.maxEdad) : 21;
+
+            const hace15dias = new Date();
+            hace15dias.setDate(hace15dias.getDate() - 15);
+
+            const { data: servicios } = await supabase
+                .from('servicio_local')
+                .select('id, dni, fecha_ingreso, hoja_ruta(fecha)');
+
+            const dniStuck = new Set();
+
+            servicios?.forEach(s => {
+                let ultimaFecha = s.fecha_ingreso ? new Date(s.fecha_ingreso) : null;
+                if (s.hoja_ruta && s.hoja_ruta.length > 0) {
+                    const fechas = s.hoja_ruta.map(h => new Date(h.fecha));
+                    const maxFecha = new Date(Math.max.apply(null, fechas));
+                    if (ultimaFecha === null || maxFecha > ultimaFecha) ultimaFecha = maxFecha;
+                }
+
+                if (!ultimaFecha || ultimaFecha < hace15dias) {
+                    dniStuck.add(s.dni);
+                }
+            });
+
+            personas.forEach(p => {
+                if (!dniStuck.has(p.dni)) return;
+
+                if (!p.fecha_nacimiento) return;
+                const edad = _calcularEdad(new Date(p.fecha_nacimiento));
+                if (edad < min || edad > max) return;
+
+                resultados.push({
+                    nombre: p.nombre, apellido: p.apellido, dni: p.dni,
+                    edad,
+                    genero: p.generoObj?.nombre, nacionalidad: p.nacionalidadObj?.nombre,
+                    info_adicional: 'Sin movimientos en Servicio Local > 15 días'
+                });
+            });
+        }
+        else if (tipo === 'ALERTA_DESACTUALIZADOS') {
+            const min = filtros.minEdad ? parseInt(filtros.minEdad) : 0;
+            const max = filtros.maxEdad ? parseInt(filtros.maxEdad) : 21;
+
+            const hace15dias = new Date(); // Unused here but kept for variable consistency if needed
+            const hace1anio = new Date();
+            hace1anio.setFullYear(hace1anio.getFullYear() - 1);
+
+            const { data: controles } = await supabase.from('control_medico').select('dni, fecha_real');
+            const { data: escolaridad } = await supabase.from('escolaridad').select('dni, fecha_real, fecha_carga');
+
+            const mapSalud = new Map();
+            controles?.forEach(c => {
+                const f = new Date(c.fecha_real);
+                if (!mapSalud.has(c.dni) || f > mapSalud.get(c.dni)) mapSalud.set(c.dni, f);
+            });
+
+            const mapEducacion = new Map();
+            escolaridad?.forEach(e => {
+                const f = e.fecha_real ? new Date(e.fecha_real) : new Date(e.fecha_carga);
+                if (!mapEducacion.has(e.dni) || f > mapEducacion.get(e.dni)) mapEducacion.set(e.dni, f);
+            });
+
+            personas.forEach(p => {
+                if (!p.fecha_nacimiento) return;
+                const edad = _calcularEdad(new Date(p.fecha_nacimiento));
+                if (edad < min || edad > max) return;
+
+                let fechaSalud = mapSalud.get(p.dni);
+                let fechaEduc = mapEducacion.get(p.dni);
+
+                const saludOk = fechaSalud && fechaSalud >= hace1anio;
+                const educOk = fechaEduc && fechaEduc >= hace1anio;
+
+                if (!saludOk || !educOk) {
+                    let motivos = [];
+                    if (!saludOk) motivos.push('Salud');
+                    if (!educOk) motivos.push('Educación');
+
+                    resultados.push({
+                        nombre: p.nombre, apellido: p.apellido, dni: p.dni,
+                        edad,
+                        genero: p.generoObj?.nombre, nacionalidad: p.nacionalidadObj?.nombre,
+                        info_adicional: `Datos desactualizados: ${motivos.join(', ')}`
+                    });
+                }
+            });
+        }
+
+        return resultados.sort((a, b) => a.apellido.localeCompare(b.apellido));
+    }
+
+    // --- ESTANDAR ---
     if (tipo === 'DERECHOS_VULNERADOS') {
         const anioNum = parseInt(anio, 10);
         const start = `${anioNum}-01-01T00:00:00`;
@@ -785,11 +918,137 @@ const obtenerAniosDerechosVulnerados = async () => {
     return Array.from(aniosSet).sort((a, b) => b - a);
 };
 
+const obtenerAlertas = async ({ minEdad = 0, maxEdad = 21 }) => {
+    const min = parseInt(minEdad, 10);
+    const max = parseInt(maxEdad, 10);
+    const fechaActual = new Date();
+    const hace15dias = new Date();
+    hace15dias.setDate(hace15dias.getDate() - 15);
+    const hace1anio = new Date();
+    hace1anio.setFullYear(hace1anio.getFullYear() - 1);
+
+    // --- ALERTA 1: Personas sin Familia ---
+    const { data: personas, error: errP } = await supabase
+        .from('persona')
+        .select('dni, fecha_nacimiento, nombre, apellido');
+
+    if (errP) throw errP;
+
+    const { data: familias, error: errF } = await supabase
+        .from('familia')
+        .select('dni_origen, dni_destino');
+
+    if (errF) throw errF;
+
+    const dnisConFamilia = new Set();
+    familias.forEach(f => {
+        dnisConFamilia.add(f.dni_origen);
+        dnisConFamilia.add(f.dni_destino);
+    });
+
+    let countSinFamilia = 0;
+    personas.forEach(p => {
+        if (!p.fecha_nacimiento) return;
+        const edad = _calcularEdad(new Date(p.fecha_nacimiento));
+        if (edad < min || edad > max) return;
+
+        if (!dnisConFamilia.has(p.dni)) {
+            countSinFamilia++;
+        }
+    });
+
+    // --- ALERTA 2: Sin Movimientos en 15 dias ---
+    const { data: servicios, error: errS } = await supabase
+        .from('servicio_local')
+        .select(`
+            id, 
+            dni, 
+            fecha_ingreso, 
+            hoja_ruta(fecha),
+            persona:dni(fecha_nacimiento)
+        `);
+
+    if (errS) throw errS;
+
+    let countSinMovimientos = 0;
+    servicios.forEach(s => {
+        // Filtro de edad
+        if (!s.persona || !s.persona.fecha_nacimiento) return;
+        const edad = _calcularEdad(new Date(s.persona.fecha_nacimiento));
+        if (edad < min || edad > max) return;
+
+        let ultimaFecha = s.fecha_ingreso ? new Date(s.fecha_ingreso) : null;
+
+        if (s.hoja_ruta && s.hoja_ruta.length > 0) {
+            const fechas = s.hoja_ruta.map(h => new Date(h.fecha));
+            const maxFecha = new Date(Math.max.apply(null, fechas));
+            if (ultimaFecha === null || maxFecha > ultimaFecha) {
+                ultimaFecha = maxFecha;
+            }
+        }
+
+        // Si no tiene fechas (ultimaFecha es null) O la última fecha es vieja
+        if (!ultimaFecha || ultimaFecha < hace15dias) {
+            countSinMovimientos++;
+        }
+    });
+
+    // --- ALERTA 3: Desactualizados ---
+    const { data: controles } = await supabase.from('control_medico').select('dni, fecha_real');
+    const { data: escolaridad } = await supabase.from('escolaridad').select('dni, fecha_real, fecha_carga');
+
+    const mapSalud = new Map();
+    controles?.forEach(c => {
+        const f = new Date(c.fecha_real);
+        if (!mapSalud.has(c.dni) || f > mapSalud.get(c.dni)) mapSalud.set(c.dni, f);
+    });
+
+    const mapEducacion = new Map();
+    escolaridad?.forEach(e => {
+        const f = e.fecha_real ? new Date(e.fecha_real) : new Date(e.fecha_carga);
+        if (!mapEducacion.has(e.dni) || f > mapEducacion.get(e.dni)) mapEducacion.set(e.dni, f);
+    });
+
+    let countDesactualizados = 0;
+    personas.forEach(p => {
+        if (!p.fecha_nacimiento) return;
+        const edad = _calcularEdad(new Date(p.fecha_nacimiento));
+        if (edad < min || edad > max) return;
+
+        let fechaSalud = mapSalud.get(p.dni);
+        let fechaEduc = mapEducacion.get(p.dni);
+
+        const saludOk = fechaSalud && fechaSalud >= hace1anio;
+        const educOk = fechaEduc && fechaEduc >= hace1anio;
+
+        if (!saludOk || !educOk) {
+            countDesactualizados++;
+        }
+    });
+
+    return {
+        sin_familia: countSinFamilia,
+        sin_movimientos: countSinMovimientos,
+        desactualizados: countDesactualizados
+    };
+};
+
+function _calcularEdad(fechaNac) {
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const m = hoy.getMonth() - fechaNac.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < fechaNac.getDate())) {
+        edad--;
+    }
+    return edad;
+}
+
 module.exports = {
     obtenerReporteEscolaridad,
     obtenerAniosDisponibles,
     obtenerReporteCondicionesVida,
     obtenerReporteDerechosVulnerados,
     obtenerDetallePersonas,
-    obtenerAniosDerechosVulnerados
+    obtenerAniosDerechosVulnerados,
+    obtenerAlertas
 };

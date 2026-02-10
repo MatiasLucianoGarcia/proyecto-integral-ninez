@@ -13,10 +13,10 @@
 		</div>
 
 		<div class="navbar-right">
-			<button mat-icon-button class="notification-button" aria-label="Notificaciones">
+			<!-- <button mat-icon-button class="notification-button" aria-label="Notificaciones">
 				<mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small"
 					aria-hidden="false">notifications</mat-icon>
-			</button>
+			</button> -->
 
 			<button mat-icon-button class="account-button" aria-label="Menú de usuario" [matMenuTriggerFor]="userMenu">
 				<mat-icon>account_circle</mat-icon>
@@ -37,10 +37,7 @@
 			<mat-icon>person</mat-icon>
 			<span>Mi Perfil</span>
 		</button>
-		<button mat-menu-item>
-			<mat-icon>settings</mat-icon>
-			<span>Configuración</span>
-		</button>
+
 		<mat-divider></mat-divider>
 		<button mat-menu-item (click)="logout()" class="logout-item">
 			<mat-icon>logout</mat-icon>

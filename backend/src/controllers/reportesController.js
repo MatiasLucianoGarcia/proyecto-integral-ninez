@@ -118,11 +118,26 @@ const getAniosDerechosVulnerados = async (req, res, next) => {
     }
 };
 
+const getAlertas = async (req, res) => {
+    try {
+        const { minEdad, maxEdad } = req.query;
+        const alertas = await reportesService.obtenerAlertas({
+            minEdad: minEdad ? parseInt(minEdad) : undefined,
+            maxEdad: maxEdad ? parseInt(maxEdad) : undefined
+        });
+        res.json(alertas);
+    } catch (error) {
+        console.error('Error al obtener alertas:', error);
+        res.status(500).json({ message: error.message || 'Error al obtener alertas' });
+    }
+};
+
 module.exports = {
     getReporteEscolaridad,
     getAniosDisponibles,
     getReporteCondicionesVida,
     getReporteDetalle,
     getReporteDerechosVulnerados,
-    getAniosDerechosVulnerados
+    getAniosDerechosVulnerados,
+    getAlertas
 };
