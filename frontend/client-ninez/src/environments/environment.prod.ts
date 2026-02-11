@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://backend-ninez.vercel.app/api' // Placeholder, user will update this
+    apiUrl: 'https://bbsin-api.vercel.app/api'
 };
