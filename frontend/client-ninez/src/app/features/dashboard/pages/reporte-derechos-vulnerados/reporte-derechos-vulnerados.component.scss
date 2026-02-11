@@ -392,3 +392,29 @@ $radius: 16px;
     justify-content: center;
     align-items: center;
 }
+
+/* Global override for report tabs */
+::ng-deep {
+
+    .mat-mdc-tab .mdc-tab__text-label,
+    .mat-mdc-tab .mdc-tab__content,
+    .mat-mdc-tab,
+    .mat-mdc-tab-link {
+        color: #000000 !important;
+        opacity: 1 !important;
+    }
+
+    .mat-mdc-tab .mdc-tab__text-label .mat-icon {
+        color: #000000 !important;
+    }
+
+    .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label,
+    .mat-mdc-tab.mdc-tab--active .mdc-tab__content {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+
+    .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label .mat-icon {
+        color: var(--primary-color) !important;
+    }
+}

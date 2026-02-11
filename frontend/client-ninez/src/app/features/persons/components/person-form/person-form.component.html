@@ -457,7 +457,11 @@
 			</mat-tab>
 
 			<!-- Tab 4: Datos Importantes -->
-			<mat-tab label="Datos Importantes">
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<mat-icon class="tab-icon">assignment</mat-icon>
+					Datos Importantes
+				</ng-template>
 				<div class="tab-content">
 					@if(personDni()) {
 					<!-- Trabajo -->
@@ -556,7 +560,11 @@
 			</mat-tab>
 
 			<!-- Tab 5: Articulaciones -->
-			<mat-tab label="Articulaciones">
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<mat-icon class="tab-icon">hub</mat-icon>
+					Articulaciones
+				</ng-template>
 				<div class="tab-content">
 					@if(personDni()) {
 					<!-- Header moved inside if -->
@@ -601,7 +609,11 @@
 			</mat-tab>
 
 			<!-- Tab 6: Condiciones de Vida -->
-			<mat-tab label="Condiciones de Vida">
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<mat-icon class="tab-icon">home_work</mat-icon>
+					Condiciones de Vida
+				</ng-template>
 				<div class="tab-content">
 					@if(personDni()) {
 					<!-- Condiciones de Vida Section (Header removed, internal now) -->
@@ -651,7 +663,11 @@
 
 			<!-- Tab 7: Servicio Local (Restricted) -->
 			@if(canViewServicioLocal) {
-			<mat-tab label="Servicio Local">
+			<mat-tab>
+				<ng-template mat-tab-label>
+					<mat-icon class="tab-icon">security</mat-icon>
+					Servicio Local
+				</ng-template>
 				<div class="tab-content">
 					@if(personDni()) {
 

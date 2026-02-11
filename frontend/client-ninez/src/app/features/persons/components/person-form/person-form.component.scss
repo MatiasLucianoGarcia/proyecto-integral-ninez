@@ -301,35 +301,32 @@
 			box-shadow: var(--shadow-sm);
 		}
 
-		.mat-mdc-tab-label {
-			min-width: 100px;
-			height: 64px;
-			padding: 0 var(--spacing-md);
-			font-weight: 500;
-			color: var(--text-secondary);
-			opacity: 1;
+		/* Global override for these tabs specifically */
+		.mat-mdc-tab .mdc-tab__text-label,
+		.mat-mdc-tab .mdc-tab__content,
+		.mat-mdc-tab,
+		.mat-mdc-tab-link {
+			color: #000000 !important;
+			/* Force pure black for ALL states */
+			opacity: 1 !important;
+		}
 
-			.tab-icon {
-				margin-right: var(--spacing-sm);
-			}
+		/* Ensure icons are also black unless active */
+		.mat-mdc-tab .mdc-tab__text-label .mat-icon {
+			color: #000000 !important;
+		}
 
-			.family-count {
-				margin-left: var(--spacing-xs);
-				padding: 2px var(--spacing-xs);
-				background-color: var(--primary-color);
-				color: var(--text-light);
-				border-radius: var(--radius-full);
-				font-size: 0.75rem;
-				font-weight: 600;
-			}
+		/* Active state can use primary color if desired, or keep black */
+		.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label,
+		.mat-mdc-tab.mdc-tab--active .mdc-tab__content {
+			color: #000000 !important;
+			/* Keep black even when active */
+			font-weight: 700 !important;
+		}
 
-			&.mdc-tab--active {
-				color: var(--primary-color);
-
-				.mat-icon {
-					color: var(--primary-color);
-				}
-			}
+		/* Active icon color */
+		.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label .mat-icon {
+			color: var(--primary-color) !important;
 		}
 
 		.mat-mdc-tab-body-wrapper {

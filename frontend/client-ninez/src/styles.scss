@@ -290,3 +290,61 @@ button[disabled],
 	max-height: none !important;
 	overflow: visible !important;
 }
+
+/* ==========================================================================
+   Global Input Style Overrides (MDC Web based Angular Material)
+   ========================================================================== */
+
+/* 1. Input Text & Select Value - Pure Black */
+.mdc-text-field__input,
+.mat-mdc-select-value,
+.mat-mdc-select-value-text {
+	color: #000000 !important;
+	-webkit-text-fill-color: #000000 !important;
+	/* For Safari/Chrome autofill */
+}
+
+/* 2. Floating Label (when text is present or focused) - Dark Gray */
+.mdc-floating-label,
+.mat-mdc-floating-label {
+	color: #334155 !important;
+	/* Slate 700 */
+	font-weight: 500 !important;
+}
+
+/* Restore primary color (celeste) for label when focused */
+.mat-mdc-form-field.mat-focused .mdc-floating-label,
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+	/* User requested specific cyan: rgb(0, 221, 221) */
+	color: rgb(0, 221, 221) !important;
+}
+
+/* 3. Placeholder (when empty) - Dark Gray */
+::placeholder,
+.mat-mdc-input-element::placeholder {
+	color: #475569 !important;
+	/* Slate 600 */
+	/* Removed opacity: 1 !important to allow Material to hide placeholder when label is shown */
+	-webkit-text-fill-color: #475569 !important;
+}
+
+/* 4. Form Field General Overrides */
+.mat-mdc-form-field {
+	/* Override internal Material variables if possible */
+	--mat-mdc-form-field-floating-label-color: #334155;
+	--mat-mdc-form-field-focus-label-color: #1e293b;
+	--mdc-filled-text-field-input-text-color: #000000;
+	--mdc-outlined-text-field-input-text-color: #000000;
+}
+
+/* 5. Datepicker Toggle Icon */
+.mat-datepicker-toggle {
+	color: #475569 !important;
+}
+
+/* 6. Fix for disabled inputs to still be readable but distinct */
+.mat-mdc-form-field-disabled .mdc-text-field__input,
+.mat-mdc-form-field-disabled .mat-mdc-select-value {
+	color: rgba(0, 0, 0, 0.6) !important;
+	-webkit-text-fill-color: rgba(0, 0, 0, 0.6) !important;
+}
