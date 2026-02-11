@@ -1,4 +1,3 @@
-
 .table-container {
     max-height: 400px;
     overflow: auto;
@@ -11,6 +10,31 @@ table {
 
 h2 {
     font-family: 'Outfit', sans-serif;
-    color: #1a237e;
+    /* Color removed to inherit global white from dialog header */
     font-weight: 500;
+}
+
+/* Force Table Styles for Light Theme inside Dialog */
+table {
+    width: 100%;
+    background-color: #ffffff !important;
+}
+
+.mat-mdc-table {
+    background-color: #ffffff !important;
+}
+
+.mat-mdc-header-cell {
+    color: #000000 !important;
+    font-weight: 600 !important;
+    background-color: #ffffff !important;
+}
+
+.mat-mdc-cell {
+    color: #000000 !important;
+}
+
+/* Row Hover Effect */
+.mat-mdc-row:hover {
+    background-color: #f8fafc !important;
 }

@@ -201,9 +201,90 @@ button[disabled],
 }
 
 /* Custom Dialog Container overrides */
-.custom-dialog-container .mat-mdc-dialog-container {
+.custom-dialog-container .mat-mdc-dialog-container,
+.mat-mdc-dialog-container {
+	/* Fix for "white square behind rounded dialog" */
+	--mdc-dialog-container-color: transparent !important;
+	--mdc-dialog-container-elevation-shadow: none !important;
+	box-shadow: none !important;
+	background-color: transparent !important;
 	padding: 0 !important;
-	overflow: visible !important;
+	overflow: hidden !important;
+	border-radius: 12px !important;
+}
+
+/* Apply the actual background and radius to the surface */
+.mdc-dialog__surface {
+	background-color: #ffffff !important;
+	border-radius: 12px !important;
+	overflow: hidden !important;
+	box-shadow: var(--shadow-xl) !important;
+}
+
+/* Dialog Title / Header */
+.mat-mdc-dialog-title,
+[mat-dialog-title] {
+	background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(30, 64, 175) 100%) !important;
+	color: #ffffff !important;
+	padding: 16px 24px !important;
+	margin: 0 !important;
+	font-size: 1.25rem !important;
+	font-weight: 500 !important;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+	/* Ensure icons in title are also white */
+	mat-icon {
+		color: #ffffff !important;
+	}
+}
+
+/* Dialog Content */
+.mat-mdc-dialog-content,
+[mat-dialog-content] {
+	padding: 24px !important;
+	background-color: #ffffff !important;
+	color: var(--text-primary) !important;
+	max-height: 70vh !important;
+	overflow-y: auto !important;
+}
+
+/* Dialog Actions */
+.mat-mdc-dialog-actions,
+[mat-dialog-actions] {
+	padding: 16px 24px !important;
+	background-color: #f8fafc !important;
+	/* Light gray footer for contrast */
+	border-top: 1px solid var(--border-color);
+	gap: 12px;
+	margin: 0 !important;
+	min-height: auto !important;
+	display: flex;
+	justify-content: flex-end;
+
+	/* Improve Cancel Button Style (mat-button) inside dialogs */
+	button[mat-button],
+	button[mat-stroked-button] {
+		color: var(--text-secondary) !important;
+		border: 1px solid var(--border-color) !important;
+		border-radius: var(--radius-md) !important;
+		padding: 0 16px !important;
+		height: 40px !important;
+		font-weight: 500 !important;
+
+		&:hover {
+			background-color: var(--bg-tertiary) !important;
+			border-color: var(--text-secondary) !important;
+		}
+	}
+
+	/* Ensure Primary Buttons are consistent */
+	button[mat-raised-button] {
+		height: 40px !important;
+		padding: 0 24px !important;
+	}
 }
 
 /* Person Card Standard Style */
