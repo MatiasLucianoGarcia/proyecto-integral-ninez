@@ -39,7 +39,7 @@
 	<div class="form-content">
 		<!-- Tabs para Datos Personales y Familia -->
 
-		<mat-tab-group class="form-tabs" [dynamicHeight]="true">
+		<mat-tab-group class="form-tabs" [dynamicHeight]="true" [(selectedIndex)]="currentTabIndex">
 			<!-- Tab 1: Datos Generales -->
 			<mat-tab>
 				<ng-template mat-tab-label>
@@ -367,8 +367,9 @@
 					</div>
 					} @else {
 					<div class="empty-state-placeholder">
-						<mat-icon>info</mat-icon>
+						<mat-icon>groups</mat-icon>
 						<p>Primero complete los datos generales para agregar información familiar.</p>
+
 					</div>
 					}
 				</div>
@@ -449,8 +450,9 @@
 					}
 					} @else {
 					<div class="empty-state-placeholder">
-						<mat-icon>info</mat-icon>
-						<p>Guarde la persona primero para agregar información de salud y educación.</p>
+						<mat-icon>local_hospital</mat-icon>
+						<p>Primero complete los datos generales para agregar información de salud y educación.</p>
+
 					</div>
 					}
 				</div>
@@ -552,8 +554,9 @@
 					</app-intereses>
 					} @else {
 					<div class="empty-state-placeholder">
-						<mat-icon>info</mat-icon>
+						<mat-icon>assignment</mat-icon>
 						<p>Primero complete los datos generales para agregar datos importantes.</p>
+
 					</div>
 					}
 				</div>
@@ -601,8 +604,9 @@
 					}
 					} @else {
 					<div class="empty-state-placeholder">
-						<mat-icon>info</mat-icon>
+						<mat-icon>hub</mat-icon>
 						<p>Primero complete los datos generales para agregar articulaciones.</p>
+
 					</div>
 					}
 				</div>
@@ -654,8 +658,9 @@
 					}
 					} @else {
 					<div class="empty-state-placeholder">
-						<mat-icon>info</mat-icon>
+						<mat-icon>home_work</mat-icon>
 						<p>Primero complete los datos generales para gestionar condiciones de vida y vivienda.</p>
+
 					</div>
 					}
 				</div>
@@ -749,8 +754,9 @@
 					}
 					} @else {
 					<div class="empty-state-placeholder">
-						<mat-icon>info</mat-icon>
+						<mat-icon>security</mat-icon>
 						<p>Primero complete los datos generales para acceder a la información del Servicio Local.</p>
+
 					</div>
 					}
 				</div>

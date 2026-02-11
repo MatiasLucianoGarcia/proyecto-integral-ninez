@@ -151,6 +151,7 @@ export class PersonFormComponent implements OnInit {
 	personForm!: FormGroup;
 	mode = signal<FormMode>('create');
 	loading = signal(false);
+	currentTabIndex = 0;
 	personDni = signal<string | null>(null);
 	familyMembers = signal<FamilyMember[]>([]);
 	loadingFamily = signal(false);
