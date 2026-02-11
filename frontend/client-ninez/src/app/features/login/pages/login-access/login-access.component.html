@@ -6,7 +6,8 @@
 				<mat-icon class="logo-icon">shield</mat-icon>
 				<h1 class="brand-title">BBSIN App</h1>
 			</div>
-			<p class="brand-description">Sistema Integral de Gestión para la Protección de Derechos de Niñez y Adolescencia</p>
+			<p class="brand-description">Sistema Integral de Gestión para la Protección de Derechos de Niñez y
+				Adolescencia</p>
 			<div class="features-list">
 				<div class="feature-item">
 					<mat-icon class="feature-icon">check_circle</mat-icon>
@@ -42,30 +43,21 @@
 
 				<mat-form-field appearance="outline" class="form-field">
 					<mat-label>Contraseña</mat-label>
-					<input
-						matInput
-						[type]="hide ? 'password' : 'text'"
-						placeholder="Ingresa tu contraseña"
-						formControlName="password"
-						autocomplete="current-password"
-					/>
+					<input matInput [type]="hide ? 'password' : 'text'" placeholder="Ingresa tu contraseña"
+						formControlName="password" autocomplete="current-password" />
 					<mat-icon matPrefix class="input-icon">lock</mat-icon>
-					<button
-						mat-icon-button
-						matSuffix
-						(click)="hide = !hide"
-						type="button"
-						class="toggle-password"
-						[attr.aria-label]="'Mostrar contraseña'"
-					>
+					<button mat-icon-button matSuffix (click)="hide = !hide" type="button" class="toggle-password"
+						[attr.aria-label]="'Mostrar contraseña'">
 						<mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
 					</button>
-					<mat-error *ngIf="loginForm.get('password')?.hasError('required')"> La contraseña es requerida </mat-error>
+					<mat-error *ngIf="loginForm.get('password')?.hasError('required')"> La contraseña es requerida
+					</mat-error>
 				</mat-form-field>
 
 				<div class="form-options">
-					<mat-checkbox class="remember-me" color="primary"> Recordarme </mat-checkbox>
-					<a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+					<mat-checkbox class="remember-me" color="primary" formControlName="rememberMe"> Recordarme
+					</mat-checkbox>
+
 				</div>
 
 				@if(loginForm.errors?.['invalidLogin']) {
@@ -75,18 +67,20 @@
 				</div>
 				}
 
-				<button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="loginForm.invalid">
-					<mat-icon class="button-icon">login</mat-icon>
-					Iniciar Sesión
+				<button mat-raised-button color="primary" class="login-button" type="submit"
+					[disabled]="loginForm.invalid || loading()">
+					@if(loading()) {
+					<mat-progress-spinner mode="indeterminate" diameter="24" color="accent"></mat-progress-spinner>
+					} @else {
+					<span class="button-content-wrapper">
+						<mat-icon class="button-icon">login</mat-icon>
+						<span>Iniciar Sesión</span>
+					</span>
+					}
 				</button>
 			</form>
 
-			<div class="form-footer">
-				<p class="footer-text">
-					¿Necesitas ayuda?
-					<a href="#" class="support-link">Contacta a soporte técnico</a>
-				</p>
-			</div>
+
 		</div>
 	</div>
 </div>

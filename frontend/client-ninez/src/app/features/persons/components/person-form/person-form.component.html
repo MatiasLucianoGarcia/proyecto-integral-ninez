@@ -408,7 +408,7 @@
 						@if(!isViewMode) {
 						<button mat-raised-button color="primary" class="add-family-button"
 							(click)="onAddEscolaridad()">
-							<mat-icon>add</mat-icon>
+							<mat-icon>school</mat-icon>
 							Agregar Escolaridad
 						</button>
 						}
@@ -433,9 +433,10 @@
 							</div>
 						</div>
 
-						<button mat-raised-button color="primary" (click)="onAddControl()" *ngIf="!isViewMode">
-							<mat-icon>add</mat-icon>
-							Agregar
+						<button mat-raised-button color="primary" (click)="onAddControl()" *ngIf="!isViewMode"
+							class="add-family-button">
+							<mat-icon>monitor_heart</mat-icon>
+							Agregar control médico
 						</button>
 					</div>
 
@@ -476,9 +477,10 @@
 							</div>
 						</div>
 
-						<button mat-raised-button color="primary" (click)="onAddTrabajo()" *ngIf="!isViewMode">
-							<mat-icon>add</mat-icon>
-							Agregar
+						<button mat-raised-button color="primary" (click)="onAddTrabajo()" *ngIf="!isViewMode"
+							class="add-family-button">
+							<mat-icon>work</mat-icon>
+							Agregar Trabajo
 						</button>
 					</div>
 
@@ -504,9 +506,10 @@
 							</div>
 						</div>
 
-						<button mat-raised-button color="primary" (click)="onAddActividad()" *ngIf="!isViewMode">
-							<mat-icon>add</mat-icon>
-							Agregar
+						<button mat-raised-button color="primary" (click)="onAddActividad()" *ngIf="!isViewMode"
+							class="add-family-button">
+							<mat-icon>sports_soccer</mat-icon>
+							Agregar Actividad
 						</button>
 					</div>
 
@@ -532,9 +535,10 @@
 							</div>
 						</div>
 
-						<button mat-raised-button color="primary" (click)="onAddPerdida()" *ngIf="!isViewMode">
-							<mat-icon>add</mat-icon>
-							Agregar
+						<button mat-raised-button color="primary" (click)="onAddPerdida()" *ngIf="!isViewMode"
+							class="add-family-button">
+							<mat-icon>heart_broken</mat-icon>
+							Agregar Pérdida
 						</button>
 					</div>
 

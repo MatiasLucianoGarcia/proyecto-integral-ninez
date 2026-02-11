@@ -20,13 +20,14 @@
 				<input matInput formControlName="dni" placeholder="Ej: 12345678" type="text" maxlength="8" />
 				<mat-icon matPrefix>badge</mat-icon>
 				@if(searchForm.get('dni')?.value) {
-				<button mat-icon-button matSuffix type="button" (click)="searchForm.patchValue({ dni: '' })" aria-label="Limpiar">
+				<button mat-icon-button matSuffix type="button" (click)="searchForm.patchValue({ dni: '' })"
+					aria-label="Limpiar">
 					<mat-icon>close</mat-icon>
 				</button>
 				}
 			</mat-form-field>
 
-			<button mat-fab extended color="primary" type="submit" class="search-button">
+			<button mat-raised-button color="primary" type="submit" class="search-button">
 				<mat-icon>search</mat-icon>
 				Buscar
 			</button>

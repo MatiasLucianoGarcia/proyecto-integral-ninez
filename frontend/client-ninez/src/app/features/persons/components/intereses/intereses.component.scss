@@ -9,23 +9,23 @@
     gap: 16px;
 
     .header-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
         color: var(--primary-color);
     }
 
     .title {
         margin: 0;
-        font-size: 1.25rem;
-        font-weight: 500;
-        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
     }
 
     .subtitle {
-        margin: 4px 0 0;
-        color: #666;
-        font-size: 0.9rem;
+        margin: var(--spacing-xs) 0 0 0;
+        color: var(--text-secondary);
+        font-size: 1rem;
     }
 }
 
